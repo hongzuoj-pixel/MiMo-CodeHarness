@@ -298,24 +298,8 @@ Planned improvements:
 
 ---
 
-## 11. Why this project matters
 
-For researchers and supervisors, this project shows an early but concrete attempt to evaluate CodeAgent behavior on real engineering repositories.
-
-For engineers, it demonstrates a practical workflow for repository-level code understanding, task generation, model execution, token tracking, and reproducible report generation.
-
-For career development, it shows hands-on experience with:
-
-- LLM API integration;
-- Agent workflow design;
-- repository-level code analysis;
-- automated evaluation;
-- IoT/embedded software case study;
-- Python tooling and engineering documentation.
-
----
-
-## 12. Safety Notes
+## 11. Safety Notes
 
 - Do not commit API keys.
 - Use environment variables for all model credentials.
