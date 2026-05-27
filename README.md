@@ -174,7 +174,7 @@ The report summarizes repository structure, dependency analysis, model evaluatio
 ### 6.1 Clone this repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/MiMo-CodeHarness.git
+git clone https://github.com/hongzuoj-pixel/MiMo-CodeHarness.git
 cd MiMo-CodeHarness
 ```
 
