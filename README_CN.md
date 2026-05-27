@@ -183,7 +183,7 @@ evaluation_scores.csv
 ### 6.1 克隆仓库
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/MiMo-CodeHarness.git
+git clone https://github.com/hongzuoj-pixel/MiMo-CodeHarness.git
 cd MiMo-CodeHarness
 ```
 
