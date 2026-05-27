@@ -1,0 +1,30 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+*.env
+api_key.txt
+secrets.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Heavy or temporary generated artifacts
+outputs/**/worktrees/
+outputs/**/patches/
+outputs/**/build_test_logs/
+external_repos/
+
+# Logs
+*.log
