@@ -1,0 +1,13 @@
+{
+  "default_timeout_seconds": 60,
+  "default_max_tokens": 2000,
+  "default_temperature": 0.2,
+  "models": [
+    {
+      "name": "LocalMock",
+      "provider_type": "mock",
+      "model": "dry-run-code-agent",
+      "enabled": true
+    }
+  ]
+}

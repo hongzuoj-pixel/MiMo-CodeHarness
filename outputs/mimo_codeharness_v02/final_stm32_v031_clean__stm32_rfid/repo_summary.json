@@ -1,0 +1,39 @@
+{
+  "project_root": "<STM32_REPO>",
+  "file_count": 16,
+  "language_counts": {
+    "C/C++/Embedded": 13,
+    "Python": 2,
+    "Docs": 1
+  },
+  "role_counts": {
+    "source": 15,
+    "documentation": 1
+  },
+  "suffix_counts": {
+    ".c": 7,
+    ".h": 6,
+    ".py": 2,
+    ".md": 1
+  },
+  "total_lines": 810,
+  "total_size_bytes": 39005,
+  "sample_files": [
+    "STM32-RFID-Access-Control-System-main/README.md",
+    "STM32-RFID-Access-Control-System-main/access.c",
+    "STM32-RFID-Access-Control-System-main/access.h",
+    "STM32-RFID-Access-Control-System-main/buzzer.c",
+    "STM32-RFID-Access-Control-System-main/buzzer.h",
+    "STM32-RFID-Access-Control-System-main/delay.c",
+    "STM32-RFID-Access-Control-System-main/delay.h",
+    "STM32-RFID-Access-Control-System-main/led.c",
+    "STM32-RFID-Access-Control-System-main/led.h",
+    "STM32-RFID-Access-Control-System-main/main.c",
+    "STM32-RFID-Access-Control-System-main/rc522.c",
+    "STM32-RFID-Access-Control-System-main/rc522.h",
+    "STM32-RFID-Access-Control-System-main/serial_logger.py",
+    "STM32-RFID-Access-Control-System-main/usart.c",
+    "STM32-RFID-Access-Control-System-main/usart.h",
+    "STM32-RFID-Access-Control-System-main/view_logs.py"
+  ]
+}

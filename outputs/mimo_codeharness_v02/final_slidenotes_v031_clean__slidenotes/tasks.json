@@ -1,0 +1,129 @@
+[
+  {
+    "task_id": "T001",
+    "task_type": "repo_understanding",
+    "difficulty": "easy",
+    "title": "Repository-level architecture understanding",
+    "description": "总结该仓库的主要目标、核心模块、入口文件、配置文件和潜在工程风险。回答必须引用真实文件路径。",
+    "related_files": [
+      "SlideNote-main/slidenote/models.py",
+      "SlideNote-main/slidenote/pipeline.py",
+      "SlideNote-main/slidenote/llm_cache.py",
+      "SlideNote-main/tests/test_sections.py",
+      "SlideNote-main/tests/test_modality.py",
+      "SlideNote-main/tests/test_coverage.py"
+    ],
+    "expected_output": "结构化项目理解报告",
+    "scoring_points": [
+      "项目目标",
+      "核心文件",
+      "模块职责",
+      "风险点",
+      "后续改进"
+    ]
+  },
+  {
+    "task_id": "T002",
+    "task_type": "dependency_explanation",
+    "difficulty": "medium",
+    "title": "Cross-file dependency reasoning",
+    "description": "基于依赖边和相关文件，解释该仓库的跨文件依赖链，指出哪些文件最可能影响构建或运行。",
+    "related_files": [
+      "SlideNote-main/gui/README_GUI.md",
+      "SlideNote-main/gui/README_GUI.zh-CN.md",
+      "SlideNote-main/gui/app.py",
+      "SlideNote-main/gui/studio_core.py",
+      "SlideNote-main/scripts/generate_cost_report.py"
+    ],
+    "expected_output": "依赖链解释与影响范围分析",
+    "scoring_points": [
+      "跨文件关系",
+      "影响范围",
+      "关键依赖",
+      "证据路径"
+    ]
+  },
+  {
+    "task_id": "T003",
+    "task_type": "bug_localization",
+    "difficulty": "medium",
+    "title": "Potential bug localization",
+    "description": "假设项目出现运行失败或功能异常，请根据仓库结构定位最值得优先检查的 3 个文件，并解释原因。",
+    "related_files": [
+      "SlideNote-main/slidenote/models.py",
+      "SlideNote-main/slidenote/pipeline.py",
+      "SlideNote-main/slidenote/llm_cache.py",
+      "SlideNote-main/tests/test_sections.py",
+      "SlideNote-main/tests/test_modality.py"
+    ],
+    "expected_output": "Bug 定位分析",
+    "scoring_points": [
+      "定位理由",
+      "相关文件",
+      "排查顺序",
+      "测试建议"
+    ]
+  },
+  {
+    "task_id": "T004",
+    "task_type": "test_generation",
+    "difficulty": "medium",
+    "title": "Test plan generation",
+    "description": "为该仓库设计一组最小可执行测试方案，包括静态检查、单元测试、构建检查和人工验证点。",
+    "related_files": [
+      "SlideNote-main/slidenote/models.py",
+      "SlideNote-main/slidenote/pipeline.py",
+      "SlideNote-main/slidenote/llm_cache.py",
+      "SlideNote-main/tests/test_sections.py",
+      "SlideNote-main/tests/test_modality.py"
+    ],
+    "expected_output": "测试方案或测试代码草案",
+    "scoring_points": [
+      "测试目标",
+      "测试步骤",
+      "预期结果",
+      "边界条件"
+    ]
+  },
+  {
+    "task_id": "T005",
+    "task_type": "code_refactor",
+    "difficulty": "hard",
+    "title": "Patch-style maintainability improvement",
+    "description": "输出一个安全、最小、可回滚的 unified diff patch，用于增加仓库说明或改进错误处理。不要修改业务核心逻辑。",
+    "related_files": [
+      "SlideNote-main/slidenote/models.py",
+      "SlideNote-main/slidenote/pipeline.py",
+      "SlideNote-main/slidenote/llm_cache.py"
+    ],
+    "expected_output": "unified diff patch + 修改解释",
+    "scoring_points": [
+      "patch 格式",
+      "最小修改",
+      "可回滚",
+      "风险说明"
+    ]
+  },
+  {
+    "task_id": "T006",
+    "task_type": "risk_analysis",
+    "difficulty": "medium",
+    "title": "Engineering risk analysis",
+    "description": "从工程化角度评估该仓库的可维护性、可测试性、依赖风险、部署风险和 token 成本。",
+    "related_files": [
+      "SlideNote-main/slidenote/models.py",
+      "SlideNote-main/slidenote/pipeline.py",
+      "SlideNote-main/slidenote/llm_cache.py",
+      "SlideNote-main/tests/test_sections.py",
+      "SlideNote-main/tests/test_modality.py"
+    ],
+    "expected_output": "风险分析报告",
+    "scoring_points": [
+      "可维护性",
+      "可测试性",
+      "依赖风险",
+      "成本",
+      "缓解方案"
+    ]
+  }
+]

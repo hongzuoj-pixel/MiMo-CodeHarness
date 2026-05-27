@@ -1,0 +1,192 @@
+{
+  "dependency_count": 86,
+  "relation_counts": {
+    "symbol_call": 56,
+    "c_include": 22,
+    "markdown_link": 6,
+    "python_import": 2
+  },
+  "strong_edges": 70,
+  "sample_edges": [
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/README.md",
+      "relation_type": "markdown_link",
+      "target": "https://img.shields.io/badge/Platform-STM32-blue",
+      "target_file": "https://img.shields.io/badge/Platform-STM32-blue",
+      "line": 3,
+      "evidence": "[Platform](https://img.shields.io/badge/Platform-STM32-blue)",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/README.md",
+      "relation_type": "markdown_link",
+      "target": "https://img.shields.io/badge/MCU-STM32F103C8T6-green",
+      "target_file": "https://img.shields.io/badge/MCU-STM32F103C8T6-green",
+      "line": 4,
+      "evidence": "[MCU](https://img.shields.io/badge/MCU-STM32F103C8T6-green)",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/README.md",
+      "relation_type": "markdown_link",
+      "target": "https://img.shields.io/badge/RFID-MFRC522-orange",
+      "target_file": "https://img.shields.io/badge/RFID-MFRC522-orange",
+      "line": 5,
+      "evidence": "[RFID](https://img.shields.io/badge/RFID-MFRC522-orange)",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/README.md",
+      "relation_type": "markdown_link",
+      "target": "https://img.shields.io/badge/Language-C%20%2B%20Python-purple",
+      "target_file": "https://img.shields.io/badge/Language-C%20%2B%20Python-purple",
+      "line": 6,
+      "evidence": "[Language](https://img.shields.io/badge/Language-C%20%2B%20Python-purple)",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/README.md",
+      "relation_type": "markdown_link",
+      "target": "https://img.shields.io/badge/Version-v2.0-red",
+      "target_file": "https://img.shields.io/badge/Version-v2.0-red",
+      "line": 7,
+      "evidence": "[Version](https://img.shields.io/badge/Version-v2.0-red)",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/README.md",
+      "relation_type": "markdown_link",
+      "target": "https://img.shields.io/badge/Status-Completed-brightgreen",
+      "target_file": "https://img.shields.io/badge/Status-Completed-brightgreen",
+      "line": 8,
+      "evidence": "[Status](https://img.shields.io/badge/Status-Completed-brightgreen)",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/access.c",
+      "relation_type": "c_include",
+      "target": "access.h",
+      "target_file": "STM32-RFID-Access-Control-System-main/access.h",
+      "line": 1,
+      "evidence": "#include \"access.h\"",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/access.h",
+      "relation_type": "c_include",
+      "target": "stm32f10x.h",
+      "target_file": "stm32f10x.h",
+      "line": 3,
+      "evidence": "\n#include \"stm32f10x.h\"",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/access.h",
+      "relation_type": "symbol_call",
+      "target": "IsSameUID",
+      "target_file": "STM32-RFID-Access-Control-System-main/access.c",
+      "line": 14,
+      "evidence": "IsSameUID(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/access.h",
+      "relation_type": "symbol_call",
+      "target": "FindCardIndex",
+      "target_file": "STM32-RFID-Access-Control-System-main/access.c",
+      "line": 15,
+      "evidence": "FindCardIndex(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/access.h",
+      "relation_type": "symbol_call",
+      "target": "IsNewCard",
+      "target_file": "STM32-RFID-Access-Control-System-main/access.c",
+      "line": 17,
+      "evidence": "IsNewCard(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "c_include",
+      "target": "stm32f10x.h",
+      "target_file": "stm32f10x.h",
+      "line": 1,
+      "evidence": "#include \"stm32f10x.h\"",
+      "strength": "weak"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "c_include",
+      "target": "buzzer.h",
+      "target_file": "STM32-RFID-Access-Control-System-main/buzzer.h",
+      "line": 2,
+      "evidence": "#include \"buzzer.h\"",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "c_include",
+      "target": "delay.h",
+      "target_file": "STM32-RFID-Access-Control-System-main/delay.h",
+      "line": 3,
+      "evidence": "#include \"delay.h\"",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "symbol_call",
+      "target": "delay_ms",
+      "target_file": "STM32-RFID-Access-Control-System-main/delay.c",
+      "line": 28,
+      "evidence": "delay_ms(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "symbol_call",
+      "target": "delay_ms",
+      "target_file": "STM32-RFID-Access-Control-System-main/delay.c",
+      "line": 39,
+      "evidence": "delay_ms(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "symbol_call",
+      "target": "delay_ms",
+      "target_file": "STM32-RFID-Access-Control-System-main/delay.c",
+      "line": 41,
+      "evidence": "delay_ms(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "symbol_call",
+      "target": "delay_ms",
+      "target_file": "STM32-RFID-Access-Control-System-main/delay.c",
+      "line": 52,
+      "evidence": "delay_ms(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "relation_type": "symbol_call",
+      "target": "delay_ms",
+      "target_file": "STM32-RFID-Access-Control-System-main/delay.c",
+      "line": 54,
+      "evidence": "delay_ms(",
+      "strength": "strong"
+    },
+    {
+      "source_file": "STM32-RFID-Access-Control-System-main/buzzer.h",
+      "relation_type": "symbol_call",
+      "target": "Buzzer_Init",
+      "target_file": "STM32-RFID-Access-Control-System-main/buzzer.c",
+      "line": 4,
+      "evidence": "Buzzer_Init(",
+      "strength": "strong"
+    }
+  ]
+}

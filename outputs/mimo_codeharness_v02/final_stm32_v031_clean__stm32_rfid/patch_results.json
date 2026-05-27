@@ -1,0 +1,80 @@
+[
+  {
+    "task_id": "T001",
+    "provider_name": "Xiaomi-MiMo-Pro",
+    "status": "no_patch",
+    "patch_file": "",
+    "worktree": "",
+    "returncode": null,
+    "changed_files": "",
+    "stdout": "",
+    "stderr": "",
+    "applied": false,
+    "note": "No diff block found in model output."
+  },
+  {
+    "task_id": "T002",
+    "provider_name": "Xiaomi-MiMo-Pro",
+    "status": "error",
+    "patch_file": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\patches\\T002_Xiaomi-MiMo-Pro_2.patch",
+    "worktree": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\worktrees\\T002_Xiaomi-MiMo-Pro_2",
+    "returncode": null,
+    "changed_files": "",
+    "stdout": "",
+    "stderr": "[WinError 2] 系统找不到指定的文件。",
+    "applied": false,
+    "note": "Patch application raised exception."
+  },
+  {
+    "task_id": "T003",
+    "provider_name": "Xiaomi-MiMo-Pro",
+    "status": "error",
+    "patch_file": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\patches\\T003_Xiaomi-MiMo-Pro_3.patch",
+    "worktree": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\worktrees\\T003_Xiaomi-MiMo-Pro_3",
+    "returncode": null,
+    "changed_files": "",
+    "stdout": "",
+    "stderr": "[WinError 2] 系统找不到指定的文件。",
+    "applied": false,
+    "note": "Patch application raised exception."
+  },
+  {
+    "task_id": "T004",
+    "provider_name": "Xiaomi-MiMo-Pro",
+    "status": "no_patch",
+    "patch_file": "",
+    "worktree": "",
+    "returncode": null,
+    "changed_files": "",
+    "stdout": "",
+    "stderr": "",
+    "applied": false,
+    "note": "No diff block found in model output."
+  },
+  {
+    "task_id": "T005",
+    "provider_name": "Xiaomi-MiMo-Pro",
+    "status": "error",
+    "patch_file": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\patches\\T005_Xiaomi-MiMo-Pro_5.patch",
+    "worktree": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\worktrees\\T005_Xiaomi-MiMo-Pro_5",
+    "returncode": null,
+    "changed_files": "",
+    "stdout": "",
+    "stderr": "[WinError 2] 系统找不到指定的文件。",
+    "applied": false,
+    "note": "Patch application raised exception."
+  },
+  {
+    "task_id": "T006",
+    "provider_name": "Xiaomi-MiMo-Pro",
+    "status": "error",
+    "patch_file": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\patches\\T006_Xiaomi-MiMo-Pro_6.patch",
+    "worktree": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_stm32_v031_clean__stm32_rfid\\worktrees\\T006_Xiaomi-MiMo-Pro_6",
+    "returncode": null,
+    "changed_files": "",
+    "stdout": "",
+    "stderr": "[WinError 2] 系统找不到指定的文件。",
+    "applied": false,
+    "note": "Patch application raised exception."
+  }
+]

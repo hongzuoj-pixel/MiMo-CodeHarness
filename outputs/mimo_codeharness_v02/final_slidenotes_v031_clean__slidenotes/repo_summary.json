@@ -1,0 +1,57 @@
+{
+  "project_root": "<SLIDENOTES_REPO>",
+  "file_count": 91,
+  "language_counts": {
+    "Python": 81,
+    "Docs": 7,
+    "Config/Data": 3
+  },
+  "role_counts": {
+    "source": 62,
+    "test": 22,
+    "documentation": 6,
+    "build_config": 1
+  },
+  "suffix_counts": {
+    ".py": 81,
+    ".md": 6,
+    ".yml": 1,
+    ".json": 1,
+    ".toml": 1,
+    ".txt": 1
+  },
+  "total_lines": 5764,
+  "total_size_bytes": 969124,
+  "sample_files": [
+    "SlideNote-main/.github/workflows/ci.yml",
+    "SlideNote-main/CONFIG.zh-CN.md",
+    "SlideNote-main/README.md",
+    "SlideNote-main/README.zh-CN.md",
+    "SlideNote-main/ROADMAP.zh-CN.md",
+    "SlideNote-main/gui/README_GUI.md",
+    "SlideNote-main/gui/README_GUI.zh-CN.md",
+    "SlideNote-main/gui/__init__.py",
+    "SlideNote-main/gui/app.py",
+    "SlideNote-main/gui/studio_core.py",
+    "SlideNote-main/pricing.template.json",
+    "SlideNote-main/pyproject.toml",
+    "SlideNote-main/requirements-gui.txt",
+    "SlideNote-main/scripts/generate_cost_report.py",
+    "SlideNote-main/slidenote/__init__.py",
+    "SlideNote-main/slidenote/__main__.py",
+    "SlideNote-main/slidenote/api_retry.py",
+    "SlideNote-main/slidenote/build_pipeline.py",
+    "SlideNote-main/slidenote/cli.py",
+    "SlideNote-main/slidenote/composite_figures.py",
+    "SlideNote-main/slidenote/content_guard.py",
+    "SlideNote-main/slidenote/costing.py",
+    "SlideNote-main/slidenote/coverage.py",
+    "SlideNote-main/slidenote/deck_brief.py",
+    "SlideNote-main/slidenote/doctor.py",
+    "SlideNote-main/slidenote/exporting.py",
+    "SlideNote-main/slidenote/extractors/__init__.py",
+    "SlideNote-main/slidenote/extractors/pdf.py",
+    "SlideNote-main/slidenote/extractors/ppt.py",
+    "SlideNote-main/slidenote/extractors/pptx.py"
+  ]
+}

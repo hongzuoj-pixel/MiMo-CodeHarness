@@ -1,0 +1,26 @@
+{
+  "default_timeout_seconds": 180,
+  "default_max_tokens": 4000,
+  "default_temperature": 0.2,
+  "models": [
+    {
+      "name": "Xiaomi-MiMo-Pro",
+      "provider_type": "openai_compatible",
+      "model": "mimo-v2.5-pro",
+      "base_url": "https://api.xiaomimimo.com/v1",
+      "api_key_env": "MIMO_API_KEY",
+      "enabled": true,
+      "max_tokens": 4000,
+      "temperature": 0.2,
+      "timeout_seconds": 240,
+      "auth_header": "api-key",
+      "max_tokens_field": "max_completion_tokens"
+    },
+    {
+      "name": "LocalMock",
+      "provider_type": "mock",
+      "model": "dry-run-code-agent",
+      "enabled": false
+    }
+  ]
+}

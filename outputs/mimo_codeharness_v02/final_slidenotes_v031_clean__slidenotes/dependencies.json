@@ -1,0 +1,4547 @@
+[
+  {
+    "source_file": "SlideNote-main/gui/README_GUI.md",
+    "relation_type": "markdown_link",
+    "target": "README_GUI.zh-CN.md",
+    "target_file": "SlideNote-main/gui/README_GUI.zh-CN.md",
+    "line": 3,
+    "evidence": "[中文说明](README_GUI.zh-CN.md)",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/gui/README_GUI.zh-CN.md",
+    "relation_type": "markdown_link",
+    "target": "README_GUI.md",
+    "target_file": "SlideNote-main/gui/README_GUI.md",
+    "line": 3,
+    "evidence": "[English](README_GUI.md)",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/gui/app.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport io\nimport json\nimport os\nimport re\nimport shutil\nimport subprocess\nimport time\nimport zipfile\nfrom datetime import datetime\nfrom pathlib import Path\nfrom typ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/gui/app.py",
+    "relation_type": "python_import",
+    "target": "slidenote.costing",
+    "target_file": "slidenote.costing",
+    "line": 18,
+    "evidence": "    from slidenote.costing import write_cost_report\nexcept Exception",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/gui/app.py",
+    "relation_type": "python_import",
+    "target": "slidenote.doctor",
+    "target_file": "slidenote.doctor",
+    "line": 23,
+    "evidence": "    from slidenote.doctor import run_doctor\nexcept Exception",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/gui/studio_core.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport os\nimport re\nimport sys\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nPROVIDER_ENV_KEYS",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/scripts/generate_cost_report.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport argparse\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/__main__.py",
+    "relation_type": "python_import",
+    "target": ".cli",
+    "target_file": ".cli",
+    "line": 1,
+    "evidence": "from .cli import main\n\n\nif __name__ ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/__main__.py",
+    "relation_type": "symbol_call",
+    "target": "main",
+    "target_file": "SlideNote-main/scripts/generate_cost_report.py",
+    "line": 5,
+    "evidence": "main(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/api_retry.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport random\nimport re\nimport time\nimport urllib",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/api_retry.py",
+    "relation_type": "python_import",
+    "target": "dataclasses",
+    "target_file": "dataclasses",
+    "line": 7,
+    "evidence": "from dataclasses import dataclass\nfrom typing import Callable, Generic, TypeVar\n\nT ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/build_pipeline.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/build_pipeline.py",
+    "relation_type": "python_import",
+    "target": "slidenote.build.errors",
+    "target_file": "slidenote.build.errors",
+    "line": 4,
+    "evidence": "from slidenote.build.errors import UserFacingConfigError\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/build_pipeline.py",
+    "relation_type": "python_import",
+    "target": "slidenote.build.state",
+    "target_file": "slidenote.build.state",
+    "line": 6,
+    "evidence": "from slidenote.build.state import BuildState\n\n__all__ ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/cli.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport argparse\nimport sys\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/cli.py",
+    "relation_type": "python_import",
+    "target": "slidenote.doctor",
+    "target_file": "slidenote.doctor",
+    "line": 14,
+    "evidence": "from slidenote.doctor import render_doctor_report, run_doctor\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/cli.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 16,
+    "evidence": "from slidenote.utils import write_json\n\n\ndef main",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/cli.py",
+    "relation_type": "symbol_call",
+    "target": "main",
+    "target_file": "SlideNote-main/scripts/generate_cost_report.py",
+    "line": 19,
+    "evidence": "main(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/composite_figures.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport math\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom statistics import median\nfrom typing import Any\n\nfrom PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/composite_figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.image_assets",
+    "target_file": "slidenote.image_assets",
+    "line": 12,
+    "evidence": "from slidenote.image_assets import image_metadata\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/composite_figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 14,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock, normalize_rel_path\n\n\nCOMPOSITE_FIGURE_MODES ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/composite_figures.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 79,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport re\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 10,
+    "evidence": "from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json, utc_now_iso\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 12,
+    "evidence": "from slidenote.table_understanding import table_preview\n\n\nCONTENT_GUARD_MODES ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 60,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 72,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "stable_json",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 72,
+    "evidence": "stable_json(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 73,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "make_cache_key",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 75,
+    "evidence": "make_cache_key(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "path_for",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 76,
+    "evidence": "path_for(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "read",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 77,
+    "evidence": "read(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 83,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport html\nimport json\nfrom dataclasses import dataclass, asdict\nfrom pathlib import Path\nfrom typing import Any, Iterable\n\nDEFAULT_PRICING ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 42,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 50,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 70,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 73,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 74,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 75,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 76,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 77,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 78,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 79,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 80,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 81,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/costing.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 85,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/coverage.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport re\nfrom dataclasses import dataclass\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/coverage.py",
+    "relation_type": "python_import",
+    "target": "slidenote.figure_grounding",
+    "target_file": "slidenote.figure_grounding",
+    "line": 7,
+    "evidence": "from slidenote.figure_grounding import note_candidate_images\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/coverage.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 9,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage\n\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 9,
+    "evidence": "from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json, utc_now_iso\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 11,
+    "evidence": "from slidenote.table_understanding import table_preview\n\nDECK_BRIEF_PROMPT_VERSION ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 36,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 50,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "stable_json",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 50,
+    "evidence": "stable_json(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 51,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 52,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "make_cache_key",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 55,
+    "evidence": "make_cache_key(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "path_for",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 56,
+    "evidence": "path_for(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 57,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "stable_json",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 57,
+    "evidence": "stable_json(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "read",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 58,
+    "evidence": "read(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 68,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/doctor.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport importlib",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/doctor.py",
+    "relation_type": "python_import",
+    "target": "os\nimport platform\nimport shutil\nimport sys\nfrom dataclasses import asdict, dataclass\nfrom typing import Any\n\n\n",
+    "target_file": "os\nimport platform\nimport shutil\nimport sys\nfrom dataclasses import asdict, dataclass\nfrom typing import Any\n\n\n",
+    "line": 4,
+    "evidence": "import os\nimport platform\nimport shutil\nimport sys\nfrom dataclasses import asdict, dataclass\nfrom typing import Any\n\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/exporting.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport re\nimport shutil\nimport subprocess\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/exporting.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 11,
+    "evidence": "from slidenote.utils import slugify, write_text\n\n\nEXPORT_FORMATS ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/exporting.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 64,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "python_import",
+    "target": ".pptx",
+    "target_file": ".pptx",
+    "line": 11,
+    "evidence": "        from .pptx import extract_pptx\n\n        return extract_pptx",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "python_import",
+    "target": ".pdf",
+    "target_file": ".pdf",
+    "line": 15,
+    "evidence": "        from .pdf import extract_pdf\n\n        return extract_pdf",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "python_import",
+    "target": ".ppt",
+    "target_file": ".ppt",
+    "line": 19,
+    "evidence": "        from .ppt import extract_ppt\n\n        return extract_ppt",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "symbol_call",
+    "target": "extract_pptx",
+    "target_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "line": 13,
+    "evidence": "extract_pptx(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "symbol_call",
+    "target": "extract_pdf",
+    "target_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "line": 17,
+    "evidence": "extract_pdf(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/__init__.py",
+    "relation_type": "symbol_call",
+    "target": "extract_ppt",
+    "target_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "line": 21,
+    "evidence": "extract_ppt(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport contextlib\nimport io\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 8,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock, normalize_rel_path\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "python_import",
+    "target": "fitz\n    except ImportError as exc",
+    "target_file": "fitz\n    except ImportError as exc",
+    "line": 14,
+    "evidence": "        import fitz\n    except ImportError as exc",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 28,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 50,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 51,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 56,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 57,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 6,
+    "evidence": "from slidenote.utils import find_executable, run_command\n\n\ndef extract_ppt",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "relation_type": "python_import",
+    "target": ".pdf",
+    "target_file": ".pdf",
+    "line": 32,
+    "evidence": "\n    from .pdf import extract_pdf\n\n    deck ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "relation_type": "symbol_call",
+    "target": "find_executable",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 10,
+    "evidence": "find_executable(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "relation_type": "symbol_call",
+    "target": "run_command",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 16,
+    "evidence": "run_command(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/ppt.py",
+    "relation_type": "symbol_call",
+    "target": "extract_pdf",
+    "target_file": "SlideNote-main/slidenote/extractors/pdf.py",
+    "line": 35,
+    "evidence": "extract_pdf(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Iterable\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 7,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock, normalize_rel_path\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 9,
+    "evidence": "from slidenote.utils import unique_path\n\n\ndef extract_pptx",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "python_import",
+    "target": "pptx",
+    "target_file": "pptx",
+    "line": 14,
+    "evidence": "        from pptx import Presentation\n    except ImportError as exc",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "symbol_call",
+    "target": "render_pptx_screenshots",
+    "target_file": "SlideNote-main/slidenote/rendering.py",
+    "line": 24,
+    "evidence": "render_pptx_screenshots(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 30,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/extractors/pptx.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 58,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport math\nimport re\nfrom concurrent",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 7,
+    "evidence": "from pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 11,
+    "evidence": "from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 13,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "slidenote.vision",
+    "target_file": "slidenote.vision",
+    "line": 15,
+    "evidence": "from slidenote.vision import _cleanup_temp_image, _file_sha256, _prepare_image_for_api\n\n\nFIGURE_GROUNDING_MODES ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figures.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport tempfile\nfrom concurrent",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figures.py",
+    "relation_type": "python_import",
+    "target": "dataclasses",
+    "target_file": "dataclasses",
+    "line": 6,
+    "evidence": "from dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any, Callable\n\nfrom PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm",
+    "target_file": "slidenote.llm",
+    "line": 13,
+    "evidence": "from slidenote.llm import LLMClient, resolve_provider_runtime\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.modality",
+    "target_file": "slidenote.modality",
+    "line": 15,
+    "evidence": "from slidenote.modality import page_has_hint\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.semantic_layout",
+    "target_file": "slidenote.semantic_layout",
+    "line": 17,
+    "evidence": "from slidenote.semantic_layout import semantic_context_for_page, semantic_layout_for_prompt\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/figures.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 87,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_assets.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Any\n\nfrom PIL import Image\n\n\ndef image_metadata",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 26,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 27,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 28,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_ranking.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Any\n\nfrom PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_ranking.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 9,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage\n\n\ndef rank_deck_images",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_ranking.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 31,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_ranking.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 43,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_ranking.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 49,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/image_ranking.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 57,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom typing import Any, Iterable\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 6,
+    "evidence": "from slidenote.table_understanding import table_preview\n\n\nElementIR ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 25,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 27,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 30,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 32,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 34,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 53,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 55,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 64,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ir.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 66,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport base64\nimport mimetypes\nimport os\nimport urllib",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm.py",
+    "relation_type": "python_import",
+    "target": "urllib.parse\nimport urllib.request\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote.api_retry import with_api_retries\n\n\n",
+    "target_file": "urllib.parse\nimport urllib.request\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote.api_retry import with_api_retries\n\n\n",
+    "line": 8,
+    "evidence": "import urllib.parse\nimport urllib.request\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote.api_retry import with_api_retries\n\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm_cache.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport hashlib\nimport json\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nfrom typing import Any\n\nLLM_CACHE_SCHEMA_VERSION ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm_cache.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 50,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm_cache.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 53,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm_cache.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 55,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm_cache.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 57,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/llm_cache.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 72,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/modality.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom collections import Counter\nfrom dataclasses import dataclass\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/modality.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 8,
+    "evidence": "from slidenote.models import Deck, SlidePage\n\nPAGE_MODALITIES ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/models.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom dataclasses import asdict, dataclass, field\nfrom pathlib import Path\nfrom typing import Any\n\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/__init__.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any, Callable\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/__init__.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 1,
+    "evidence": "from slidenote.models import Deck\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/__init__.py",
+    "relation_type": "python_import",
+    "target": ".local",
+    "target_file": ".local",
+    "line": 1,
+    "evidence": "from .local import _generate_notes_locally\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/__init__.py",
+    "relation_type": "python_import",
+    "target": ".prompts",
+    "target_file": ".prompts",
+    "line": 1,
+    "evidence": "from .prompts import _llm_page_prompt\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/assembly.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport base64\nimport html\nimport mimetypes\nimport re\nimport shutil\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/assembly.py",
+    "relation_type": "python_import",
+    "target": "slidenote.image_ranking",
+    "target_file": "slidenote.image_ranking",
+    "line": 13,
+    "evidence": "from slidenote.image_ranking import sorted_images_by_importance\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom concurrent",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 4,
+    "evidence": "from pathlib import Path\nfrom typing import Any, Callable\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm",
+    "target_file": "slidenote.llm",
+    "line": 8,
+    "evidence": "from slidenote.llm import resolve_provider_runtime\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 10,
+    "evidence": "from slidenote.models import Deck\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": ".lecture_weave",
+    "target_file": ".lecture_weave",
+    "line": 21,
+    "evidence": "from .lecture_weave import _generate_notes_with_lecture_weave\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": ".repair",
+    "target_file": ".repair",
+    "line": 23,
+    "evidence": "from .repair import _repair_required_markdown_once\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "python_import",
+    "target": ".",
+    "target_file": ".",
+    "line": 58,
+    "evidence": "    from . import NoteGenerationResult\n\n    runtime ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 66,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/direct.py",
+    "relation_type": "symbol_call",
+    "target": "_generate_notes_with_lecture_weave",
+    "target_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "line": 68,
+    "evidence": "_generate_notes_with_lecture_weave(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom concurrent",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 4,
+    "evidence": "from pathlib import Path\nfrom typing import Any, Callable\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 8,
+    "evidence": "from slidenote.llm_cache import LLMCache\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "python_import",
+    "target": ".llm_calls",
+    "target_file": ".llm_calls",
+    "line": 23,
+    "evidence": "from .llm_calls import _generate_page_lecture_context, _generate_weave_context\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "python_import",
+    "target": ".repair",
+    "target_file": ".repair",
+    "line": 25,
+    "evidence": "from .repair import _repair_required_markdown_once\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "python_import",
+    "target": ".",
+    "target_file": ".",
+    "line": 61,
+    "evidence": "    from . import NoteGenerationResult\n\n    refresh_ids ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "relation_type": "symbol_call",
+    "target": "NoteContext",
+    "target_file": "SlideNote-main/slidenote/notes/assembly.py",
+    "line": 66,
+    "evidence": "NoteContext(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 7,
+    "evidence": "from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "relation_type": "python_import",
+    "target": ".assembly",
+    "target_file": ".assembly",
+    "line": 9,
+    "evidence": "\nfrom .assembly import NoteContext, _display_path\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "relation_type": "python_import",
+    "target": ".prompt_templates",
+    "target_file": ".prompt_templates",
+    "line": 12,
+    "evidence": "from .prompt_templates import _llm_context_prompt, _llm_page_lecture_prompt, _llm_weave_prompt\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "relation_type": "python_import",
+    "target": ".",
+    "target_file": ".",
+    "line": 19,
+    "evidence": "    from . import orchestrator\n\n    legacy_client ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "relation_type": "symbol_call",
+    "target": "_llm_context_prompt",
+    "target_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "line": 53,
+    "evidence": "_llm_context_prompt(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/local.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/local.py",
+    "relation_type": "python_import",
+    "target": "slidenote.image_ranking",
+    "target_file": "slidenote.image_ranking",
+    "line": 7,
+    "evidence": "from slidenote.image_ranking import sorted_images_by_importance\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/local.py",
+    "relation_type": "symbol_call",
+    "target": "NoteContext",
+    "target_file": "SlideNote-main/slidenote/notes/assembly.py",
+    "line": 48,
+    "evidence": "NoteContext(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/orchestrator.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/orchestrator.py",
+    "relation_type": "python_import",
+    "target": ".direct",
+    "target_file": ".direct",
+    "line": 4,
+    "evidence": "\nfrom .direct import _generate_notes_with_llm\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/orchestrator.py",
+    "relation_type": "python_import",
+    "target": ".repair",
+    "target_file": ".repair",
+    "line": 14,
+    "evidence": "from .repair import _repair_required_markdown_once\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/orchestrator.py",
+    "relation_type": "python_import",
+    "target": ".versions",
+    "target_file": ".versions",
+    "line": 16,
+    "evidence": "from .versions import NOTE_PROMPT_VERSION, PAGE_LECTURE_PROMPT_VERSION, WEAVE_PROMPT_VERSION\n\n__all__ ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport re\nfrom dataclasses import asdict\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "python_import",
+    "target": "slidenote.deck_brief",
+    "target_file": "slidenote.deck_brief",
+    "line": 8,
+    "evidence": "from slidenote.deck_brief import deck_brief_for_prompt\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "python_import",
+    "target": "slidenote.ir",
+    "target_file": "slidenote.ir",
+    "line": 10,
+    "evidence": "from slidenote.ir import build_page_ir\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 12,
+    "evidence": "from slidenote.models import Deck, SlidePage\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 14,
+    "evidence": "from slidenote.table_understanding import table_preview\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 34,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 38,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 42,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 43,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 44,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 45,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "relation_type": "symbol_call",
+    "target": "build_page_ir",
+    "target_file": "SlideNote-main/slidenote/ir.py",
+    "line": 56,
+    "evidence": "build_page_ir(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_rules.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\n\ndef _source_prompt_rule",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 8,
+    "evidence": "from slidenote.models import Deck, SlidePage\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "relation_type": "python_import",
+    "target": ".prompt_rules",
+    "target_file": ".prompt_rules",
+    "line": 18,
+    "evidence": "from .prompt_rules import _language_prompt_rule, _note_depth_rule, _source_prompt_rule, _term_policy_prompt_rule\n\n\ndef _llm_page_prompt",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "relation_type": "symbol_call",
+    "target": "NoteContext",
+    "target_file": "SlideNote-main/slidenote/notes/assembly.py",
+    "line": 22,
+    "evidence": "NoteContext(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "relation_type": "symbol_call",
+    "target": "_page_payload_for_prompt",
+    "target_file": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "line": 62,
+    "evidence": "_page_payload_for_prompt(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 75,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompts.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/prompts.py",
+    "relation_type": "python_import",
+    "target": ".prompt_rules",
+    "target_file": ".prompt_rules",
+    "line": 12,
+    "evidence": "from .prompt_rules import _language_prompt_rule, _note_depth_rule, _source_prompt_rule, _term_policy_prompt_rule\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "python_import",
+    "target": "slidenote.coverage",
+    "target_file": "slidenote.coverage",
+    "line": 7,
+    "evidence": "from slidenote.coverage import analyze_coverage\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 9,
+    "evidence": "from slidenote.models import Deck\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "python_import",
+    "target": ".llm_calls",
+    "target_file": ".llm_calls",
+    "line": 12,
+    "evidence": "from .llm_calls import _generate_cached_llm_text\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 37,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "symbol_call",
+    "target": "NoteContext",
+    "target_file": "SlideNote-main/slidenote/notes/assembly.py",
+    "line": 51,
+    "evidence": "NoteContext(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 73,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 78,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 80,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/repair.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 81,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/usage.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/usage.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 1,
+    "evidence": "from slidenote.models import Deck\n\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/usage.py",
+    "relation_type": "python_import",
+    "target": ".prompt_payload",
+    "target_file": ".prompt_payload",
+    "line": 1,
+    "evidence": "from .prompt_payload import _prompt_brief_hash, _prompt_deck_brief\nfrom ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/usage.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 1,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/usage.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 1,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/notes/versions.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nNOTE_PROMPT_VERSION ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ocr.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport base64\nimport json\nimport os\nimport tempfile\nimport urllib",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ocr.py",
+    "relation_type": "python_import",
+    "target": "urllib.parse\nimport urllib.request\nfrom concurrent.futures import ThreadPoolExecutor, as_completed\nfrom dataclasses import asdict, dataclass\nfrom pathlib import Path\nfrom typing import Any, Callable\n\nfrom PIL import Image\n\nfrom slidenote.api_retry import with_api_retries\nfrom slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, utc_now_iso\nfrom slidenote.modality import page_has_hint\nfrom slidenote.models import Deck, ImageAsset, SlidePage\n\nOCR_SCHEMA_VERSION ",
+    "target_file": "urllib.parse\nimport urllib.request\nfrom concurrent.futures import ThreadPoolExecutor, as_completed\nfrom dataclasses import asdict, dataclass\nfrom pathlib import Path\nfrom typing import Any, Callable\n\nfrom PIL import Image\n\nfrom slidenote.api_retry import with_api_retries\nfrom slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, utc_now_iso\nfrom slidenote.modality import page_has_hint\nfrom slidenote.models import Deck, ImageAsset, SlidePage\n\nOCR_SCHEMA_VERSION ",
+    "line": 8,
+    "evidence": "import urllib.parse\nimport urllib.request\nfrom concurrent.futures import ThreadPoolExecutor, as_completed\nfrom dataclasses import asdict, dataclass\nfrom pathlib import Path\nfrom typing import Any, Cal",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/ocr.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 42,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/pipeline.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom pathlib import Path\nfrom typing import Any, Callable, Protocol\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/pipeline.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 8,
+    "evidence": "from slidenote.utils import write_json, write_text\n\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "runner",
+    "target_file": "SlideNote-main/tests/test_pipeline.py",
+    "line": 50,
+    "evidence": "runner(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 57,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport time\nfrom dataclasses import dataclass, field\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 9,
+    "evidence": "from slidenote.utils import write_json\n\n\n",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 26,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 29,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "write",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 36,
+    "evidence": "write(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 40,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "write",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 43,
+    "evidence": "write(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "write",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 48,
+    "evidence": "write(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "write",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 70,
+    "evidence": "write(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 75,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "write",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 81,
+    "evidence": "write(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/progress.py",
+    "relation_type": "symbol_call",
+    "target": "write",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 86,
+    "evidence": "write(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/rendering.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/rendering.py",
+    "relation_type": "python_import",
+    "target": "slidenote.utils",
+    "target_file": "slidenote.utils",
+    "line": 6,
+    "evidence": "from slidenote.utils import find_executable, run_command\n\n\ndef render_pptx_screenshots",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/rendering.py",
+    "relation_type": "python_import",
+    "target": "fitz\n    except ImportError",
+    "target_file": "fitz\n    except ImportError",
+    "line": 51,
+    "evidence": "        import fitz\n    except ImportError",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/rendering.py",
+    "relation_type": "python_import",
+    "target": "win32com.client  ",
+    "target_file": "win32com.client  ",
+    "line": 69,
+    "evidence": "        import win32com.client  ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/rendering.py",
+    "relation_type": "symbol_call",
+    "target": "find_executable",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 17,
+    "evidence": "find_executable(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/rendering.py",
+    "relation_type": "symbol_call",
+    "target": "run_command",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 25,
+    "evidence": "run_command(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 9,
+    "evidence": "from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json, utc_now_iso\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 45,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 58,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "stable_json",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 58,
+    "evidence": "stable_json(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 58,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "sha256_text",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 59,
+    "evidence": "sha256_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "make_cache_key",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 61,
+    "evidence": "make_cache_key(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "path_for",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 62,
+    "evidence": "path_for(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "read",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 63,
+    "evidence": "read(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 69,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/sections.py",
+    "relation_type": "symbol_call",
+    "target": "generate_with_usage",
+    "target_file": "SlideNote-main/tests/test_content_guard.py",
+    "line": 79,
+    "evidence": "generate_with_usage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport re\nfrom concurrent",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 6,
+    "evidence": "from pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 10,
+    "evidence": "from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, utc_now_iso\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 12,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "slidenote.vision",
+    "target_file": "slidenote.vision",
+    "line": 14,
+    "evidence": "from slidenote.vision import _cleanup_temp_image, _file_sha256, _prepare_image_for_api\n\n\nSEMANTIC_LAYOUT_MODES ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 55,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/source_map.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport hashlib\nimport re\nfrom pathlib import Path\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/source_map.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm_cache",
+    "target_file": "slidenote.llm_cache",
+    "line": 9,
+    "evidence": "from slidenote.llm_cache import utc_now_iso\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/source_map.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 11,
+    "evidence": "from slidenote.table_understanding import table_preview\n\n\nELEMENT_PATTERN ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/source_map.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 53,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/table_understanding.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport re\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/table_understanding.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 7,
+    "evidence": "from slidenote.models import Deck, TableBlock\n\n\ndef enrich_deck_with_table_understanding",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "utc_now_iso",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 48,
+    "evidence": "utc_now_iso(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/utils.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport re\nimport shutil\nimport subprocess\nfrom pathlib import Path\nfrom typing import Any, Iterable\n\n\ndef ensure_clean_dir",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/utils.py",
+    "relation_type": "symbol_call",
+    "target": "write_json",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 15,
+    "evidence": "write_json(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/utils.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 17,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/utils.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 24,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/utils.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 26,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/utils.py",
+    "relation_type": "symbol_call",
+    "target": "run",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 59,
+    "evidence": "run(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/vision.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nimport tempfile\nfrom concurrent",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/vision.py",
+    "relation_type": "python_import",
+    "target": "dataclasses",
+    "target_file": "dataclasses",
+    "line": 6,
+    "evidence": "from dataclasses import asdict, dataclass\nfrom pathlib import Path\nfrom typing import Any, Callable\n\nfrom PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/vision.py",
+    "relation_type": "python_import",
+    "target": "slidenote.llm",
+    "target_file": "slidenote.llm",
+    "line": 13,
+    "evidence": "from slidenote.llm import LLMClient, resolve_provider_runtime\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/vision.py",
+    "relation_type": "python_import",
+    "target": "slidenote.modality",
+    "target_file": "slidenote.modality",
+    "line": 15,
+    "evidence": "from slidenote.modality import page_has_hint\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/vision.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 17,
+    "evidence": "from slidenote.table_understanding import table_preview\n\nVISION_PROMPT_VERSION ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/vision.py",
+    "relation_type": "symbol_call",
+    "target": "LLMCache",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 68,
+    "evidence": "LLMCache(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/crop.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/crop.py",
+    "relation_type": "python_import",
+    "target": "slidenote.figures",
+    "target_file": "slidenote.figures",
+    "line": 1,
+    "evidence": "from slidenote.figures import enrich_deck_with_figures, select_figure_targets\n\n__all__ ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/grounding.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/quality.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom typing import Any\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/quality.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 1,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/slidenote/visual/vision.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/conftest.py",
+    "relation_type": "python_import",
+    "target": "sys\nfrom pathlib import Path\n\nimport pytest\n\nROOT ",
+    "target_file": "sys\nfrom pathlib import Path\n\nimport pytest\n\nROOT ",
+    "line": 1,
+    "evidence": "import sys\nfrom pathlib import Path\n\nimport pytest\n\nROOT ",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "python_import",
+    "target": "json\nfrom argparse import Namespace\nfrom pathlib import Path\n\nimport fitz\n\nfrom slidenote.cli import _apply_speed_mode_defaults, _parse_slide_ranges, _resolve_api_concurrency, main\nfrom slidenote.notes import NoteGenerationResult\n\n\ndef test_parse_slide_ranges",
+    "target_file": "json\nfrom argparse import Namespace\nfrom pathlib import Path\n\nimport fitz\n\nfrom slidenote.cli import _apply_speed_mode_defaults, _parse_slide_ranges, _resolve_api_concurrency, main\nfrom slidenote.notes import NoteGenerationResult\n\n\ndef test_parse_slide_ranges",
+    "line": 1,
+    "evidence": "import json\nfrom argparse import Namespace\nfrom pathlib import Path\n\nimport fitz\n\nfrom slidenote.cli import _apply_speed_mode_defaults, _parse_slide_ranges, _resolve_api_concurrency, main\nfrom slideno",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "main",
+    "target_file": "SlideNote-main/scripts/generate_cost_report.py",
+    "line": 68,
+    "evidence": "main(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 71,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 72,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 73,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 74,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 75,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 76,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 77,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 78,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 79,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_cli.py",
+    "relation_type": "symbol_call",
+    "target": "read_text",
+    "target_file": "SlideNote-main/slidenote/utils.py",
+    "line": 80,
+    "evidence": "read_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "python_import",
+    "target": "json\n\nfrom slidenote.content_guard import build_content_guard, missing_required_items\nfrom slidenote.coverage import analyze_coverage\nfrom slidenote.models import Deck, SlidePage, TextBlock\n\n\ndef test_local_content_guard_marks_structural_page_with_definition_as_mixed",
+    "target_file": "json\n\nfrom slidenote.content_guard import build_content_guard, missing_required_items\nfrom slidenote.coverage import analyze_coverage\nfrom slidenote.models import Deck, SlidePage, TextBlock\n\n\ndef test_local_content_guard_marks_structural_page_with_definition_as_mixed",
+    "line": 1,
+    "evidence": "import json\n\nfrom slidenote.content_guard import build_content_guard, missing_required_items\nfrom slidenote.coverage import analyze_coverage\nfrom slidenote.models import Deck, SlidePage, TextBlock\n\n\nd",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 13,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 17,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 18,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "build_content_guard",
+    "target_file": "SlideNote-main/slidenote/content_guard.py",
+    "line": 24,
+    "evidence": "build_content_guard(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 37,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 39,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 45,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "build_content_guard",
+    "target_file": "SlideNote-main/slidenote/content_guard.py",
+    "line": 57,
+    "evidence": "build_content_guard(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 69,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 71,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_content_guard.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 88,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_costing.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport json\nfrom pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_costing.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 12,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_costing.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 29,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_costing.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 49,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_costing.py",
+    "relation_type": "symbol_call",
+    "target": "write_text",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 54,
+    "evidence": "write_text(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "python_import",
+    "target": "slidenote.coverage",
+    "target_file": "slidenote.coverage",
+    "line": 1,
+    "evidence": "from slidenote.coverage import analyze_coverage\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 10,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 12,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 13,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 18,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 32,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 34,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 35,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 40,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 50,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 52,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 57,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 71,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 73,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_coverage.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 78,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "python_import",
+    "target": "json\n\nfrom slidenote.deck_brief import build_deck_brief, deck_brief_for_prompt, render_deck_brief_markdown\nfrom slidenote.models import Deck, SlidePage, TextBlock\n\n\ndef test_deck_brief_generates_report_and_uses_cache",
+    "target_file": "json\n\nfrom slidenote.deck_brief import build_deck_brief, deck_brief_for_prompt, render_deck_brief_markdown\nfrom slidenote.models import Deck, SlidePage, TextBlock\n\n\ndef test_deck_brief_generates_report_and_uses_cache",
+    "line": 1,
+    "evidence": "import json\n\nfrom slidenote.deck_brief import build_deck_brief, deck_brief_for_prompt, render_deck_brief_markdown\nfrom slidenote.models import Deck, SlidePage, TextBlock\n\n\ndef test_deck_brief_generate",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 12,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 12,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 13,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 13,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 19,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "generate_with_usage",
+    "target_file": "SlideNote-main/tests/test_content_guard.py",
+    "line": 22,
+    "evidence": "generate_with_usage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "Result",
+    "target_file": "SlideNote-main/tests/test_content_guard.py",
+    "line": 44,
+    "evidence": "Result(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_deck_brief.py",
+    "relation_type": "symbol_call",
+    "target": "build_deck_brief",
+    "target_file": "SlideNote-main/slidenote/deck_brief.py",
+    "line": 48,
+    "evidence": "build_deck_brief(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "python_import",
+    "target": "subprocess\n\nfrom slidenote.exporting import add_table_of_contents, build_export_artifacts, clean_markdown_for_export, parse_export_formats\n\n\ndef test_parse_export_formats_expands_all_and_deduplicates",
+    "target_file": "subprocess\n\nfrom slidenote.exporting import add_table_of_contents, build_export_artifacts, clean_markdown_for_export, parse_export_formats\n\n\ndef test_parse_export_formats_expands_all_and_deduplicates",
+    "line": 1,
+    "evidence": "import subprocess\n\nfrom slidenote.exporting import add_table_of_contents, build_export_artifacts, clean_markdown_for_export, parse_export_formats\n\n\ndef test_parse_export_formats_expands_all_and_dedupl",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "markdown_link",
+    "target": "#tcp-basics",
+    "target_file": "#tcp-basics",
+    "line": 25,
+    "evidence": "[TCP Basics](#tcp-basics)",
+    "strength": "weak"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "markdown_link",
+    "target": "#拥塞控制",
+    "target_file": "#拥塞控制",
+    "line": 25,
+    "evidence": "[拥塞控制](#拥塞控制)",
+    "strength": "weak"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "markdown_link",
+    "target": "#tcp-basics-2",
+    "target_file": "#tcp-basics-2",
+    "line": 25,
+    "evidence": "[TCP Basics](#tcp-basics-2)",
+    "strength": "weak"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "markdown_link",
+    "target": "#definition",
+    "target_file": "#definition",
+    "line": 40,
+    "evidence": "[Definition](#definition)",
+    "strength": "weak"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "symbol_call",
+    "target": "parse_export_formats",
+    "target_file": "SlideNote-main/slidenote/exporting.py",
+    "line": 7,
+    "evidence": "parse_export_formats(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "symbol_call",
+    "target": "parse_export_formats",
+    "target_file": "SlideNote-main/slidenote/exporting.py",
+    "line": 8,
+    "evidence": "parse_export_formats(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "symbol_call",
+    "target": "build_export_artifacts",
+    "target_file": "SlideNote-main/slidenote/exporting.py",
+    "line": 53,
+    "evidence": "build_export_artifacts(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "symbol_call",
+    "target": "get",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 64,
+    "evidence": "get(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_exports.py",
+    "relation_type": "symbol_call",
+    "target": "build_export_artifacts",
+    "target_file": "SlideNote-main/slidenote/exporting.py",
+    "line": 80,
+    "evidence": "build_export_artifacts(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "PIL",
+    "target_file": "PIL",
+    "line": 1,
+    "evidence": "from PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 4,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TextBlock\n\n\ndef test_figure_grounding_anchors_image_to_nearby_text",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 12,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 17,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 18,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 21,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_figure_grounding",
+    "target_file": "SlideNote-main/slidenote/figure_grounding.py",
+    "line": 34,
+    "evidence": "enrich_deck_with_figure_grounding(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 45,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 49,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 51,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figure_grounding.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 74,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figures.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 1,
+    "evidence": "from pathlib import Path\n\nfrom PIL import Image, ImageDraw\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.figures",
+    "target_file": "slidenote.figures",
+    "line": 6,
+    "evidence": "from slidenote.figures import _crop_figures, _figure_prompt, enrich_deck_with_figures, select_figure_targets\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figures.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 8,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figures.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 20,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figures.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 20,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_figures.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 50,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "python_import",
+    "target": "slidenote.image_assets",
+    "target_file": "slidenote.image_assets",
+    "line": 1,
+    "evidence": "from slidenote.image_assets import classify_image_asset, refine_image_role_for_placement\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "python_import",
+    "target": "slidenote.extractors.pdf",
+    "target_file": "slidenote.extractors.pdf",
+    "line": 3,
+    "evidence": "from slidenote.extractors.pdf import _is_page_like_bbox\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 5,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage\n\n\ndef test_classify_tiny_image_as_decorative",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "classify_image_asset",
+    "target_file": "SlideNote-main/slidenote/image_assets.py",
+    "line": 9,
+    "evidence": "classify_image_asset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "classify_image_asset",
+    "target_file": "SlideNote-main/slidenote/image_assets.py",
+    "line": 17,
+    "evidence": "classify_image_asset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "refine_image_role_for_placement",
+    "target_file": "SlideNote-main/slidenote/image_assets.py",
+    "line": 25,
+    "evidence": "refine_image_role_for_placement(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 47,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 51,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 52,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "rank_deck_images",
+    "target_file": "SlideNote-main/slidenote/image_ranking.py",
+    "line": 58,
+    "evidence": "rank_deck_images(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_image_assets.py",
+    "relation_type": "symbol_call",
+    "target": "sorted_images_by_importance",
+    "target_file": "SlideNote-main/slidenote/image_ranking.py",
+    "line": 63,
+    "evidence": "sorted_images_by_importance(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "python_import",
+    "target": "slidenote.ir",
+    "target_file": "slidenote.ir",
+    "line": 1,
+    "evidence": "from slidenote.ir import build_deck_ir, build_page_ir, element_index_from_ir, iter_expected_source_elements\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "TableBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 6,
+    "evidence": "TableBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 13,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 16,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 19,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 27,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "build_page_ir",
+    "target_file": "SlideNote-main/slidenote/ir.py",
+    "line": 47,
+    "evidence": "build_page_ir(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "iter_expected_source_elements",
+    "target_file": "SlideNote-main/slidenote/ir.py",
+    "line": 61,
+    "evidence": "iter_expected_source_elements(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ir.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 66,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_llm.py",
+    "relation_type": "python_import",
+    "target": "pytest\n\nfrom slidenote.llm import LLMClient, LLMResult, get_provider_spec, resolve_provider_runtime\nfrom slidenote.models import ImageAsset, SlidePage\nfrom slidenote.notes import _llm_page_prompt\n\n\ndef test_provider_aliases",
+    "target_file": "pytest\n\nfrom slidenote.llm import LLMClient, LLMResult, get_provider_spec, resolve_provider_runtime\nfrom slidenote.models import ImageAsset, SlidePage\nfrom slidenote.notes import _llm_page_prompt\n\n\ndef test_provider_aliases",
+    "line": 1,
+    "evidence": "import pytest\n\nfrom slidenote.llm import LLMClient, LLMResult, get_provider_spec, resolve_provider_runtime\nfrom slidenote.models import ImageAsset, SlidePage\nfrom slidenote.notes import _llm_page_prom",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_llm.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 65,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_llm.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 65,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_llm.py",
+    "relation_type": "symbol_call",
+    "target": "_llm_page_prompt",
+    "target_file": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "line": 67,
+    "evidence": "_llm_page_prompt(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_llm.py",
+    "relation_type": "symbol_call",
+    "target": "LLMResult",
+    "target_file": "SlideNote-main/slidenote/llm.py",
+    "line": 83,
+    "evidence": "LLMResult(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "python_import",
+    "target": "slidenote.modality",
+    "target_file": "slidenote.modality",
+    "line": 1,
+    "evidence": "from slidenote.modality import classify_page_modality, enrich_deck_with_modalities\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 6,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 8,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 9,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "classify_page_modality",
+    "target_file": "SlideNote-main/slidenote/modality.py",
+    "line": 13,
+    "evidence": "classify_page_modality(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 21,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 23,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "classify_page_modality",
+    "target_file": "SlideNote-main/slidenote/modality.py",
+    "line": 28,
+    "evidence": "classify_page_modality(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 37,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 39,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "TableBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 40,
+    "evidence": "TableBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "classify_page_modality",
+    "target_file": "SlideNote-main/slidenote/modality.py",
+    "line": 44,
+    "evidence": "classify_page_modality(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 55,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 55,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 56,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_modality.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_modalities",
+    "target_file": "SlideNote-main/slidenote/modality.py",
+    "line": 60,
+    "evidence": "enrich_deck_with_modalities(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 1,
+    "evidence": "from pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 4,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "python_import",
+    "target": "slidenote.notes.assembly",
+    "target_file": "slidenote.notes.assembly",
+    "line": 6,
+    "evidence": "from slidenote.notes.assembly import _postprocess_llm_markdown\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "python_import",
+    "target": "slidenote.table_understanding",
+    "target_file": "slidenote.table_understanding",
+    "line": 8,
+    "evidence": "from slidenote.table_understanding import enrich_deck_with_table_understanding\n\n\ndef test_local_notes_include_all_element_ids",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 16,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 20,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 21,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "TableBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 23,
+    "evidence": "TableBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 24,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "analyze_coverage",
+    "target_file": "SlideNote-main/slidenote/coverage.py",
+    "line": 30,
+    "evidence": "analyze_coverage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 43,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "TableBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 47,
+    "evidence": "TableBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_table_understanding",
+    "target_file": "SlideNote-main/slidenote/table_understanding.py",
+    "line": 59,
+    "evidence": "enrich_deck_with_table_understanding(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_notes.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 81,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 1,
+    "evidence": "from pathlib import Path\n\nimport pytest\nfrom PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 7,
+    "evidence": "from slidenote.models import Deck, SlidePage, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 19,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 21,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 36,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 48,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_modalities",
+    "target_file": "SlideNote-main/slidenote/modality.py",
+    "line": 49,
+    "evidence": "enrich_deck_with_modalities(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 61,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 64,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "recognize",
+    "target_file": "SlideNote-main/slidenote/ocr.py",
+    "line": 67,
+    "evidence": "recognize(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_ocr.py",
+    "relation_type": "symbol_call",
+    "target": "Result",
+    "target_file": "SlideNote-main/tests/test_content_guard.py",
+    "line": 73,
+    "evidence": "Result(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "python_import",
+    "target": "argparse",
+    "target_file": "argparse",
+    "line": 1,
+    "evidence": "from argparse import Namespace\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "python_import",
+    "target": "slidenote.pipeline",
+    "target_file": "slidenote.pipeline",
+    "line": 4,
+    "evidence": "from slidenote.pipeline import ArtifactRegistry, BuildContext, FunctionStage, StageResult, run_stage\n\n\ndef test_function_stage_records_result_and_registered_artifact",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "ArtifactRegistry",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 9,
+    "evidence": "ArtifactRegistry(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "BuildContext",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 10,
+    "evidence": "BuildContext(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "write_json",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 19,
+    "evidence": "write_json(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "StageResult",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 20,
+    "evidence": "StageResult(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "run_stage",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 22,
+    "evidence": "run_stage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "FunctionStage",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 22,
+    "evidence": "FunctionStage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "as_summary",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 26,
+    "evidence": "as_summary(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "BuildContext",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 32,
+    "evidence": "BuildContext(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "FunctionStage",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 38,
+    "evidence": "FunctionStage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_pipeline.py",
+    "relation_type": "symbol_call",
+    "target": "run_stage",
+    "target_file": "SlideNote-main/slidenote/pipeline.py",
+    "line": 41,
+    "evidence": "run_stage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 1,
+    "evidence": "from slidenote.models import Deck, SlidePage, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 10,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 10,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 11,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 11,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 12,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 16,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 17,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 18,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 19,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 22,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 22,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 38,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 42,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 49,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 49,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 50,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_sections.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 53,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "PIL",
+    "target_file": "PIL",
+    "line": 1,
+    "evidence": "from PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "python_import",
+    "target": "slidenote.semantic_layout",
+    "target_file": "slidenote.semantic_layout",
+    "line": 4,
+    "evidence": "from slidenote.semantic_layout import enrich_deck_with_semantic_layout, semantic_context_for_page, semantic_layout_for_prompt\n\n\ndef test_semantic_layout_groups_code_output_cause_and_fix",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 8,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 14,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 15,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "main",
+    "target_file": "SlideNote-main/scripts/generate_cost_report.py",
+    "line": 18,
+    "evidence": "main(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 21,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 27,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 33,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_semantic_layout",
+    "target_file": "SlideNote-main/slidenote/semantic_layout.py",
+    "line": 43,
+    "evidence": "enrich_deck_with_semantic_layout(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_semantic_layout.py",
+    "relation_type": "symbol_call",
+    "target": "__init__",
+    "target_file": "SlideNote-main/slidenote/llm_cache.py",
+    "line": 63,
+    "evidence": "__init__(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 1,
+    "evidence": "from pathlib import Path\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "python_import",
+    "target": "slidenote.source_map",
+    "target_file": "slidenote.source_map",
+    "line": 4,
+    "evidence": "from slidenote.source_map import build_source_map\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 13,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 15,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 17,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 18,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "build_source_map",
+    "target_file": "SlideNote-main/slidenote/source_map.py",
+    "line": 25,
+    "evidence": "build_source_map(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 37,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 37,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "build_source_map",
+    "target_file": "SlideNote-main/slidenote/source_map.py",
+    "line": 41,
+    "evidence": "build_source_map(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 51,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 51,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "build_source_map",
+    "target_file": "SlideNote-main/slidenote/source_map.py",
+    "line": 56,
+    "evidence": "build_source_map(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_source_map.py",
+    "relation_type": "symbol_call",
+    "target": "build_source_map",
+    "target_file": "SlideNote-main/slidenote/source_map.py",
+    "line": 57,
+    "evidence": "build_source_map(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_studio_core.py",
+    "relation_type": "python_import",
+    "target": "__future__",
+    "target_file": "__future__",
+    "line": 1,
+    "evidence": "from __future__ import annotations\n\nimport os\nimport sys\nfrom pathlib import Path\n\nfrom gui",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_studio_core.py",
+    "relation_type": "symbol_call",
+    "target": "StudioConfig",
+    "target_file": "SlideNote-main/gui/studio_core.py",
+    "line": 11,
+    "evidence": "StudioConfig(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_studio_core.py",
+    "relation_type": "symbol_call",
+    "target": "StudioConfig",
+    "target_file": "SlideNote-main/gui/studio_core.py",
+    "line": 59,
+    "evidence": "StudioConfig(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_studio_core.py",
+    "relation_type": "symbol_call",
+    "target": "StudioConfig",
+    "target_file": "SlideNote-main/gui/studio_core.py",
+    "line": 78,
+    "evidence": "StudioConfig(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 1,
+    "evidence": "from slidenote.models import Deck, SlidePage, TableBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "TableBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 6,
+    "evidence": "TableBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 14,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_table_understanding",
+    "target_file": "SlideNote-main/slidenote/table_understanding.py",
+    "line": 16,
+    "evidence": "enrich_deck_with_table_understanding(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "TableBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 32,
+    "evidence": "TableBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 33,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_table_understanding.py",
+    "relation_type": "symbol_call",
+    "target": "enrich_deck_with_table_understanding",
+    "target_file": "SlideNote-main/slidenote/table_understanding.py",
+    "line": 35,
+    "evidence": "enrich_deck_with_table_understanding(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "python_import",
+    "target": "pathlib",
+    "target_file": "pathlib",
+    "line": 1,
+    "evidence": "from pathlib import Path\n\nimport pytest\nfrom PIL import Image\n\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "python_import",
+    "target": "slidenote.models",
+    "target_file": "slidenote.models",
+    "line": 7,
+    "evidence": "from slidenote.models import Deck, ImageAsset, SlidePage, TextBlock\nfrom slidenote",
+    "strength": "medium"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 19,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "TextBlock",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 21,
+    "evidence": "TextBlock(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 22,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 45,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 48,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 49,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "SlidePage",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 73,
+    "evidence": "SlidePage(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 76,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  },
+  {
+    "source_file": "SlideNote-main/tests/test_vision.py",
+    "relation_type": "symbol_call",
+    "target": "ImageAsset",
+    "target_file": "SlideNote-main/slidenote/models.py",
+    "line": 77,
+    "evidence": "ImageAsset(",
+    "strength": "strong"
+  }
+]

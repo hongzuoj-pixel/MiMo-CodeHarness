@@ -1,0 +1,343 @@
+{
+  "mode": "mimo_codeharness_v02",
+  "project": "<SLIDENOTES_REPO>",
+  "name": "final_slidenotes_v031_clean__slidenotes",
+  "output_dir": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes",
+  "execute_real_api": true,
+  "apply_patches": true,
+  "run_build_tests": false,
+  "elapsed_seconds": 550.9551,
+  "repo_summary": {
+    "project_root": "<SLIDENOTES_REPO>",
+    "file_count": 91,
+    "language_counts": {
+      "Python": 81,
+      "Docs": 7,
+      "Config/Data": 3
+    },
+    "role_counts": {
+      "source": 62,
+      "test": 22,
+      "documentation": 6,
+      "build_config": 1
+    },
+    "suffix_counts": {
+      ".py": 81,
+      ".md": 6,
+      ".yml": 1,
+      ".json": 1,
+      ".toml": 1,
+      ".txt": 1
+    },
+    "total_lines": 5764,
+    "total_size_bytes": 969124,
+    "sample_files": [
+      "SlideNote-main/.github/workflows/ci.yml",
+      "SlideNote-main/CONFIG.zh-CN.md",
+      "SlideNote-main/README.md",
+      "SlideNote-main/README.zh-CN.md",
+      "SlideNote-main/ROADMAP.zh-CN.md",
+      "SlideNote-main/gui/README_GUI.md",
+      "SlideNote-main/gui/README_GUI.zh-CN.md",
+      "SlideNote-main/gui/__init__.py",
+      "SlideNote-main/gui/app.py",
+      "SlideNote-main/gui/studio_core.py",
+      "SlideNote-main/pricing.template.json",
+      "SlideNote-main/pyproject.toml",
+      "SlideNote-main/requirements-gui.txt",
+      "SlideNote-main/scripts/generate_cost_report.py",
+      "SlideNote-main/slidenote/__init__.py",
+      "SlideNote-main/slidenote/__main__.py",
+      "SlideNote-main/slidenote/api_retry.py",
+      "SlideNote-main/slidenote/build_pipeline.py",
+      "SlideNote-main/slidenote/cli.py",
+      "SlideNote-main/slidenote/composite_figures.py",
+      "SlideNote-main/slidenote/content_guard.py",
+      "SlideNote-main/slidenote/costing.py",
+      "SlideNote-main/slidenote/coverage.py",
+      "SlideNote-main/slidenote/deck_brief.py",
+      "SlideNote-main/slidenote/doctor.py",
+      "SlideNote-main/slidenote/exporting.py",
+      "SlideNote-main/slidenote/extractors/__init__.py",
+      "SlideNote-main/slidenote/extractors/pdf.py",
+      "SlideNote-main/slidenote/extractors/ppt.py",
+      "SlideNote-main/slidenote/extractors/pptx.py"
+    ]
+  },
+  "dependency_summary": {
+    "dependency_count": 505,
+    "relation_counts": {
+      "symbol_call": 315,
+      "python_import": 184,
+      "markdown_link": 6
+    },
+    "strong_edges": 317,
+    "sample_edges": [
+      {
+        "source_file": "SlideNote-main/gui/README_GUI.md",
+        "relation_type": "markdown_link",
+        "target": "README_GUI.zh-CN.md",
+        "target_file": "SlideNote-main/gui/README_GUI.zh-CN.md",
+        "line": 3,
+        "evidence": "[中文说明](README_GUI.zh-CN.md)",
+        "strength": "strong"
+      },
+      {
+        "source_file": "SlideNote-main/gui/README_GUI.zh-CN.md",
+        "relation_type": "markdown_link",
+        "target": "README_GUI.md",
+        "target_file": "SlideNote-main/gui/README_GUI.md",
+        "line": 3,
+        "evidence": "[English](README_GUI.md)",
+        "strength": "strong"
+      },
+      {
+        "source_file": "SlideNote-main/gui/app.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nimport io\nimport json\nimport os\nimport re\nimport shutil\nimport subprocess\nimport time\nimport zipfile\nfrom datetime import datetime\nfrom pathlib import Path\nfrom typ",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/gui/app.py",
+        "relation_type": "python_import",
+        "target": "slidenote.costing",
+        "target_file": "slidenote.costing",
+        "line": 18,
+        "evidence": "    from slidenote.costing import write_cost_report\nexcept Exception",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/gui/app.py",
+        "relation_type": "python_import",
+        "target": "slidenote.doctor",
+        "target_file": "slidenote.doctor",
+        "line": 23,
+        "evidence": "    from slidenote.doctor import run_doctor\nexcept Exception",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/gui/studio_core.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nimport os\nimport re\nimport sys\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom typing import Any\n\nPROVIDER_ENV_KEYS",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/scripts/generate_cost_report.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nimport argparse\nfrom pathlib import Path\n\nfrom slidenote",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/__main__.py",
+        "relation_type": "python_import",
+        "target": ".cli",
+        "target_file": ".cli",
+        "line": 1,
+        "evidence": "from .cli import main\n\n\nif __name__ ",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/__main__.py",
+        "relation_type": "symbol_call",
+        "target": "main",
+        "target_file": "SlideNote-main/scripts/generate_cost_report.py",
+        "line": 5,
+        "evidence": "main(",
+        "strength": "strong"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/api_retry.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nimport random\nimport re\nimport time\nimport urllib",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/api_retry.py",
+        "relation_type": "python_import",
+        "target": "dataclasses",
+        "target_file": "dataclasses",
+        "line": 7,
+        "evidence": "from dataclasses import dataclass\nfrom typing import Callable, Generic, TypeVar\n\nT ",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/build_pipeline.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nfrom slidenote",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/build_pipeline.py",
+        "relation_type": "python_import",
+        "target": "slidenote.build.errors",
+        "target_file": "slidenote.build.errors",
+        "line": 4,
+        "evidence": "from slidenote.build.errors import UserFacingConfigError\nfrom slidenote",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/build_pipeline.py",
+        "relation_type": "python_import",
+        "target": "slidenote.build.state",
+        "target_file": "slidenote.build.state",
+        "line": 6,
+        "evidence": "from slidenote.build.state import BuildState\n\n__all__ ",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/cli.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nimport argparse\nimport sys\nfrom pathlib import Path\n\nfrom slidenote",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/cli.py",
+        "relation_type": "python_import",
+        "target": "slidenote.doctor",
+        "target_file": "slidenote.doctor",
+        "line": 14,
+        "evidence": "from slidenote.doctor import render_doctor_report, run_doctor\nfrom slidenote",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/cli.py",
+        "relation_type": "python_import",
+        "target": "slidenote.utils",
+        "target_file": "slidenote.utils",
+        "line": 16,
+        "evidence": "from slidenote.utils import write_json\n\n\ndef main",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/cli.py",
+        "relation_type": "symbol_call",
+        "target": "main",
+        "target_file": "SlideNote-main/scripts/generate_cost_report.py",
+        "line": 19,
+        "evidence": "main(",
+        "strength": "strong"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/composite_figures.py",
+        "relation_type": "python_import",
+        "target": "__future__",
+        "target_file": "__future__",
+        "line": 1,
+        "evidence": "from __future__ import annotations\n\nimport math\nfrom dataclasses import dataclass\nfrom pathlib import Path\nfrom statistics import median\nfrom typing import Any\n\nfrom PIL import Image\n\nfrom slidenote",
+        "strength": "medium"
+      },
+      {
+        "source_file": "SlideNote-main/slidenote/composite_figures.py",
+        "relation_type": "python_import",
+        "target": "slidenote.image_assets",
+        "target_file": "slidenote.image_assets",
+        "line": 12,
+        "evidence": "from slidenote.image_assets import image_metadata\nfrom slidenote",
+        "strength": "medium"
+      }
+    ]
+  },
+  "task_count": 6,
+  "model_run_count": 6,
+  "patch_result_count": 6,
+  "build_summary": {
+    "project_root": "<SLIDENOTES_REPO>",
+    "run_external": false,
+    "check_count": 4,
+    "ok_count": 3,
+    "failed_count": 0,
+    "warning_count": 0,
+    "skipped_count": 1,
+    "all_critical_ok": true,
+    "results": [
+      {
+        "name": "python_py_compile",
+        "status": "ok",
+        "command": "py_compile all .py",
+        "returncode": 0,
+        "time_seconds": 0.442,
+        "stdout_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\python_py_compile_stdout.log",
+        "stderr_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\python_py_compile_stderr.log",
+        "note": "Stdlib Python syntax check."
+      },
+      {
+        "name": "json_parse",
+        "status": "ok",
+        "command": "json.loads all .json",
+        "returncode": 0,
+        "time_seconds": 0.0044,
+        "stdout_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\json_parse_stdout.log",
+        "stderr_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\json_parse_stderr.log",
+        "note": "JSON config parse check."
+      },
+      {
+        "name": "c_brace_scan",
+        "status": "ok",
+        "command": "brace scan for .c/.h",
+        "returncode": 0,
+        "time_seconds": 0.0071,
+        "stdout_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\c_brace_scan_stdout.log",
+        "stderr_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\c_brace_scan_stderr.log",
+        "note": "Lightweight embedded C safety scan; not a compiler."
+      },
+      {
+        "name": "pytest",
+        "status": "skipped",
+        "command": "C:\\Users\\student\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m pytest -q",
+        "returncode": null,
+        "time_seconds": 0.001,
+        "stdout_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\pytest_stdout.log",
+        "stderr_log": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\build_test_logs\\pytest_stderr.log",
+        "note": "Skipped by default for safe offline execution."
+      }
+    ]
+  },
+  "score_summary": {
+    "run_count": 6,
+    "provider_count": 1,
+    "providers": [
+      {
+        "provider_name": "Xiaomi-MiMo-Pro",
+        "run_count": 6,
+        "avg_score": 66.71,
+        "pass_rate": 0.8333,
+        "total_tokens_est": 38675,
+        "avg_time_seconds": 91.627
+      }
+    ],
+    "total_tokens_est": 38675,
+    "overall_avg_score": 66.71
+  },
+  "scoring_version": "v0.3.1 evidence-aware + review-ready",
+  "scoring_inputs": {
+    "llm_review_path": "",
+    "human_review_path": "",
+    "human_rubric_path": ""
+  },
+  "key_outputs": {
+    "dashboard": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\dashboard.html",
+    "technical_report": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\TECHNICAL_REPORT.md",
+    "paper_draft": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\PAPER_DRAFT.md",
+    "token_usage": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\token_usage.csv",
+    "evaluation_scores": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\evaluation_scores.csv",
+    "patch_results": "<PROJECT_ROOT>\\outputs\\mimo_codeharness_v02\\final_slidenotes_v031_clean__slidenotes\\patch_results.csv"
+  }
+}

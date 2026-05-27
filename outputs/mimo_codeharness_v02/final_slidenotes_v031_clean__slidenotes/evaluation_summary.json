@@ -1,0 +1,16 @@
+{
+  "run_count": 6,
+  "provider_count": 1,
+  "providers": [
+    {
+      "provider_name": "Xiaomi-MiMo-Pro",
+      "run_count": 6,
+      "avg_score": 66.71,
+      "pass_rate": 0.8333,
+      "total_tokens_est": 38675,
+      "avg_time_seconds": 91.627
+    }
+  ],
+  "total_tokens_est": 38675,
+  "overall_avg_score": 66.71
+}

@@ -1,0 +1,1237 @@
+source_file,relation_type,target,target_file,line,evidence,strength
+SlideNote-main/gui/README_GUI.md,markdown_link,README_GUI.zh-CN.md,SlideNote-main/gui/README_GUI.zh-CN.md,3,[中文说明](README_GUI.zh-CN.md),strong
+SlideNote-main/gui/README_GUI.zh-CN.md,markdown_link,README_GUI.md,SlideNote-main/gui/README_GUI.md,3,[English](README_GUI.md),strong
+SlideNote-main/gui/app.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import io
+import json
+import os
+import re
+import shutil
+import subprocess
+import time
+import zipfile
+from datetime import datetime
+from pathlib import Path
+from typ",medium
+SlideNote-main/gui/app.py,python_import,slidenote.costing,slidenote.costing,18,"    from slidenote.costing import write_cost_report
+except Exception",medium
+SlideNote-main/gui/app.py,python_import,slidenote.doctor,slidenote.doctor,23,"    from slidenote.doctor import run_doctor
+except Exception",medium
+SlideNote-main/gui/studio_core.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import os
+import re
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+PROVIDER_ENV_KEYS",medium
+SlideNote-main/scripts/generate_cost_report.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/slidenote/__main__.py,python_import,.cli,.cli,1,"from .cli import main
+
+
+if __name__ ",medium
+SlideNote-main/slidenote/__main__.py,symbol_call,main,SlideNote-main/scripts/generate_cost_report.py,5,main(,strong
+SlideNote-main/slidenote/api_retry.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import random
+import re
+import time
+import urllib",medium
+SlideNote-main/slidenote/api_retry.py,python_import,dataclasses,dataclasses,7,"from dataclasses import dataclass
+from typing import Callable, Generic, TypeVar
+
+T ",medium
+SlideNote-main/slidenote/build_pipeline.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from slidenote",medium
+SlideNote-main/slidenote/build_pipeline.py,python_import,slidenote.build.errors,slidenote.build.errors,4,"from slidenote.build.errors import UserFacingConfigError
+from slidenote",medium
+SlideNote-main/slidenote/build_pipeline.py,python_import,slidenote.build.state,slidenote.build.state,6,"from slidenote.build.state import BuildState
+
+__all__ ",medium
+SlideNote-main/slidenote/cli.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/slidenote/cli.py,python_import,slidenote.doctor,slidenote.doctor,14,"from slidenote.doctor import render_doctor_report, run_doctor
+from slidenote",medium
+SlideNote-main/slidenote/cli.py,python_import,slidenote.utils,slidenote.utils,16,"from slidenote.utils import write_json
+
+
+def main",medium
+SlideNote-main/slidenote/cli.py,symbol_call,main,SlideNote-main/scripts/generate_cost_report.py,19,main(,strong
+SlideNote-main/slidenote/composite_figures.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import math
+from dataclasses import dataclass
+from pathlib import Path
+from statistics import median
+from typing import Any
+
+from PIL import Image
+
+from slidenote",medium
+SlideNote-main/slidenote/composite_figures.py,python_import,slidenote.image_assets,slidenote.image_assets,12,"from slidenote.image_assets import image_metadata
+from slidenote",medium
+SlideNote-main/slidenote/composite_figures.py,python_import,slidenote.models,slidenote.models,14,"from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock, normalize_rel_path
+
+
+COMPOSITE_FIGURE_MODES ",medium
+SlideNote-main/slidenote/composite_figures.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,79,utc_now_iso(,strong
+SlideNote-main/slidenote/content_guard.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import re
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/content_guard.py,python_import,slidenote.llm_cache,slidenote.llm_cache,10,"from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json, utc_now_iso
+from slidenote",medium
+SlideNote-main/slidenote/content_guard.py,python_import,slidenote.table_understanding,slidenote.table_understanding,12,"from slidenote.table_understanding import table_preview
+
+
+CONTENT_GUARD_MODES ",medium
+SlideNote-main/slidenote/content_guard.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,60,LLMCache(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,72,sha256_text(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,stable_json,SlideNote-main/slidenote/llm_cache.py,72,stable_json(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,73,sha256_text(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,make_cache_key,SlideNote-main/slidenote/llm_cache.py,75,make_cache_key(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,path_for,SlideNote-main/slidenote/llm_cache.py,76,path_for(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,read,SlideNote-main/slidenote/llm_cache.py,77,read(,strong
+SlideNote-main/slidenote/content_guard.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,83,get(,strong
+SlideNote-main/slidenote/costing.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import html
+import json
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Iterable
+
+DEFAULT_PRICING ",medium
+SlideNote-main/slidenote/costing.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,42,read_text(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,50,read_text(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,70,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,73,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,74,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,75,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,76,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,77,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,78,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,79,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,80,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,81,get(,strong
+SlideNote-main/slidenote/costing.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,85,get(,strong
+SlideNote-main/slidenote/coverage.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+
+from slidenote",medium
+SlideNote-main/slidenote/coverage.py,python_import,slidenote.figure_grounding,slidenote.figure_grounding,7,"from slidenote.figure_grounding import note_candidate_images
+from slidenote",medium
+SlideNote-main/slidenote/coverage.py,python_import,slidenote.models,slidenote.models,9,"from slidenote.models import Deck, ImageAsset, SlidePage
+
+
+",medium
+SlideNote-main/slidenote/deck_brief.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/deck_brief.py,python_import,slidenote.llm_cache,slidenote.llm_cache,9,"from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json, utc_now_iso
+from slidenote",medium
+SlideNote-main/slidenote/deck_brief.py,python_import,slidenote.table_understanding,slidenote.table_understanding,11,"from slidenote.table_understanding import table_preview
+
+DECK_BRIEF_PROMPT_VERSION ",medium
+SlideNote-main/slidenote/deck_brief.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,36,LLMCache(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,50,sha256_text(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,stable_json,SlideNote-main/slidenote/llm_cache.py,50,stable_json(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,51,sha256_text(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,52,sha256_text(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,make_cache_key,SlideNote-main/slidenote/llm_cache.py,55,make_cache_key(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,path_for,SlideNote-main/slidenote/llm_cache.py,56,path_for(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,57,sha256_text(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,stable_json,SlideNote-main/slidenote/llm_cache.py,57,stable_json(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,read,SlideNote-main/slidenote/llm_cache.py,58,read(,strong
+SlideNote-main/slidenote/deck_brief.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,68,get(,strong
+SlideNote-main/slidenote/doctor.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import importlib",medium
+SlideNote-main/slidenote/doctor.py,python_import,"os
+import platform
+import shutil
+import sys
+from dataclasses import asdict, dataclass
+from typing import Any
+
+
+","os
+import platform
+import shutil
+import sys
+from dataclasses import asdict, dataclass
+from typing import Any
+
+
+",4,"import os
+import platform
+import shutil
+import sys
+from dataclasses import asdict, dataclass
+from typing import Any
+
+
+",medium
+SlideNote-main/slidenote/exporting.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import re
+import shutil
+import subprocess
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/exporting.py,python_import,slidenote.utils,slidenote.utils,11,"from slidenote.utils import slugify, write_text
+
+
+EXPORT_FORMATS ",medium
+SlideNote-main/slidenote/exporting.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,64,write_text(,strong
+SlideNote-main/slidenote/extractors/__init__.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/slidenote/extractors/__init__.py,python_import,.pptx,.pptx,11,"        from .pptx import extract_pptx
+
+        return extract_pptx",medium
+SlideNote-main/slidenote/extractors/__init__.py,python_import,.pdf,.pdf,15,"        from .pdf import extract_pdf
+
+        return extract_pdf",medium
+SlideNote-main/slidenote/extractors/__init__.py,python_import,.ppt,.ppt,19,"        from .ppt import extract_ppt
+
+        return extract_ppt",medium
+SlideNote-main/slidenote/extractors/__init__.py,symbol_call,extract_pptx,SlideNote-main/slidenote/extractors/pptx.py,13,extract_pptx(,strong
+SlideNote-main/slidenote/extractors/__init__.py,symbol_call,extract_pdf,SlideNote-main/slidenote/extractors/pdf.py,17,extract_pdf(,strong
+SlideNote-main/slidenote/extractors/__init__.py,symbol_call,extract_ppt,SlideNote-main/slidenote/extractors/ppt.py,21,extract_ppt(,strong
+SlideNote-main/slidenote/extractors/pdf.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import contextlib
+import io
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/slidenote/extractors/pdf.py,python_import,slidenote.models,slidenote.models,8,"from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock, normalize_rel_path
+from slidenote",medium
+SlideNote-main/slidenote/extractors/pdf.py,python_import,"fitz
+    except ImportError as exc","fitz
+    except ImportError as exc",14,"        import fitz
+    except ImportError as exc",medium
+SlideNote-main/slidenote/extractors/pdf.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,28,SlidePage(,strong
+SlideNote-main/slidenote/extractors/pdf.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,50,get(,strong
+SlideNote-main/slidenote/extractors/pdf.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,51,get(,strong
+SlideNote-main/slidenote/extractors/pdf.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,56,get(,strong
+SlideNote-main/slidenote/extractors/pdf.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,57,get(,strong
+SlideNote-main/slidenote/extractors/ppt.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/slidenote/extractors/ppt.py,python_import,slidenote.utils,slidenote.utils,6,"from slidenote.utils import find_executable, run_command
+
+
+def extract_ppt",medium
+SlideNote-main/slidenote/extractors/ppt.py,python_import,.pdf,.pdf,32,"
+    from .pdf import extract_pdf
+
+    deck ",medium
+SlideNote-main/slidenote/extractors/ppt.py,symbol_call,find_executable,SlideNote-main/slidenote/utils.py,10,find_executable(,strong
+SlideNote-main/slidenote/extractors/ppt.py,symbol_call,run_command,SlideNote-main/slidenote/utils.py,16,run_command(,strong
+SlideNote-main/slidenote/extractors/ppt.py,symbol_call,extract_pdf,SlideNote-main/slidenote/extractors/pdf.py,35,extract_pdf(,strong
+SlideNote-main/slidenote/extractors/pptx.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Iterable
+
+from slidenote",medium
+SlideNote-main/slidenote/extractors/pptx.py,python_import,slidenote.models,slidenote.models,7,"from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock, normalize_rel_path
+from slidenote",medium
+SlideNote-main/slidenote/extractors/pptx.py,python_import,slidenote.utils,slidenote.utils,9,"from slidenote.utils import unique_path
+
+
+def extract_pptx",medium
+SlideNote-main/slidenote/extractors/pptx.py,python_import,pptx,pptx,14,"        from pptx import Presentation
+    except ImportError as exc",medium
+SlideNote-main/slidenote/extractors/pptx.py,symbol_call,render_pptx_screenshots,SlideNote-main/slidenote/rendering.py,24,render_pptx_screenshots(,strong
+SlideNote-main/slidenote/extractors/pptx.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,30,SlidePage(,strong
+SlideNote-main/slidenote/extractors/pptx.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,58,TextBlock(,strong
+SlideNote-main/slidenote/figure_grounding.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import math
+import re
+from concurrent",medium
+SlideNote-main/slidenote/figure_grounding.py,python_import,pathlib,pathlib,7,"from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/figure_grounding.py,python_import,slidenote.llm_cache,slidenote.llm_cache,11,"from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text
+from slidenote",medium
+SlideNote-main/slidenote/figure_grounding.py,python_import,slidenote.models,slidenote.models,13,"from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock
+from slidenote",medium
+SlideNote-main/slidenote/figure_grounding.py,python_import,slidenote.vision,slidenote.vision,15,"from slidenote.vision import _cleanup_temp_image, _file_sha256, _prepare_image_for_api
+
+
+FIGURE_GROUNDING_MODES ",medium
+SlideNote-main/slidenote/figures.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import tempfile
+from concurrent",medium
+SlideNote-main/slidenote/figures.py,python_import,dataclasses,dataclasses,6,"from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+from PIL import Image
+
+from slidenote",medium
+SlideNote-main/slidenote/figures.py,python_import,slidenote.llm,slidenote.llm,13,"from slidenote.llm import LLMClient, resolve_provider_runtime
+from slidenote",medium
+SlideNote-main/slidenote/figures.py,python_import,slidenote.modality,slidenote.modality,15,"from slidenote.modality import page_has_hint
+from slidenote",medium
+SlideNote-main/slidenote/figures.py,python_import,slidenote.semantic_layout,slidenote.semantic_layout,17,"from slidenote.semantic_layout import semantic_context_for_page, semantic_layout_for_prompt
+from slidenote",medium
+SlideNote-main/slidenote/figures.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,87,LLMCache(,strong
+SlideNote-main/slidenote/image_assets.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from PIL import Image
+
+
+def image_metadata",medium
+SlideNote-main/slidenote/image_assets.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,26,get(,strong
+SlideNote-main/slidenote/image_assets.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,27,get(,strong
+SlideNote-main/slidenote/image_assets.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,28,get(,strong
+SlideNote-main/slidenote/image_ranking.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from PIL import Image
+
+from slidenote",medium
+SlideNote-main/slidenote/image_ranking.py,python_import,slidenote.models,slidenote.models,9,"from slidenote.models import Deck, ImageAsset, SlidePage
+
+
+def rank_deck_images",medium
+SlideNote-main/slidenote/image_ranking.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,31,get(,strong
+SlideNote-main/slidenote/image_ranking.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,43,get(,strong
+SlideNote-main/slidenote/image_ranking.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,49,utc_now_iso(,strong
+SlideNote-main/slidenote/image_ranking.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,57,get(,strong
+SlideNote-main/slidenote/ir.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from typing import Any, Iterable
+
+from slidenote",medium
+SlideNote-main/slidenote/ir.py,python_import,slidenote.table_understanding,slidenote.table_understanding,6,"from slidenote.table_understanding import table_preview
+
+
+ElementIR ",medium
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,25,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,27,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,30,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,32,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,34,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,53,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,55,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,64,get(,strong
+SlideNote-main/slidenote/ir.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,66,get(,strong
+SlideNote-main/slidenote/llm.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import base64
+import mimetypes
+import os
+import urllib",medium
+SlideNote-main/slidenote/llm.py,python_import,"urllib.parse
+import urllib.request
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from slidenote.api_retry import with_api_retries
+
+
+","urllib.parse
+import urllib.request
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from slidenote.api_retry import with_api_retries
+
+
+",8,"import urllib.parse
+import urllib.request
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from slidenote.api_retry import with_api_retries
+
+
+",medium
+SlideNote-main/slidenote/llm_cache.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import hashlib
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+LLM_CACHE_SCHEMA_VERSION ",medium
+SlideNote-main/slidenote/llm_cache.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,50,read_text(,strong
+SlideNote-main/slidenote/llm_cache.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,53,get(,strong
+SlideNote-main/slidenote/llm_cache.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,55,get(,strong
+SlideNote-main/slidenote/llm_cache.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,57,get(,strong
+SlideNote-main/slidenote/llm_cache.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,72,write_text(,strong
+SlideNote-main/slidenote/modality.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from collections import Counter
+from dataclasses import dataclass
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/modality.py,python_import,slidenote.models,slidenote.models,8,"from slidenote.models import Deck, SlidePage
+
+PAGE_MODALITIES ",medium
+SlideNote-main/slidenote/models.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any
+
+
+",medium
+SlideNote-main/slidenote/notes/__init__.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/__init__.py,python_import,slidenote.models,slidenote.models,1,"from slidenote.models import Deck
+
+from ",medium
+SlideNote-main/slidenote/notes/__init__.py,python_import,.local,.local,1,"from .local import _generate_notes_locally
+from ",medium
+SlideNote-main/slidenote/notes/__init__.py,python_import,.prompts,.prompts,1,"from .prompts import _llm_page_prompt
+
+",medium
+SlideNote-main/slidenote/notes/assembly.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import base64
+import html
+import mimetypes
+import re
+import shutil
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/assembly.py,python_import,slidenote.image_ranking,slidenote.image_ranking,13,"from slidenote.image_ranking import sorted_images_by_importance
+from slidenote",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from concurrent",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,pathlib,pathlib,4,"from pathlib import Path
+from typing import Any, Callable
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,slidenote.llm,slidenote.llm,8,"from slidenote.llm import resolve_provider_runtime
+from slidenote",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,slidenote.models,slidenote.models,10,"from slidenote.models import Deck
+
+from ",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,.lecture_weave,.lecture_weave,21,"from .lecture_weave import _generate_notes_with_lecture_weave
+from ",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,.repair,.repair,23,"from .repair import _repair_required_markdown_once
+from ",medium
+SlideNote-main/slidenote/notes/direct.py,python_import,.,.,58,"    from . import NoteGenerationResult
+
+    runtime ",medium
+SlideNote-main/slidenote/notes/direct.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,66,LLMCache(,strong
+SlideNote-main/slidenote/notes/direct.py,symbol_call,_generate_notes_with_lecture_weave,SlideNote-main/slidenote/notes/lecture_weave.py,68,_generate_notes_with_lecture_weave(,strong
+SlideNote-main/slidenote/notes/lecture_weave.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from concurrent",medium
+SlideNote-main/slidenote/notes/lecture_weave.py,python_import,pathlib,pathlib,4,"from pathlib import Path
+from typing import Any, Callable
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/lecture_weave.py,python_import,slidenote.llm_cache,slidenote.llm_cache,8,"from slidenote.llm_cache import LLMCache
+from slidenote",medium
+SlideNote-main/slidenote/notes/lecture_weave.py,python_import,.llm_calls,.llm_calls,23,"from .llm_calls import _generate_page_lecture_context, _generate_weave_context
+from ",medium
+SlideNote-main/slidenote/notes/lecture_weave.py,python_import,.repair,.repair,25,"from .repair import _repair_required_markdown_once
+from ",medium
+SlideNote-main/slidenote/notes/lecture_weave.py,python_import,.,.,61,"    from . import NoteGenerationResult
+
+    refresh_ids ",medium
+SlideNote-main/slidenote/notes/lecture_weave.py,symbol_call,NoteContext,SlideNote-main/slidenote/notes/assembly.py,66,NoteContext(,strong
+SlideNote-main/slidenote/notes/llm_calls.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/llm_calls.py,python_import,slidenote.llm_cache,slidenote.llm_cache,7,"from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json
+from slidenote",medium
+SlideNote-main/slidenote/notes/llm_calls.py,python_import,.assembly,.assembly,9,"
+from .assembly import NoteContext, _display_path
+from ",medium
+SlideNote-main/slidenote/notes/llm_calls.py,python_import,.prompt_templates,.prompt_templates,12,"from .prompt_templates import _llm_context_prompt, _llm_page_lecture_prompt, _llm_weave_prompt
+from ",medium
+SlideNote-main/slidenote/notes/llm_calls.py,python_import,.,.,19,"    from . import orchestrator
+
+    legacy_client ",medium
+SlideNote-main/slidenote/notes/llm_calls.py,symbol_call,_llm_context_prompt,SlideNote-main/slidenote/notes/prompt_templates.py,53,_llm_context_prompt(,strong
+SlideNote-main/slidenote/notes/local.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/local.py,python_import,slidenote.image_ranking,slidenote.image_ranking,7,"from slidenote.image_ranking import sorted_images_by_importance
+from slidenote",medium
+SlideNote-main/slidenote/notes/local.py,symbol_call,NoteContext,SlideNote-main/slidenote/notes/assembly.py,48,NoteContext(,strong
+SlideNote-main/slidenote/notes/orchestrator.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/orchestrator.py,python_import,.direct,.direct,4,"
+from .direct import _generate_notes_with_llm
+from ",medium
+SlideNote-main/slidenote/notes/orchestrator.py,python_import,.repair,.repair,14,"from .repair import _repair_required_markdown_once
+from ",medium
+SlideNote-main/slidenote/notes/orchestrator.py,python_import,.versions,.versions,16,"from .versions import NOTE_PROMPT_VERSION, PAGE_LECTURE_PROMPT_VERSION, WEAVE_PROMPT_VERSION
+
+__all__ ",medium
+SlideNote-main/slidenote/notes/prompt_payload.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import re
+from dataclasses import asdict
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/prompt_payload.py,python_import,slidenote.deck_brief,slidenote.deck_brief,8,"from slidenote.deck_brief import deck_brief_for_prompt
+from slidenote",medium
+SlideNote-main/slidenote/notes/prompt_payload.py,python_import,slidenote.ir,slidenote.ir,10,"from slidenote.ir import build_page_ir
+from slidenote",medium
+SlideNote-main/slidenote/notes/prompt_payload.py,python_import,slidenote.models,slidenote.models,12,"from slidenote.models import Deck, SlidePage
+from slidenote",medium
+SlideNote-main/slidenote/notes/prompt_payload.py,python_import,slidenote.table_understanding,slidenote.table_understanding,14,"from slidenote.table_understanding import table_preview
+
+from ",medium
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,34,get(,strong
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,38,get(,strong
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,42,get(,strong
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,43,get(,strong
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,44,get(,strong
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,45,get(,strong
+SlideNote-main/slidenote/notes/prompt_payload.py,symbol_call,build_page_ir,SlideNote-main/slidenote/ir.py,56,build_page_ir(,strong
+SlideNote-main/slidenote/notes/prompt_rules.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+
+def _source_prompt_rule",medium
+SlideNote-main/slidenote/notes/prompt_templates.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/prompt_templates.py,python_import,slidenote.models,slidenote.models,8,"from slidenote.models import Deck, SlidePage
+
+from ",medium
+SlideNote-main/slidenote/notes/prompt_templates.py,python_import,.prompt_rules,.prompt_rules,18,"from .prompt_rules import _language_prompt_rule, _note_depth_rule, _source_prompt_rule, _term_policy_prompt_rule
+
+
+def _llm_page_prompt",medium
+SlideNote-main/slidenote/notes/prompt_templates.py,symbol_call,NoteContext,SlideNote-main/slidenote/notes/assembly.py,22,NoteContext(,strong
+SlideNote-main/slidenote/notes/prompt_templates.py,symbol_call,_page_payload_for_prompt,SlideNote-main/slidenote/notes/prompt_payload.py,62,_page_payload_for_prompt(,strong
+SlideNote-main/slidenote/notes/prompt_templates.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,75,get(,strong
+SlideNote-main/slidenote/notes/prompts.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from ",medium
+SlideNote-main/slidenote/notes/prompts.py,python_import,.prompt_rules,.prompt_rules,12,"from .prompt_rules import _language_prompt_rule, _note_depth_rule, _source_prompt_rule, _term_policy_prompt_rule
+from ",medium
+SlideNote-main/slidenote/notes/repair.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/repair.py,python_import,slidenote.coverage,slidenote.coverage,7,"from slidenote.coverage import analyze_coverage
+from slidenote",medium
+SlideNote-main/slidenote/notes/repair.py,python_import,slidenote.models,slidenote.models,9,"from slidenote.models import Deck
+
+from ",medium
+SlideNote-main/slidenote/notes/repair.py,python_import,.llm_calls,.llm_calls,12,"from .llm_calls import _generate_cached_llm_text
+from ",medium
+SlideNote-main/slidenote/notes/repair.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,37,analyze_coverage(,strong
+SlideNote-main/slidenote/notes/repair.py,symbol_call,NoteContext,SlideNote-main/slidenote/notes/assembly.py,51,NoteContext(,strong
+SlideNote-main/slidenote/notes/repair.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,73,get(,strong
+SlideNote-main/slidenote/notes/repair.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,78,analyze_coverage(,strong
+SlideNote-main/slidenote/notes/repair.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,80,get(,strong
+SlideNote-main/slidenote/notes/repair.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,81,get(,strong
+SlideNote-main/slidenote/notes/usage.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/notes/usage.py,python_import,slidenote.models,slidenote.models,1,"from slidenote.models import Deck
+
+from ",medium
+SlideNote-main/slidenote/notes/usage.py,python_import,.prompt_payload,.prompt_payload,1,"from .prompt_payload import _prompt_brief_hash, _prompt_deck_brief
+from ",medium
+SlideNote-main/slidenote/notes/usage.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,1,get(,strong
+SlideNote-main/slidenote/notes/usage.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,1,utc_now_iso(,strong
+SlideNote-main/slidenote/notes/versions.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+NOTE_PROMPT_VERSION ",medium
+SlideNote-main/slidenote/ocr.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import base64
+import json
+import os
+import tempfile
+import urllib",medium
+SlideNote-main/slidenote/ocr.py,python_import,"urllib.parse
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+from PIL import Image
+
+from slidenote.api_retry import with_api_retries
+from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, utc_now_iso
+from slidenote.modality import page_has_hint
+from slidenote.models import Deck, ImageAsset, SlidePage
+
+OCR_SCHEMA_VERSION ","urllib.parse
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+from PIL import Image
+
+from slidenote.api_retry import with_api_retries
+from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, utc_now_iso
+from slidenote.modality import page_has_hint
+from slidenote.models import Deck, ImageAsset, SlidePage
+
+OCR_SCHEMA_VERSION ",8,"import urllib.parse
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Cal",medium
+SlideNote-main/slidenote/ocr.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,42,__init__(,strong
+SlideNote-main/slidenote/pipeline.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable, Protocol
+
+from slidenote",medium
+SlideNote-main/slidenote/pipeline.py,python_import,slidenote.utils,slidenote.utils,8,"from slidenote.utils import write_json, write_text
+
+
+",medium
+SlideNote-main/slidenote/pipeline.py,symbol_call,runner,SlideNote-main/tests/test_pipeline.py,50,runner(,strong
+SlideNote-main/slidenote/pipeline.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,57,__init__(,strong
+SlideNote-main/slidenote/progress.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/progress.py,python_import,slidenote.utils,slidenote.utils,9,"from slidenote.utils import write_json
+
+
+",medium
+SlideNote-main/slidenote/progress.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,26,__init__(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,29,utc_now_iso(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,write,SlideNote-main/slidenote/llm_cache.py,36,write(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,40,utc_now_iso(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,write,SlideNote-main/slidenote/llm_cache.py,43,write(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,write,SlideNote-main/slidenote/llm_cache.py,48,write(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,write,SlideNote-main/slidenote/llm_cache.py,70,write(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,75,utc_now_iso(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,write,SlideNote-main/slidenote/llm_cache.py,81,write(,strong
+SlideNote-main/slidenote/progress.py,symbol_call,write,SlideNote-main/slidenote/llm_cache.py,86,write(,strong
+SlideNote-main/slidenote/rendering.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/slidenote/rendering.py,python_import,slidenote.utils,slidenote.utils,6,"from slidenote.utils import find_executable, run_command
+
+
+def render_pptx_screenshots",medium
+SlideNote-main/slidenote/rendering.py,python_import,"fitz
+    except ImportError","fitz
+    except ImportError",51,"        import fitz
+    except ImportError",medium
+SlideNote-main/slidenote/rendering.py,python_import,win32com.client  ,win32com.client  ,69,        import win32com.client  ,medium
+SlideNote-main/slidenote/rendering.py,symbol_call,find_executable,SlideNote-main/slidenote/utils.py,17,find_executable(,strong
+SlideNote-main/slidenote/rendering.py,symbol_call,run_command,SlideNote-main/slidenote/utils.py,25,run_command(,strong
+SlideNote-main/slidenote/sections.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import re
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/sections.py,python_import,slidenote.llm_cache,slidenote.llm_cache,9,"from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, stable_json, utc_now_iso
+from slidenote",medium
+SlideNote-main/slidenote/sections.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,45,LLMCache(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,58,sha256_text(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,stable_json,SlideNote-main/slidenote/llm_cache.py,58,stable_json(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,58,get(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,sha256_text,SlideNote-main/slidenote/llm_cache.py,59,sha256_text(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,make_cache_key,SlideNote-main/slidenote/llm_cache.py,61,make_cache_key(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,path_for,SlideNote-main/slidenote/llm_cache.py,62,path_for(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,read,SlideNote-main/slidenote/llm_cache.py,63,read(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,69,get(,strong
+SlideNote-main/slidenote/sections.py,symbol_call,generate_with_usage,SlideNote-main/tests/test_content_guard.py,79,generate_with_usage(,strong
+SlideNote-main/slidenote/semantic_layout.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import re
+from concurrent",medium
+SlideNote-main/slidenote/semantic_layout.py,python_import,pathlib,pathlib,6,"from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/semantic_layout.py,python_import,slidenote.llm_cache,slidenote.llm_cache,10,"from slidenote.llm_cache import LLM_CACHE_SCHEMA_VERSION, LLMCache, make_cache_key, sha256_text, utc_now_iso
+from slidenote",medium
+SlideNote-main/slidenote/semantic_layout.py,python_import,slidenote.models,slidenote.models,12,"from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock
+from slidenote",medium
+SlideNote-main/slidenote/semantic_layout.py,python_import,slidenote.vision,slidenote.vision,14,"from slidenote.vision import _cleanup_temp_image, _file_sha256, _prepare_image_for_api
+
+
+SEMANTIC_LAYOUT_MODES ",medium
+SlideNote-main/slidenote/semantic_layout.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,55,LLMCache(,strong
+SlideNote-main/slidenote/source_map.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import hashlib
+import re
+from pathlib import Path
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/source_map.py,python_import,slidenote.llm_cache,slidenote.llm_cache,9,"from slidenote.llm_cache import utc_now_iso
+from slidenote",medium
+SlideNote-main/slidenote/source_map.py,python_import,slidenote.table_understanding,slidenote.table_understanding,11,"from slidenote.table_understanding import table_preview
+
+
+ELEMENT_PATTERN ",medium
+SlideNote-main/slidenote/source_map.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,53,utc_now_iso(,strong
+SlideNote-main/slidenote/table_understanding.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import re
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/table_understanding.py,python_import,slidenote.models,slidenote.models,7,"from slidenote.models import Deck, TableBlock
+
+
+def enrich_deck_with_table_understanding",medium
+SlideNote-main/slidenote/table_understanding.py,symbol_call,utc_now_iso,SlideNote-main/slidenote/llm_cache.py,48,utc_now_iso(,strong
+SlideNote-main/slidenote/utils.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import re
+import shutil
+import subprocess
+from pathlib import Path
+from typing import Any, Iterable
+
+
+def ensure_clean_dir",medium
+SlideNote-main/slidenote/utils.py,symbol_call,write_json,SlideNote-main/slidenote/pipeline.py,15,write_json(,strong
+SlideNote-main/slidenote/utils.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,17,write_text(,strong
+SlideNote-main/slidenote/utils.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,24,write_text(,strong
+SlideNote-main/slidenote/utils.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,26,write_text(,strong
+SlideNote-main/slidenote/utils.py,symbol_call,run,SlideNote-main/slidenote/pipeline.py,59,run(,strong
+SlideNote-main/slidenote/vision.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+import tempfile
+from concurrent",medium
+SlideNote-main/slidenote/vision.py,python_import,dataclasses,dataclasses,6,"from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+from PIL import Image
+
+from slidenote",medium
+SlideNote-main/slidenote/vision.py,python_import,slidenote.llm,slidenote.llm,13,"from slidenote.llm import LLMClient, resolve_provider_runtime
+from slidenote",medium
+SlideNote-main/slidenote/vision.py,python_import,slidenote.modality,slidenote.modality,15,"from slidenote.modality import page_has_hint
+from slidenote",medium
+SlideNote-main/slidenote/vision.py,python_import,slidenote.table_understanding,slidenote.table_understanding,17,"from slidenote.table_understanding import table_preview
+
+VISION_PROMPT_VERSION ",medium
+SlideNote-main/slidenote/vision.py,symbol_call,LLMCache,SlideNote-main/slidenote/llm_cache.py,68,LLMCache(,strong
+SlideNote-main/slidenote/visual/crop.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from slidenote",medium
+SlideNote-main/slidenote/visual/crop.py,python_import,slidenote.figures,slidenote.figures,1,"from slidenote.figures import enrich_deck_with_figures, select_figure_targets
+
+__all__ ",medium
+SlideNote-main/slidenote/visual/grounding.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from slidenote",medium
+SlideNote-main/slidenote/visual/quality.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from typing import Any
+
+from slidenote",medium
+SlideNote-main/slidenote/visual/quality.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,1,get(,strong
+SlideNote-main/slidenote/visual/semantic_layout.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from slidenote",medium
+SlideNote-main/slidenote/visual/vision.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+from slidenote",medium
+SlideNote-main/tests/conftest.py,python_import,"sys
+from pathlib import Path
+
+import pytest
+
+ROOT ","sys
+from pathlib import Path
+
+import pytest
+
+ROOT ",1,"import sys
+from pathlib import Path
+
+import pytest
+
+ROOT ",medium
+SlideNote-main/tests/test_cli.py,python_import,"json
+from argparse import Namespace
+from pathlib import Path
+
+import fitz
+
+from slidenote.cli import _apply_speed_mode_defaults, _parse_slide_ranges, _resolve_api_concurrency, main
+from slidenote.notes import NoteGenerationResult
+
+
+def test_parse_slide_ranges","json
+from argparse import Namespace
+from pathlib import Path
+
+import fitz
+
+from slidenote.cli import _apply_speed_mode_defaults, _parse_slide_ranges, _resolve_api_concurrency, main
+from slidenote.notes import NoteGenerationResult
+
+
+def test_parse_slide_ranges",1,"import json
+from argparse import Namespace
+from pathlib import Path
+
+import fitz
+
+from slidenote.cli import _apply_speed_mode_defaults, _parse_slide_ranges, _resolve_api_concurrency, main
+from slideno",medium
+SlideNote-main/tests/test_cli.py,symbol_call,main,SlideNote-main/scripts/generate_cost_report.py,68,main(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,71,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,72,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,73,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,74,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,75,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,76,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,77,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,78,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,79,read_text(,strong
+SlideNote-main/tests/test_cli.py,symbol_call,read_text,SlideNote-main/slidenote/utils.py,80,read_text(,strong
+SlideNote-main/tests/test_content_guard.py,python_import,"json
+
+from slidenote.content_guard import build_content_guard, missing_required_items
+from slidenote.coverage import analyze_coverage
+from slidenote.models import Deck, SlidePage, TextBlock
+
+
+def test_local_content_guard_marks_structural_page_with_definition_as_mixed","json
+
+from slidenote.content_guard import build_content_guard, missing_required_items
+from slidenote.coverage import analyze_coverage
+from slidenote.models import Deck, SlidePage, TextBlock
+
+
+def test_local_content_guard_marks_structural_page_with_definition_as_mixed",1,"import json
+
+from slidenote.content_guard import build_content_guard, missing_required_items
+from slidenote.coverage import analyze_coverage
+from slidenote.models import Deck, SlidePage, TextBlock
+
+
+d",medium
+SlideNote-main/tests/test_content_guard.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,13,SlidePage(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,17,TextBlock(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,18,TextBlock(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,build_content_guard,SlideNote-main/slidenote/content_guard.py,24,build_content_guard(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,37,SlidePage(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,39,TextBlock(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,45,__init__(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,build_content_guard,SlideNote-main/slidenote/content_guard.py,57,build_content_guard(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,69,SlidePage(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,71,TextBlock(,strong
+SlideNote-main/tests/test_content_guard.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,88,analyze_coverage(,strong
+SlideNote-main/tests/test_costing.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/tests/test_costing.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,12,write_text(,strong
+SlideNote-main/tests/test_costing.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,29,write_text(,strong
+SlideNote-main/tests/test_costing.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,49,write_text(,strong
+SlideNote-main/tests/test_costing.py,symbol_call,write_text,SlideNote-main/slidenote/pipeline.py,54,write_text(,strong
+SlideNote-main/tests/test_coverage.py,python_import,slidenote.coverage,slidenote.coverage,1,"from slidenote.coverage import analyze_coverage
+from slidenote",medium
+SlideNote-main/tests/test_coverage.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,10,SlidePage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,12,TextBlock(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,13,ImageAsset(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,18,analyze_coverage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,32,SlidePage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,34,TextBlock(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,35,ImageAsset(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,40,analyze_coverage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,50,SlidePage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,52,TextBlock(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,57,analyze_coverage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,71,SlidePage(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,73,TextBlock(,strong
+SlideNote-main/tests/test_coverage.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,78,analyze_coverage(,strong
+SlideNote-main/tests/test_deck_brief.py,python_import,"json
+
+from slidenote.deck_brief import build_deck_brief, deck_brief_for_prompt, render_deck_brief_markdown
+from slidenote.models import Deck, SlidePage, TextBlock
+
+
+def test_deck_brief_generates_report_and_uses_cache","json
+
+from slidenote.deck_brief import build_deck_brief, deck_brief_for_prompt, render_deck_brief_markdown
+from slidenote.models import Deck, SlidePage, TextBlock
+
+
+def test_deck_brief_generates_report_and_uses_cache",1,"import json
+
+from slidenote.deck_brief import build_deck_brief, deck_brief_for_prompt, render_deck_brief_markdown
+from slidenote.models import Deck, SlidePage, TextBlock
+
+
+def test_deck_brief_generate",medium
+SlideNote-main/tests/test_deck_brief.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,12,SlidePage(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,12,TextBlock(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,13,SlidePage(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,13,TextBlock(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,19,__init__(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,generate_with_usage,SlideNote-main/tests/test_content_guard.py,22,generate_with_usage(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,Result,SlideNote-main/tests/test_content_guard.py,44,Result(,strong
+SlideNote-main/tests/test_deck_brief.py,symbol_call,build_deck_brief,SlideNote-main/slidenote/deck_brief.py,48,build_deck_brief(,strong
+SlideNote-main/tests/test_exports.py,python_import,"subprocess
+
+from slidenote.exporting import add_table_of_contents, build_export_artifacts, clean_markdown_for_export, parse_export_formats
+
+
+def test_parse_export_formats_expands_all_and_deduplicates","subprocess
+
+from slidenote.exporting import add_table_of_contents, build_export_artifacts, clean_markdown_for_export, parse_export_formats
+
+
+def test_parse_export_formats_expands_all_and_deduplicates",1,"import subprocess
+
+from slidenote.exporting import add_table_of_contents, build_export_artifacts, clean_markdown_for_export, parse_export_formats
+
+
+def test_parse_export_formats_expands_all_and_dedupl",medium
+SlideNote-main/tests/test_exports.py,markdown_link,#tcp-basics,#tcp-basics,25,[TCP Basics](#tcp-basics),weak
+SlideNote-main/tests/test_exports.py,markdown_link,#拥塞控制,#拥塞控制,25,[拥塞控制](#拥塞控制),weak
+SlideNote-main/tests/test_exports.py,markdown_link,#tcp-basics-2,#tcp-basics-2,25,[TCP Basics](#tcp-basics-2),weak
+SlideNote-main/tests/test_exports.py,markdown_link,#definition,#definition,40,[Definition](#definition),weak
+SlideNote-main/tests/test_exports.py,symbol_call,parse_export_formats,SlideNote-main/slidenote/exporting.py,7,parse_export_formats(,strong
+SlideNote-main/tests/test_exports.py,symbol_call,parse_export_formats,SlideNote-main/slidenote/exporting.py,8,parse_export_formats(,strong
+SlideNote-main/tests/test_exports.py,symbol_call,build_export_artifacts,SlideNote-main/slidenote/exporting.py,53,build_export_artifacts(,strong
+SlideNote-main/tests/test_exports.py,symbol_call,get,SlideNote-main/slidenote/pipeline.py,64,get(,strong
+SlideNote-main/tests/test_exports.py,symbol_call,build_export_artifacts,SlideNote-main/slidenote/exporting.py,80,build_export_artifacts(,strong
+SlideNote-main/tests/test_figure_grounding.py,python_import,PIL,PIL,1,"from PIL import Image
+
+from slidenote",medium
+SlideNote-main/tests/test_figure_grounding.py,python_import,slidenote.models,slidenote.models,4,"from slidenote.models import Deck, ImageAsset, SlidePage, TextBlock
+
+
+def test_figure_grounding_anchors_image_to_nearby_text",medium
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,12,SlidePage(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,17,TextBlock(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,18,TextBlock(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,21,ImageAsset(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,enrich_deck_with_figure_grounding,SlideNote-main/slidenote/figure_grounding.py,34,enrich_deck_with_figure_grounding(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,45,SlidePage(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,49,TextBlock(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,51,ImageAsset(,strong
+SlideNote-main/tests/test_figure_grounding.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,74,__init__(,strong
+SlideNote-main/tests/test_figures.py,python_import,pathlib,pathlib,1,"from pathlib import Path
+
+from PIL import Image, ImageDraw
+
+from slidenote",medium
+SlideNote-main/tests/test_figures.py,python_import,slidenote.figures,slidenote.figures,6,"from slidenote.figures import _crop_figures, _figure_prompt, enrich_deck_with_figures, select_figure_targets
+from slidenote",medium
+SlideNote-main/tests/test_figures.py,python_import,slidenote.models,slidenote.models,8,"from slidenote.models import Deck, ImageAsset, SlidePage, TextBlock
+from slidenote",medium
+SlideNote-main/tests/test_figures.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,20,SlidePage(,strong
+SlideNote-main/tests/test_figures.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,20,TextBlock(,strong
+SlideNote-main/tests/test_figures.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,50,SlidePage(,strong
+SlideNote-main/tests/test_image_assets.py,python_import,slidenote.image_assets,slidenote.image_assets,1,"from slidenote.image_assets import classify_image_asset, refine_image_role_for_placement
+from slidenote",medium
+SlideNote-main/tests/test_image_assets.py,python_import,slidenote.extractors.pdf,slidenote.extractors.pdf,3,"from slidenote.extractors.pdf import _is_page_like_bbox
+from slidenote",medium
+SlideNote-main/tests/test_image_assets.py,python_import,slidenote.models,slidenote.models,5,"from slidenote.models import Deck, ImageAsset, SlidePage
+
+
+def test_classify_tiny_image_as_decorative",medium
+SlideNote-main/tests/test_image_assets.py,symbol_call,classify_image_asset,SlideNote-main/slidenote/image_assets.py,9,classify_image_asset(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,classify_image_asset,SlideNote-main/slidenote/image_assets.py,17,classify_image_asset(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,refine_image_role_for_placement,SlideNote-main/slidenote/image_assets.py,25,refine_image_role_for_placement(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,47,SlidePage(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,51,ImageAsset(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,52,ImageAsset(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,rank_deck_images,SlideNote-main/slidenote/image_ranking.py,58,rank_deck_images(,strong
+SlideNote-main/tests/test_image_assets.py,symbol_call,sorted_images_by_importance,SlideNote-main/slidenote/image_ranking.py,63,sorted_images_by_importance(,strong
+SlideNote-main/tests/test_ir.py,python_import,slidenote.ir,slidenote.ir,1,"from slidenote.ir import build_deck_ir, build_page_ir, element_index_from_ir, iter_expected_source_elements
+from slidenote",medium
+SlideNote-main/tests/test_ir.py,symbol_call,TableBlock,SlideNote-main/slidenote/models.py,6,TableBlock(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,13,SlidePage(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,16,TextBlock(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,19,ImageAsset(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,27,ImageAsset(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,build_page_ir,SlideNote-main/slidenote/ir.py,47,build_page_ir(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,iter_expected_source_elements,SlideNote-main/slidenote/ir.py,61,iter_expected_source_elements(,strong
+SlideNote-main/tests/test_ir.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,66,ImageAsset(,strong
+SlideNote-main/tests/test_llm.py,python_import,"pytest
+
+from slidenote.llm import LLMClient, LLMResult, get_provider_spec, resolve_provider_runtime
+from slidenote.models import ImageAsset, SlidePage
+from slidenote.notes import _llm_page_prompt
+
+
+def test_provider_aliases","pytest
+
+from slidenote.llm import LLMClient, LLMResult, get_provider_spec, resolve_provider_runtime
+from slidenote.models import ImageAsset, SlidePage
+from slidenote.notes import _llm_page_prompt
+
+
+def test_provider_aliases",1,"import pytest
+
+from slidenote.llm import LLMClient, LLMResult, get_provider_spec, resolve_provider_runtime
+from slidenote.models import ImageAsset, SlidePage
+from slidenote.notes import _llm_page_prom",medium
+SlideNote-main/tests/test_llm.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,65,SlidePage(,strong
+SlideNote-main/tests/test_llm.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,65,ImageAsset(,strong
+SlideNote-main/tests/test_llm.py,symbol_call,_llm_page_prompt,SlideNote-main/slidenote/notes/prompt_templates.py,67,_llm_page_prompt(,strong
+SlideNote-main/tests/test_llm.py,symbol_call,LLMResult,SlideNote-main/slidenote/llm.py,83,LLMResult(,strong
+SlideNote-main/tests/test_modality.py,python_import,slidenote.modality,slidenote.modality,1,"from slidenote.modality import classify_page_modality, enrich_deck_with_modalities
+from slidenote",medium
+SlideNote-main/tests/test_modality.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,6,SlidePage(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,8,TextBlock(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,9,ImageAsset(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,classify_page_modality,SlideNote-main/slidenote/modality.py,13,classify_page_modality(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,21,SlidePage(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,23,ImageAsset(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,classify_page_modality,SlideNote-main/slidenote/modality.py,28,classify_page_modality(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,37,SlidePage(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,39,TextBlock(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,TableBlock,SlideNote-main/slidenote/models.py,40,TableBlock(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,classify_page_modality,SlideNote-main/slidenote/modality.py,44,classify_page_modality(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,55,SlidePage(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,55,TextBlock(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,56,SlidePage(,strong
+SlideNote-main/tests/test_modality.py,symbol_call,enrich_deck_with_modalities,SlideNote-main/slidenote/modality.py,60,enrich_deck_with_modalities(,strong
+SlideNote-main/tests/test_notes.py,python_import,pathlib,pathlib,1,"from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/tests/test_notes.py,python_import,slidenote.models,slidenote.models,4,"from slidenote.models import Deck, ImageAsset, SlidePage, TableBlock, TextBlock
+from slidenote",medium
+SlideNote-main/tests/test_notes.py,python_import,slidenote.notes.assembly,slidenote.notes.assembly,6,"from slidenote.notes.assembly import _postprocess_llm_markdown
+from slidenote",medium
+SlideNote-main/tests/test_notes.py,python_import,slidenote.table_understanding,slidenote.table_understanding,8,"from slidenote.table_understanding import enrich_deck_with_table_understanding
+
+
+def test_local_notes_include_all_element_ids",medium
+SlideNote-main/tests/test_notes.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,16,SlidePage(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,20,TextBlock(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,21,TextBlock(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,TableBlock,SlideNote-main/slidenote/models.py,23,TableBlock(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,24,ImageAsset(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,analyze_coverage,SlideNote-main/slidenote/coverage.py,30,analyze_coverage(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,43,SlidePage(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,TableBlock,SlideNote-main/slidenote/models.py,47,TableBlock(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,enrich_deck_with_table_understanding,SlideNote-main/slidenote/table_understanding.py,59,enrich_deck_with_table_understanding(,strong
+SlideNote-main/tests/test_notes.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,81,SlidePage(,strong
+SlideNote-main/tests/test_ocr.py,python_import,pathlib,pathlib,1,"from pathlib import Path
+
+import pytest
+from PIL import Image
+
+from slidenote",medium
+SlideNote-main/tests/test_ocr.py,python_import,slidenote.models,slidenote.models,7,"from slidenote.models import Deck, SlidePage, TextBlock
+from slidenote",medium
+SlideNote-main/tests/test_ocr.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,19,SlidePage(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,21,TextBlock(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,36,SlidePage(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,48,SlidePage(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,enrich_deck_with_modalities,SlideNote-main/slidenote/modality.py,49,enrich_deck_with_modalities(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,61,SlidePage(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,64,__init__(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,recognize,SlideNote-main/slidenote/ocr.py,67,recognize(,strong
+SlideNote-main/tests/test_ocr.py,symbol_call,Result,SlideNote-main/tests/test_content_guard.py,73,Result(,strong
+SlideNote-main/tests/test_pipeline.py,python_import,argparse,argparse,1,"from argparse import Namespace
+
+from slidenote",medium
+SlideNote-main/tests/test_pipeline.py,python_import,slidenote.pipeline,slidenote.pipeline,4,"from slidenote.pipeline import ArtifactRegistry, BuildContext, FunctionStage, StageResult, run_stage
+
+
+def test_function_stage_records_result_and_registered_artifact",medium
+SlideNote-main/tests/test_pipeline.py,symbol_call,ArtifactRegistry,SlideNote-main/slidenote/pipeline.py,9,ArtifactRegistry(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,BuildContext,SlideNote-main/slidenote/pipeline.py,10,BuildContext(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,write_json,SlideNote-main/slidenote/pipeline.py,19,write_json(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,StageResult,SlideNote-main/slidenote/pipeline.py,20,StageResult(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,run_stage,SlideNote-main/slidenote/pipeline.py,22,run_stage(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,FunctionStage,SlideNote-main/slidenote/pipeline.py,22,FunctionStage(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,as_summary,SlideNote-main/slidenote/pipeline.py,26,as_summary(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,BuildContext,SlideNote-main/slidenote/pipeline.py,32,BuildContext(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,FunctionStage,SlideNote-main/slidenote/pipeline.py,38,FunctionStage(,strong
+SlideNote-main/tests/test_pipeline.py,symbol_call,run_stage,SlideNote-main/slidenote/pipeline.py,41,run_stage(,strong
+SlideNote-main/tests/test_sections.py,python_import,slidenote.models,slidenote.models,1,"from slidenote.models import Deck, SlidePage, TextBlock
+from slidenote",medium
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,10,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,10,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,11,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,11,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,12,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,16,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,17,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,18,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,19,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,22,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,22,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,38,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,42,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,49,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,49,TextBlock(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,50,SlidePage(,strong
+SlideNote-main/tests/test_sections.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,53,TextBlock(,strong
+SlideNote-main/tests/test_semantic_layout.py,python_import,PIL,PIL,1,"from PIL import Image
+
+from slidenote",medium
+SlideNote-main/tests/test_semantic_layout.py,python_import,slidenote.semantic_layout,slidenote.semantic_layout,4,"from slidenote.semantic_layout import enrich_deck_with_semantic_layout, semantic_context_for_page, semantic_layout_for_prompt
+
+
+def test_semantic_layout_groups_code_output_cause_and_fix",medium
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,8,SlidePage(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,14,TextBlock(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,15,TextBlock(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,main,SlideNote-main/scripts/generate_cost_report.py,18,main(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,21,TextBlock(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,27,TextBlock(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,33,TextBlock(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,enrich_deck_with_semantic_layout,SlideNote-main/slidenote/semantic_layout.py,43,enrich_deck_with_semantic_layout(,strong
+SlideNote-main/tests/test_semantic_layout.py,symbol_call,__init__,SlideNote-main/slidenote/llm_cache.py,63,__init__(,strong
+SlideNote-main/tests/test_source_map.py,python_import,pathlib,pathlib,1,"from pathlib import Path
+
+from slidenote",medium
+SlideNote-main/tests/test_source_map.py,python_import,slidenote.source_map,slidenote.source_map,4,"from slidenote.source_map import build_source_map
+from slidenote",medium
+SlideNote-main/tests/test_source_map.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,13,SlidePage(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,15,TextBlock(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,17,ImageAsset(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,18,ImageAsset(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,build_source_map,SlideNote-main/slidenote/source_map.py,25,build_source_map(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,37,SlidePage(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,37,TextBlock(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,build_source_map,SlideNote-main/slidenote/source_map.py,41,build_source_map(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,51,SlidePage(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,51,TextBlock(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,build_source_map,SlideNote-main/slidenote/source_map.py,56,build_source_map(,strong
+SlideNote-main/tests/test_source_map.py,symbol_call,build_source_map,SlideNote-main/slidenote/source_map.py,57,build_source_map(,strong
+SlideNote-main/tests/test_studio_core.py,python_import,__future__,__future__,1,"from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+
+from gui",medium
+SlideNote-main/tests/test_studio_core.py,symbol_call,StudioConfig,SlideNote-main/gui/studio_core.py,11,StudioConfig(,strong
+SlideNote-main/tests/test_studio_core.py,symbol_call,StudioConfig,SlideNote-main/gui/studio_core.py,59,StudioConfig(,strong
+SlideNote-main/tests/test_studio_core.py,symbol_call,StudioConfig,SlideNote-main/gui/studio_core.py,78,StudioConfig(,strong
+SlideNote-main/tests/test_table_understanding.py,python_import,slidenote.models,slidenote.models,1,"from slidenote.models import Deck, SlidePage, TableBlock
+from slidenote",medium
+SlideNote-main/tests/test_table_understanding.py,symbol_call,TableBlock,SlideNote-main/slidenote/models.py,6,TableBlock(,strong
+SlideNote-main/tests/test_table_understanding.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,14,SlidePage(,strong
+SlideNote-main/tests/test_table_understanding.py,symbol_call,enrich_deck_with_table_understanding,SlideNote-main/slidenote/table_understanding.py,16,enrich_deck_with_table_understanding(,strong
+SlideNote-main/tests/test_table_understanding.py,symbol_call,TableBlock,SlideNote-main/slidenote/models.py,32,TableBlock(,strong
+SlideNote-main/tests/test_table_understanding.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,33,SlidePage(,strong
+SlideNote-main/tests/test_table_understanding.py,symbol_call,enrich_deck_with_table_understanding,SlideNote-main/slidenote/table_understanding.py,35,enrich_deck_with_table_understanding(,strong
+SlideNote-main/tests/test_vision.py,python_import,pathlib,pathlib,1,"from pathlib import Path
+
+import pytest
+from PIL import Image
+
+from slidenote",medium
+SlideNote-main/tests/test_vision.py,python_import,slidenote.models,slidenote.models,7,"from slidenote.models import Deck, ImageAsset, SlidePage, TextBlock
+from slidenote",medium
+SlideNote-main/tests/test_vision.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,19,SlidePage(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,TextBlock,SlideNote-main/slidenote/models.py,21,TextBlock(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,22,ImageAsset(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,45,SlidePage(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,48,ImageAsset(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,49,ImageAsset(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,SlidePage,SlideNote-main/slidenote/models.py,73,SlidePage(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,76,ImageAsset(,strong
+SlideNote-main/tests/test_vision.py,symbol_call,ImageAsset,SlideNote-main/slidenote/models.py,77,ImageAsset(,strong

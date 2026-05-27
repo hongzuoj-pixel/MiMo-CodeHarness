@@ -1,0 +1,7 @@
+task_id,provider_name,model,input_tokens_est,output_tokens_est,total_tokens_est,dry_run,status
+T001,Xiaomi-MiMo-Pro,mimo-v2.5-pro,5181,2247,7428,False,completed
+T002,Xiaomi-MiMo-Pro,mimo-v2.5-pro,4211,3187,7398,False,completed
+T003,Xiaomi-MiMo-Pro,mimo-v2.5-pro,4439,2522,6961,False,completed
+T004,Xiaomi-MiMo-Pro,mimo-v2.5-pro,4436,2106,6542,False,completed
+T005,Xiaomi-MiMo-Pro,mimo-v2.5-pro,3966,2141,6107,False,completed
+T006,Xiaomi-MiMo-Pro,mimo-v2.5-pro,4441,2643,7084,False,completed

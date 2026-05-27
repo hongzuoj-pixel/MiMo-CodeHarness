@@ -1,0 +1,130 @@
+[
+  {
+    "path": "STM32-RFID-Access-Control-System-main/README.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 16410,
+    "line_count": 68,
+    "role": "documentation"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/access.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 1553,
+    "line_count": 83,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/access.h",
+    "suffix": ".h",
+    "language": "C/C++/Embedded",
+    "size_bytes": 330,
+    "line_count": 19,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/buzzer.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 889,
+    "line_count": 56,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/buzzer.h",
+    "suffix": ".h",
+    "language": "C/C++/Embedded",
+    "size_bytes": 192,
+    "line_count": 12,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/delay.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 160,
+    "line_count": 11,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/delay.h",
+    "suffix": ".h",
+    "language": "C/C++/Embedded",
+    "size_bytes": 80,
+    "line_count": 6,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/led.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 333,
+    "line_count": 20,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/led.h",
+    "suffix": ".h",
+    "language": "C/C++/Embedded",
+    "size_bytes": 107,
+    "line_count": 8,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/main.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 5696,
+    "line_count": 135,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/rc522.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 6601,
+    "line_count": 125,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/rc522.h",
+    "suffix": ".h",
+    "language": "C/C++/Embedded",
+    "size_bytes": 1128,
+    "line_count": 45,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/serial_logger.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3070,
+    "line_count": 113,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/usart.c",
+    "suffix": ".c",
+    "language": "C/C++/Embedded",
+    "size_bytes": 1432,
+    "line_count": 64,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/usart.h",
+    "suffix": ".h",
+    "language": "C/C++/Embedded",
+    "size_bytes": 236,
+    "line_count": 12,
+    "role": "source"
+  },
+  {
+    "path": "STM32-RFID-Access-Control-System-main/view_logs.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 788,
+    "line_count": 33,
+    "role": "source"
+  }
+]

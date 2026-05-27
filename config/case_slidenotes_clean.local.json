@@ -1,0 +1,10 @@
+{
+  "description": "Clean SlideNotes case for MiMo-CodeHarness v0.3.1. Uses a relative local clone path for GitHub portability.",
+  "cases": [
+    {
+      "name": "slidenotes",
+      "path": "external_repos/SlideNote",
+      "git_url": "https://github.com/Cat-blizzard/SlideNote.git"
+    }
+  ]
+}

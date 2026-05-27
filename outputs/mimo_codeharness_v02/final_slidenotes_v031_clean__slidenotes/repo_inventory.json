@@ -1,0 +1,730 @@
+[
+  {
+    "path": "SlideNote-main/.github/workflows/ci.yml",
+    "suffix": ".yml",
+    "language": "Config/Data",
+    "size_bytes": 760,
+    "line_count": 34,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/CONFIG.zh-CN.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 17885,
+    "line_count": 89,
+    "role": "documentation"
+  },
+  {
+    "path": "SlideNote-main/README.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 39919,
+    "line_count": 77,
+    "role": "documentation"
+  },
+  {
+    "path": "SlideNote-main/README.zh-CN.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 38876,
+    "line_count": 82,
+    "role": "documentation"
+  },
+  {
+    "path": "SlideNote-main/ROADMAP.zh-CN.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 54798,
+    "line_count": 44,
+    "role": "documentation"
+  },
+  {
+    "path": "SlideNote-main/gui/README_GUI.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 4115,
+    "line_count": 88,
+    "role": "documentation"
+  },
+  {
+    "path": "SlideNote-main/gui/README_GUI.zh-CN.md",
+    "suffix": ".md",
+    "language": "Docs",
+    "size_bytes": 4702,
+    "line_count": 116,
+    "role": "documentation"
+  },
+  {
+    "path": "SlideNote-main/gui/__init__.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 0,
+    "line_count": 0,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/gui/app.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 48279,
+    "line_count": 108,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/gui/studio_core.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 12027,
+    "line_count": 93,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/pricing.template.json",
+    "suffix": ".json",
+    "language": "Config/Data",
+    "size_bytes": 995,
+    "line_count": 44,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/pyproject.toml",
+    "suffix": ".toml",
+    "language": "Config/Data",
+    "size_bytes": 748,
+    "line_count": 33,
+    "role": "build_config"
+  },
+  {
+    "path": "SlideNote-main/requirements-gui.txt",
+    "suffix": ".txt",
+    "language": "Docs",
+    "size_bytes": 18,
+    "line_count": 2,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/scripts/generate_cost_report.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 809,
+    "line_count": 22,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/__init__.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 76,
+    "line_count": 7,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/__main__.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 81,
+    "line_count": 7,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/api_retry.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 2381,
+    "line_count": 83,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/build_pipeline.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 464,
+    "line_count": 16,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/cli.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 14800,
+    "line_count": 59,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/composite_figures.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 15496,
+    "line_count": 93,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/content_guard.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 24079,
+    "line_count": 83,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/costing.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 12389,
+    "line_count": 89,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/coverage.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 17358,
+    "line_count": 70,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/deck_brief.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 22501,
+    "line_count": 75,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/doctor.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 9993,
+    "line_count": 67,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/exporting.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 12951,
+    "line_count": 81,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/extractors/__init__.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 621,
+    "line_count": 24,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/extractors/pdf.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 8990,
+    "line_count": 69,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/extractors/ppt.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 1182,
+    "line_count": 41,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/extractors/pptx.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 9973,
+    "line_count": 70,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/figure_grounding.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 39035,
+    "line_count": 70,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/figures.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 42278,
+    "line_count": 89,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/image_assets.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 2004,
+    "line_count": 64,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/image_ranking.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 6529,
+    "line_count": 71,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/ir.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 10677,
+    "line_count": 81,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/llm.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 21783,
+    "line_count": 84,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/llm_cache.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 2238,
+    "line_count": 75,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/modality.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 5591,
+    "line_count": 72,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/models.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3320,
+    "line_count": 85,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/__init__.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 9813,
+    "line_count": 83,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/assembly.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 51226,
+    "line_count": 81,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/direct.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 8625,
+    "line_count": 84,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/lecture_weave.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 11705,
+    "line_count": 87,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/llm_calls.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 16196,
+    "line_count": 84,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/local.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 11221,
+    "line_count": 82,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/orchestrator.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 1027,
+    "line_count": 34,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/prompt_payload.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 5203,
+    "line_count": 64,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/prompt_rules.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 4934,
+    "line_count": 33,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/prompt_templates.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 27900,
+    "line_count": 83,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/prompts.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 941,
+    "line_count": 33,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/repair.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3110,
+    "line_count": 83,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/usage.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 5610,
+    "line_count": 67,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/notes/versions.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 158,
+    "line_count": 6,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/ocr.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 20991,
+    "line_count": 82,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/pipeline.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3173,
+    "line_count": 92,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/progress.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 4844,
+    "line_count": 88,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/rendering.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3384,
+    "line_count": 79,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/sections.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 19880,
+    "line_count": 79,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/semantic_layout.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 44858,
+    "line_count": 65,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/source_map.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 11795,
+    "line_count": 73,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/table_understanding.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 10201,
+    "line_count": 81,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/utils.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 1665,
+    "line_count": 68,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/vision.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 20642,
+    "line_count": 81,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/visual/__init__.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 184,
+    "line_count": 7,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/visual/crop.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 307,
+    "line_count": 11,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/visual/grounding.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 217,
+    "line_count": 9,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/visual/quality.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 578,
+    "line_count": 24,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/visual/semantic_layout.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 371,
+    "line_count": 16,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/slidenote/visual/vision.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 221,
+    "line_count": 10,
+    "role": "source"
+  },
+  {
+    "path": "SlideNote-main/tests/conftest.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 730,
+    "line_count": 27,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_cli.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 16277,
+    "line_count": 81,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_content_guard.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3172,
+    "line_count": 88,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_costing.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 2217,
+    "line_count": 63,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_coverage.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 6611,
+    "line_count": 91,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_deck_brief.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 4330,
+    "line_count": 58,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_exports.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 4878,
+    "line_count": 80,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_figure_grounding.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 8007,
+    "line_count": 77,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_figures.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 11743,
+    "line_count": 71,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_image_assets.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 2421,
+    "line_count": 64,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_ir.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 4124,
+    "line_count": 69,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_llm.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3766,
+    "line_count": 85,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_modality.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 2468,
+    "line_count": 66,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_notes.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 50619,
+    "line_count": 84,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_ocr.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 5648,
+    "line_count": 78,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_pipeline.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 1666,
+    "line_count": 46,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_sections.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 4843,
+    "line_count": 67,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_semantic_layout.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 6469,
+    "line_count": 69,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_source_map.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 5591,
+    "line_count": 68,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_studio_core.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 3355,
+    "line_count": 81,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_table_understanding.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 1801,
+    "line_count": 42,
+    "role": "test"
+  },
+  {
+    "path": "SlideNote-main/tests/test_vision.py",
+    "suffix": ".py",
+    "language": "Python",
+    "size_bytes": 6687,
+    "line_count": 83,
+    "role": "test"
+  }
+]

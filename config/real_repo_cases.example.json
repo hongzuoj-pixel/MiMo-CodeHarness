@@ -1,0 +1,50 @@
+{
+  "description": "Real repository case-study configuration for MiMo-CodeHarness v0.2. Replace local paths / git URLs with your own repositories before real API runs.",
+  "cases": [
+    {
+      "name": "demo_harmony_baseline",
+      "path": "demo_harmony_project",
+      "type": "HarmonyOS / ArkTS demo",
+      "limit_tasks": 4,
+      "max_files": 300
+    },
+    {
+      "name": "demo_android_baseline",
+      "path": "demo_android_project",
+      "type": "Android / Java demo",
+      "limit_tasks": 4,
+      "max_files": 300
+    },
+    {
+      "name": "stm32_rfid",
+      "path": "external_repos/STM32-RFID-Access-Control-System",
+      "git_url": "https://github.com/YOUR_USERNAME/STM32-RFID-Access-Control-System.git",
+      "type": "Embedded C / IoT / STM32",
+      "limit_tasks": 6,
+      "max_files": 600
+    },
+    {
+      "name": "slidenotes",
+      "path": "external_repos/SlideNotes",
+      "git_url": "https://github.com/YOUR_USERNAME/SlideNotes.git",
+      "type": "Python GUI / Markdown-PDF-LaTeX export",
+      "limit_tasks": 6,
+      "max_files": 700
+    },
+    {
+      "name": "harmonyos_real_project",
+      "path": "real_repos/harmonyos_project",
+      "type": "HarmonyOS / ArkTS real repository",
+      "limit_tasks": 6,
+      "max_files": 900
+    },
+    {
+      "name": "dreamzero_libero_light",
+      "path": "external_repos/DreamZero-Libero",
+      "git_url": "https://github.com/MIKUZ12/DreamZero-Libero.git",
+      "type": "Robotics / Embodied AI research codebase",
+      "limit_tasks": 5,
+      "max_files": 700
+    }
+  ]
+}

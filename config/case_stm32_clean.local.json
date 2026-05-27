@@ -1,0 +1,10 @@
+{
+  "description": "Clean STM32 case for MiMo-CodeHarness v0.3.1. Uses a relative local clone path for GitHub portability.",
+  "cases": [
+    {
+      "name": "stm32_rfid",
+      "path": "external_repos/STM32-RFID-Access-Control-System",
+      "git_url": "https://github.com/hongzuoj-pixel/STM32-RFID-Access-Control-System.git"
+    }
+  ]
+}
