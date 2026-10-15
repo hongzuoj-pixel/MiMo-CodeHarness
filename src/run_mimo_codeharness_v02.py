@@ -60,6 +60,7 @@ EXCLUDE_DIRS = {
     ".git", ".idea", ".vscode", "node_modules", "oh_modules", "build", "dist", "out",
     "coverage", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv", "env",
     "target", ".gradle", ".hvigor", "hvigor", "checkpoints", "datasets", "data/raw",
+    "outputs",
 }
 MAX_SNIPPET_CHARS = 2800
 
@@ -706,6 +707,7 @@ def extract_diff_block(content: str) -> str:
 COPY_EXCLUDE_DIRS = {
     ".git", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv",
     "node_modules", "oh_modules", "build", "dist", "out", "target", "coverage",
+    "outputs",
 }
 
 
@@ -1110,10 +1112,14 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
     model_runs = run_models(tasks, config, execute, repo_summary, dep_summary, scanner.snippets)
     patch_results = apply_patches(model_runs, project, out_dir, actually_apply=apply_patch_flag)
 
-    # Establish a clean baseline, then verify every applied candidate independently.
-    build_summary = BuildTesterV02(project, out_dir / "build_test_logs").run_all(
-        run_external=run_build_tests
+    # Establish the baseline in an isolated workspace with the same copy policy used
+    # for candidates. This prevents source mutation and environment skew.
+    baseline_worktree = copy_worktree(
+        project, out_dir / "worktrees" / "_baseline"
     )
+    build_summary = BuildTesterV02(
+        baseline_worktree, out_dir / "build_test_logs"
+    ).run_all(run_external=run_build_tests)
     candidate_build_summaries: Dict[str, Dict[str, Any]] = {}
     for patch in patch_results:
         if patch.applied and patch.worktree:
