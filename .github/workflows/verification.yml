@@ -1,0 +1,55 @@
+name: verification-pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit and regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Scoring invariants
+        run: python src/validate_scoring_v03.py
+      - name: Offline end-to-end smoke test
+        shell: bash
+        run: |
+          set +e
+          python src/run_mimo_codeharness_v02.py \
+            --project demo_harmony_project \
+            --name ci_validation_v04 \
+            --config config/api_models_mimo.json \
+            --limit-tasks 6 \
+            --apply-patches
+          code=$?
+          set -e
+          if [[ "$code" -ne 0 && "$code" -ne 3 ]]; then
+            echo "Unexpected harness exit code: $code"
+            exit "$code"
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("outputs/mimo_codeharness_v02/ci_validation_v04/verification_summary.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          assert data["overall_verdict"] in {
+              "PASS", "FAIL", "INSUFFICIENT_EVIDENCE", "ERROR", "NOT_APPLICABLE"
+          }
+          assert "exit_code" in data
+          PY
