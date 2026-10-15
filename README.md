@@ -91,11 +91,13 @@ Generates repository-level tasks such as:
 - Runs lightweight build/test signals such as Python syntax check, JSON parsing, and C/C++ brace scan.
 - For embedded projects, the current build/test check is **not a full Keil firmware compilation**; it is a lightweight static safety check.
 
-### Evidence-aware scoring
+### Evidence-aware scoring and hard verification
 
-The final clean results use the v0.3/v0.3.1 evidence-aware automatic scorer. The score is based on repository grounding, task-rubric coverage, answer completeness, patch evidence, and build/test evidence.
+The descriptive score measures repository grounding, rubric coverage, answer completeness, patch evidence, and build/test signals. v0.4 now reports an independent hard verdict for every candidate: `PASS`, `FAIL`, `INSUFFICIENT_EVIDENCE`, `ERROR`, or `NOT_APPLICABLE`.
 
-LLM Judge and human review scripts were explored experimentally, but they are **not used as the final reported scoring basis** in the clean results, because model-as-judge can be biased and needs further calibration.
+A high score cannot override a failed or unverified patch. Each applied candidate is tested in its own faithful workspace and compared with an untouched baseline. Static-only checks no longer count as behavior-test success. See [Verification Pipeline v0.4](docs/VERIFICATION_V04.md).
+
+LLM Judge and human review remain optional evidence and do not replace executable verification.
 
 ---
 
@@ -105,8 +107,10 @@ The following results are from final clean runs. They are the recommended result
 
 | Case Study | Repository Type | Files | Dependency Edges | Tasks | Avg. Score | Estimated Tokens | Status |
 |---|---:|---:|---:|---:|---:|---:|---|
-| STM32 RFID Access Control | Embedded C / IoT | 16 | 86 | 6 | 78.76 | 41,520 | OK |
-| SlideNotes GUI Tool | Python GUI / Document Export Tool | 91 | 505 | 6 | 66.71 | 38,675 | OK |
+| STM32 RFID Access Control | Embedded C / IoT | 16 | 86 | 6 | 78.76 | 41,520 | Legacy / unverified |
+| SlideNotes GUI Tool | Python GUI / Document Export Tool | 91 | 505 | 6 | 66.71 | Legacy / unverified |
+
+These historical v0.3.1 scores predate baseline-vs-candidate verification and must not be cited as verified patch success.
 
 Recommended result directories:
 
@@ -257,10 +261,16 @@ MiMo-CodeHarness/
 │   ├── run_mimo_codeharness_v02.py
 │   ├── test_mimo_api_connection.py
 │   ├── validate_mimo_codeharness_v02.py
-│   └── scoring_v03.py
+│   ├── scoring_v03.py
+│   └── verification_v04.py
 ├── docs/
 │   ├── SCORING_SYSTEM_V03.md
-│   └── SCORING_SYSTEM_V031.md
+│   ├── SCORING_SYSTEM_V031.md
+│   └── VERIFICATION_V04.md
+├── tests/
+│   └── test_verification_v04.py
+├── .github/workflows/
+│   └── verification.yml
 ├── outputs/
 │   └── mimo_codeharness_v02/
 │       ├── final_stm32_v031_clean__stm32_rfid/
@@ -277,8 +287,8 @@ This project is an engineering prototype, not a fully industrial benchmark yet.
 
 Current limitations:
 
-- The build/test stage is lightweight and does not replace full project-specific compilation.
-- The embedded STM32 case does not perform full Keil firmware compilation yet.
+- A candidate receives `INSUFFICIENT_EVIDENCE` when no behavior test is detected or executed.
+- The embedded STM32 case still does not perform full Keil firmware compilation; static checks alone are never reported as verified success.
 - LLM Judge and human review are not used in the final clean scores.
 - Scores should be interpreted as evidence-aware automatic evaluation results, not absolute ground truth.
 - More repositories and more repeated trials are needed for stronger benchmark-level conclusions.
@@ -304,4 +314,5 @@ Planned improvements:
 - Do not commit API keys.
 - Use environment variables for all model credentials.
 - Review generated patches before applying them to production code.
-- Treat automatic scores as evaluation evidence, not final truth.
+- Treat automatic scores as descriptive evidence, not final truth.
+- Use the hard verification verdict and process exit code as the automation gate.
