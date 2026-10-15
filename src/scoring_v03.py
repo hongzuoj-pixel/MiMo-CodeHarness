@@ -32,7 +32,6 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 PATCH_REQUIRED_TYPES = {
     "bug_fix",
-    "bug_localization",
     "code_refactor",
     "test_generation",
     "patch_generation",
@@ -239,12 +238,16 @@ def score_build_test(build_summary: Mapping[str, Any]) -> Tuple[float, Dict[str,
     skipped = int(build_summary.get("skipped_count", 0) or 0)
     all_ok = bool(build_summary.get("all_critical_ok"))
     run_external = bool(build_summary.get("run_external"))
-    if all_ok and run_external and skipped == 0:
+    executed = int(build_summary.get("external_executed_count", 0) or 0)
+    if all_ok and run_external and executed > 0 and skipped == 0:
         score = 100.0
-        note = "Real external build/test and safe checks passed."
+        note = "Executed behavior tests and safe checks passed."
+    elif all_ok and executed > 0:
+        score = 92.0
+        note = "Executed behavior tests passed; some optional checks may be skipped."
     elif all_ok:
-        score = 86.0 if skipped else 92.0
-        note = "Critical safe checks passed; external build/test may be skipped."
+        score = 65.0
+        note = "Static checks passed, but no behavior test was executed."
     elif failed:
         score = 30.0
         note = "Critical build/test checks failed or errored."
@@ -253,7 +256,7 @@ def score_build_test(build_summary: Mapping[str, Any]) -> Tuple[float, Dict[str,
         note = "Warnings present; needs manual review."
     if warnings:
         score = max(0.0, score - min(12.0, warnings * 4.0))
-    return clamp(score), {"build_note": note, "failed_count": failed, "warning_count": warnings, "skipped_count": skipped, "run_external": run_external}
+    return clamp(score), {"build_note": note, "failed_count": failed, "warning_count": warnings, "skipped_count": skipped, "run_external": run_external, "external_executed_count": executed}
 
 
 def load_review_scores(path: Optional[str]) -> Dict[Tuple[str, str], Dict[str, Any]]:
@@ -332,9 +335,9 @@ def weighted_available_score(component_scores: Mapping[str, Optional[float]], we
 def evidence_level(has_llm: bool, has_human: bool, has_patch: bool, build_score: float) -> str:
     if has_llm and has_human and build_score >= 80 and has_patch:
         return "A"
-    if (has_llm or has_human) and build_score >= 70:
+    if (has_llm or has_human) and build_score >= 60:
         return "B"
-    if build_score >= 70:
+    if build_score >= 60:
         return "C"
     return "D"
 
@@ -344,6 +347,8 @@ def score_outputs_v03(
     runs: List[Any],
     patch_results: List[Any],
     build_summary: Mapping[str, Any],
+    verification_results: Optional[List[Any]] = None,
+    candidate_build_summaries: Optional[Mapping[str, Mapping[str, Any]]] = None,
     llm_review_path: Optional[str] = None,
     human_review_path: Optional[str] = None,
     human_rubric_path: Optional[str] = None,
@@ -354,6 +359,13 @@ def score_outputs_v03(
     for p in patch_results:
         patch_map[(getattr(p, "task_id", ""), getattr(p, "provider_name", ""))].append(p)
 
+    verification_by_id = {
+        str(getattr(item, "candidate_id", "")): item
+        for item in (verification_results or [])
+        if getattr(item, "candidate_id", "")
+    }
+    candidate_build_summaries = candidate_build_summaries or {}
+
     llm_scores = load_review_scores(llm_review_path)
     human_scores = load_review_scores(human_review_path)
     human_rubrics: Dict[str, Any] = {}
@@ -361,7 +373,7 @@ def score_outputs_v03(
         data = json.loads(Path(human_rubric_path).read_text(encoding="utf-8"))
         human_rubrics = data.get("tasks", data if isinstance(data, dict) else {})
 
-    build_score, build_meta = score_build_test(build_summary)
+    baseline_build_score, baseline_build_meta = score_build_test(build_summary)
     used_weights = dict(DEFAULT_WEIGHTS)
     if weights:
         used_weights.update({k: float(v) for k, v in weights.items()})
@@ -374,8 +386,20 @@ def score_outputs_v03(
         answer = getattr(r, "content", "") or ""
         status = getattr(r, "status", "")
         rubric = human_rubrics.get(task_id, {}) if task_id else {}
+        candidate_id = str(getattr(r, "candidate_id", ""))
         patch_items = patch_map.get((task_id, provider), [])
+        if candidate_id:
+            exact_items = [
+                p for p in patch_items
+                if str(getattr(p, "candidate_id", "")) == candidate_id
+            ]
+            if exact_items:
+                patch_items = exact_items
         patch_statuses = [getattr(p, "status", "") for p in patch_items]
+        candidate_build = candidate_build_summaries.get(candidate_id, build_summary)
+        build_score, build_meta = score_build_test(candidate_build)
+        verification = verification_by_id.get(candidate_id)
+        verification_verdict = str(getattr(verification, "verdict", "NOT_APPLICABLE"))
 
         repo_score, repo_meta = score_repo_grounding(task, answer) if task else (0.0, {})
         rubric_score, rubric_meta = score_task_rubric(task, answer, rubric) if task else (0.0, {})
@@ -402,7 +426,13 @@ def score_outputs_v03(
         has_patch_evidence = bool(patch_statuses) or patch_meta.get("has_diff_text")
         level = evidence_level(llm_score is not None, human_score is not None, bool(has_patch_evidence), build_score)
 
+        patch_expected = bool(patch_meta.get("patch_expected", False))
+        analysis_pass = status == "completed" and final >= 70
+        verified_pass = verification_verdict == "PASS"
+        hard_pass = analysis_pass and (verified_pass if patch_expected else True)
+
         rows.append({
+            "candidate_id": candidate_id,
             "task_id": task_id,
             "task_type": getattr(task, "task_type", "unknown") if task else "unknown",
             "provider_name": provider,
@@ -411,7 +441,10 @@ def score_outputs_v03(
             "dry_run": getattr(r, "dry_run", False),
             "final_score": safe_round(final),
             "total_score": safe_round(final),  # backward-compatible column name
-            "pass": status == "completed" and final >= 70,
+            "pass": hard_pass,
+            "analysis_pass": analysis_pass,
+            "verified_pass": verified_pass,
+            "verification_verdict": verification_verdict,
             "evidence_level": level,
             "effective_weight": effective_weight,
             "missing_evidence": ";".join(missing),
@@ -430,7 +463,7 @@ def score_outputs_v03(
             "rubric_hits": rubric_meta.get("rubric_hits", 0),
             "rubric_total": rubric_meta.get("rubric_total", 0),
             "rubric_hit_items": "; ".join(map(str, rubric_meta.get("rubric_hit_items", []))),
-            "patch_expected": patch_meta.get("patch_expected", False),
+            "patch_expected": patch_expected,
             "patch_status": ";".join(patch_statuses),
             "patch_note": patch_meta.get("patch_note", ""),
             "build_note": build_meta.get("build_note", ""),
@@ -439,8 +472,8 @@ def score_outputs_v03(
             "total_tokens_est": getattr(r, "total_tokens_est", 0),
             "time_seconds": getattr(r, "time_seconds", 0),
             "scoring_note": (
-                "v0.3 evidence-aware score. Missing optional LLM/human evidence is shown in missing_evidence; "
-                "scores should be reported with evidence_level, not as absolute truth."
+                "v0.4 separates descriptive score from hard verification. "
+                "Patch-required tasks pass only with verification_verdict=PASS."
             ),
             "error": getattr(r, "error", ""),
         })

@@ -1,0 +1,114 @@
+name: verification-pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-and-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit and regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Scoring invariants
+        run: python src/validate_scoring_v03.py
+      - name: Offline end-to-end smoke test
+        shell: bash
+        run: |
+          set +e
+          python src/run_mimo_codeharness_v02.py \
+            --project demo_harmony_project \
+            --name ci_validation_v04 \
+            --config config/api_models_mimo.json \
+            --limit-tasks 6 \
+            --apply-patches
+          code=$?
+          set -e
+          if [[ "$code" -ne 0 && "$code" -ne 2 && "$code" -ne 3 ]]; then
+            echo "Unexpected harness execution error: $code"
+            exit "$code"
+          fi
+          cat outputs/mimo_codeharness_v02/ci_validation_v04/patch_results.json
+          cat outputs/mimo_codeharness_v02/ci_validation_v04/verification_results.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("outputs/mimo_codeharness_v02/ci_validation_v04/verification_summary.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          assert data["overall_verdict"] in {
+              "PASS", "FAIL", "INSUFFICIENT_EVIDENCE", "ERROR", "NOT_APPLICABLE"
+          }
+          assert "exit_code" in data
+          PY
+
+  real-python-case:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Clone pinned SlideNote case
+        shell: bash
+        run: |
+          git clone --no-checkout https://github.com/Cat-blizzard/SlideNote.git external_repos/SlideNote
+          git -C external_repos/SlideNote checkout fc0e351f15e5764d4da343c3182da35eb0b7a52e
+      - name: Install pinned case test dependencies
+        run: python -m pip install -e "external_repos/SlideNote[dev]"
+      - name: Run baseline and candidate behavior tests
+        shell: bash
+        run: |
+          set +e
+          python src/run_mimo_codeharness_v02.py \
+            --project external_repos/SlideNote \
+            --name ci_slidenote_v04 \
+            --config config/api_models_mimo.json \
+            --limit-tasks 5 \
+            --apply-patches \
+            --run-build-tests
+          code=$?
+          set -e
+          if [[ "$code" -eq 4 ]]; then
+            echo "Harness execution error"
+            exit "$code"
+          fi
+      - name: Validate real behavior evidence
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path("outputs/mimo_codeharness_v02/ci_slidenote_v04")
+          baseline = json.loads(
+              (root / "build_test_logs/build_test_summary.json").read_text(encoding="utf-8")
+          )
+          results = json.loads(
+              (root / "verification_results.json").read_text(encoding="utf-8")
+          )
+          candidate_builds = json.loads(
+              (root / "candidate_build_summaries.json").read_text(encoding="utf-8")
+          )
+
+          assert baseline["external_executed_count"] >= 1, baseline
+          refactor = next(item for item in results if item["task_id"] == "T005")
+          assert refactor["verdict"] == "PASS", refactor
+          assert refactor["external_tests_executed"] >= 1, refactor
+          assert candidate_builds[refactor["candidate_id"]]["external_executed_count"] >= 1
+          assert not Path("external_repos/SlideNote/CODEHARNESS_AGENT_NOTE.md").exists()
+          PY
+          test -z "$(git -C external_repos/SlideNote status --porcelain)"

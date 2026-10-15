@@ -29,7 +29,7 @@ def main() -> None:
         "--apply-patches",
     ]
     proc = subprocess.run(cmd, cwd=str(ROOT), text=True, capture_output=True, timeout=120)
-    if proc.returncode != 0:
+    if proc.returncode not in {0, 3}:
         print(proc.stdout)
         print(proc.stderr, file=sys.stderr)
         raise SystemExit(proc.returncode)
@@ -43,6 +43,10 @@ def main() -> None:
         "model_outputs.jsonl",
         "patch_results.csv",
         "build_test_logs/build_test_summary.json",
+        "candidate_build_summaries.json",
+        "verification_results.json",
+        "verification_results.csv",
+        "verification_summary.json",
         "evaluation_scores.csv",
         "evaluation_summary.json",
         "token_usage.csv",
@@ -57,7 +61,12 @@ def main() -> None:
     if summary.get("run_count", 0) < 1:
         raise AssertionError("No model runs were scored.")
     if not build.get("all_critical_ok"):
-        raise AssertionError("Critical build/test checks did not pass in offline validation.")
+        raise AssertionError("Critical baseline checks did not pass in offline validation.")
+    verification = json.loads((out_dir / "verification_summary.json").read_text(encoding="utf-8"))
+    if proc.returncode != int(verification.get("exit_code", -1)):
+        raise AssertionError("Process exit code does not match verification summary.")
+    if verification.get("overall_verdict") == "PASS":
+        raise AssertionError("Static-only offline validation must not claim verified PASS.")
     print(json.dumps({
         "validated": True,
         "output_dir": str(out_dir),
@@ -65,6 +74,8 @@ def main() -> None:
         "overall_avg_score": summary.get("overall_avg_score"),
         "total_tokens_est": summary.get("total_tokens_est"),
         "build_all_critical_ok": build.get("all_critical_ok"),
+        "verification_verdict": verification.get("overall_verdict"),
+        "exit_code": proc.returncode,
     }, ensure_ascii=False, indent=2))
 
 

@@ -98,17 +98,13 @@ MiMo-CodeHarness 的流程是：
 
 注意：对于 STM32 项目，当前 build/test 不是完整 Keil 固件编译，而是轻量级静态安全检查。这个限制在报告中会明确说明。
 
-### 证据分层评分
+### 描述性评分与硬验证
 
-最终 clean 版结果使用 v0.3/v0.3.1 证据分层自动评分系统。评分依据包括：
+描述性评分衡量真实文件引用、rubric 覆盖、回答完整度和工程信号。v0.4 另外为每个候选输出独立的硬判定：`PASS`、`FAIL`、`INSUFFICIENT_EVIDENCE`、`ERROR` 或 `NOT_APPLICABLE`。
 
-- 是否引用真实文件和模块；
-- 是否覆盖任务 rubric；
-- 回答是否完整清晰；
-- patch 检查结果；
-- build/test 检查结果。
+高分不能覆盖失败或未经验证的补丁。系统先验证未修改仓库的基线，再把每个候选放入独立、完整的工作区运行，并比较前后测试结果。只有静态检查而没有行为测试时，结果必须是 `INSUFFICIENT_EVIDENCE`。详细规则见 [v0.4 验证说明](docs/VERIFICATION_V04.md)。
 
-LLM Judge 和人工 review 脚本曾经作为实验功能探索过，但**不作为当前 final clean 结果的最终评分依据**，因为同模型自评可能存在偏宽松问题，需要后续进一步校准。
+LLM Judge 和人工 review 仍然只是可选证据，不能替代可执行验证。
 
 ---
 
@@ -118,8 +114,10 @@ LLM Judge 和人工 review 脚本曾经作为实验功能探索过，但**不作
 
 | Case Study | 项目类型 | 文件数 | 依赖边数 | 任务数 | 平均分 | 估算 Token | 状态 |
 |---|---:|---:|---:|---:|---:|---:|---|
-| STM32 RFID Access Control | 嵌入式 C / 物联网 | 16 | 86 | 6 | 78.76 | 41,520 | OK |
-| SlideNotes GUI Tool | Python GUI / 文档导出工具 | 91 | 505 | 6 | 66.71 | 38,675 | OK |
+| STM32 RFID Access Control | 嵌入式 C / 物联网 | 16 | 86 | 6 | 78.76 | 41,520 | 历史结果 / 未硬验证 |
+| SlideNotes GUI Tool | Python GUI / 文档导出工具 | 91 | 505 | 6 | 66.71 | 历史结果 / 未硬验证 |
+
+这些 v0.3.1 历史分数生成于“基线—候选”验证机制之前，不能再表述为补丁已验证通过。
 
 推荐展示目录：
 
@@ -266,10 +264,16 @@ MiMo-CodeHarness/
 │   ├── run_mimo_codeharness_v02.py
 │   ├── test_mimo_api_connection.py
 │   ├── validate_mimo_codeharness_v02.py
-│   └── scoring_v03.py
+│   ├── scoring_v03.py
+│   └── verification_v04.py
 ├── docs/
 │   ├── SCORING_SYSTEM_V03.md
-│   └── SCORING_SYSTEM_V031.md
+│   ├── SCORING_SYSTEM_V031.md
+│   └── VERIFICATION_V04.md
+├── tests/
+│   └── test_verification_v04.py
+├── .github/workflows/
+│   └── verification.yml
 ├── outputs/
 │   └── mimo_codeharness_v02/
 │       ├── final_stm32_v031_clean__stm32_rfid/
@@ -286,8 +290,8 @@ MiMo-CodeHarness/
 
 当前限制包括：
 
-- build/test 阶段是轻量级检查，不等于完整项目编译；
-- STM32 项目暂未接入 Keil/ARM 工具链真实固件编译；
+- 没有检测并执行行为测试时，候选结果为 `INSUFFICIENT_EVIDENCE`；
+- STM32 项目暂未接入 Keil/ARM 工具链真实固件编译，静态检查不会再被报告为验证成功；
 - final clean 分数不使用 LLM Judge 和人工 review；
 - 自动分数应理解为“证据分层评测结果”，不是绝对真值；
 - 未来需要更多仓库和更多轮重复实验来增强 benchmark 结论。
@@ -314,4 +318,5 @@ MiMo-CodeHarness/
 - 不要把 `.env` 上传 GitHub；
 - 所有密钥通过环境变量设置；
 - 自动生成 patch 不能直接用于生产环境，必须人工确认；
-- 自动评分只能作为评测证据，不应被解释为绝对真值。
+- 自动评分只能作为描述性证据，不应被解释为绝对真值；
+- 自动化流程应以硬验证 verdict 和进程退出码作为门禁。

@@ -21,7 +21,6 @@ import difflib
 import html
 import json
 import os
-import py_compile
 import re
 import shutil
 import subprocess
@@ -38,6 +37,8 @@ try:
     from scoring_v03 import score_outputs_v03
 except Exception:  # keep legacy harness runnable if copied without scoring_v03.py
     score_outputs_v03 = None
+
+from verification_v04 import classify_candidate, summarize_verifications
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -59,6 +60,7 @@ EXCLUDE_DIRS = {
     ".git", ".idea", ".vscode", "node_modules", "oh_modules", "build", "dist", "out",
     "coverage", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv", "env",
     "target", ".gradle", ".hvigor", "hvigor", "checkpoints", "datasets", "data/raw",
+    "outputs",
 }
 MAX_SNIPPET_CHARS = 2800
 
@@ -110,6 +112,7 @@ class ModelRunRecord:
     content: str
     error: str
     raw: Dict[str, Any]
+    candidate_id: str = ""
 
 
 @dataclass
@@ -125,6 +128,7 @@ class PatchResult:
     stderr: str
     applied: bool
     note: str
+    candidate_id: str = ""
 
 
 @dataclass
@@ -137,6 +141,7 @@ class CheckResult:
     stdout_log: str
     stderr_log: str
     note: str
+    category: str = "static"
 
 
 def ensure_dir(path: Path) -> Path:
@@ -478,7 +483,7 @@ class TaskGeneratorV02:
 
 def load_model_config(path: Path) -> Dict[str, Any]:
     if not path.exists():
-        return {"models": [{"name": "LocalMock", "provider_type": "mock", "model": "dry-run-code-agent", "enabled": True}], "default_max_tokens": 2000}
+        raise FileNotFoundError(f"Model config does not exist: {path}")
     text = path.read_text(encoding="utf-8")
     for key, value in os.environ.items():
         text = text.replace("${" + key + "}", value)
@@ -569,7 +574,6 @@ def mock_model_response(task: HarnessTask, repo_summary: Dict[str, Any], snippet
 ```diff
 diff --git a/CODEHARNESS_AGENT_NOTE.md b/CODEHARNESS_AGENT_NOTE.md
 new file mode 100644
-index 0000000..1111111
 --- /dev/null
 +++ b/CODEHARNESS_AGENT_NOTE.md
 @@ -0,0 +1,5 @@
@@ -645,8 +649,15 @@ def call_model(task: HarnessTask, model_cfg: Dict[str, Any], prompt: str, execut
     return content, raw, input_tokens, output_tokens, total_tokens
 
 
+def safe_identifier(value: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "-", str(value)).strip("-._")
+    return cleaned[:64] or "candidate"
+
+
 def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, repo_summary: Dict[str, Any], dep_summary: Dict[str, Any], snippets: Dict[str, str]) -> List[ModelRunRecord]:
-    models = [m for m in config.get("models", []) if m.get("enabled", True)] or [{"name": "LocalMock", "provider_type": "mock", "model": "dry-run-code-agent"}]
+    models = [m for m in config.get("models", []) if m.get("enabled", True)]
+    if not models:
+        raise ValueError("Model config contains no enabled models.")
     rows: List[ModelRunRecord] = []
     for task in tasks:
         prompt = build_prompt(task, repo_summary, dep_summary, snippets)
@@ -663,6 +674,7 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
                 status = "failed"
                 error = f"{type(exc).__name__}: {exc}"
                 raw = {"traceback": traceback.format_exc(limit=4)}
+            candidate_id = f"{task.task_id}-{safe_identifier(model_cfg.get('name', 'unknown'))}-{len(rows) + 1:03d}"
             rows.append(ModelRunRecord(
                 task_id=task.task_id,
                 provider_name=str(model_cfg.get("name", "unknown")),
@@ -676,6 +688,7 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
                 content=content,
                 error=error,
                 raw=raw,
+                candidate_id=candidate_id,
             ))
     return rows
 
@@ -690,56 +703,68 @@ def extract_diff_block(content: str) -> str:
     return ""
 
 
-MEDIA_OR_BINARY_SUFFIXES = {
-    ".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".ico",
-    ".mp4", ".mov", ".avi", ".wmv", ".mp3", ".wav",
-    ".zip", ".rar", ".7z", ".pdf", ".doc", ".docx", ".ppt", ".pptx",
-    ".uvguix", ".uvopt", ".uvoptx", ".bak",
+COPY_EXCLUDE_DIRS = {
+    ".git", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv",
+    "node_modules", "oh_modules", "build", "dist", "out", "target", "coverage",
+    "outputs",
 }
 
 
 def copy_worktree(project_root: Path, dst: Path) -> Path:
-    """Copy a source tree for isolated patch checking.
+    """Create a faithful isolated copy, preserving binary fixtures and symlinks.
 
-    v0.3.1 intentionally skips large/binary media files. They are not needed for
-    patch application, static build checks, or code scoring, and on Windows they
-    often cause path-length/copy failures in nested worktree directories.
+    Generated dependency/cache directories are excluded, but project files are never
+    silently dropped. Any copy failure aborts candidate preparation.
     """
     if dst.exists():
-        shutil.rmtree(dst, ignore_errors=True)
+        shutil.rmtree(dst)
 
-    def ignore(dirpath: str, names: List[str]) -> set:
-        ignored = set()
-        for n in names:
-            if n in EXCLUDE_DIRS or n in {"outputs", "figures", "screenshots", ".git"}:
-                ignored.add(n)
-                continue
-            suffix = Path(n).suffix.lower()
-            if suffix in MEDIA_OR_BINARY_SUFFIXES:
-                ignored.add(n)
-        return ignored
+    def ignore(_dirpath: str, names: List[str]) -> set:
+        return {name for name in names if name in COPY_EXCLUDE_DIRS}
 
-    try:
-        shutil.copytree(project_root, dst, ignore=ignore)
-    except shutil.Error as exc:
-        # Best effort fallback: keep the harness running and copy source-like files only.
-        if dst.exists():
-            shutil.rmtree(dst, ignore_errors=True)
-        dst.mkdir(parents=True, exist_ok=True)
-        source_suffixes = {".py", ".c", ".h", ".cpp", ".hpp", ".cc", ".java", ".kt", ".js", ".ts", ".ets", ".json", ".yaml", ".yml", ".md", ".txt", ".sh", ".bat", ".ps1", ".xml", ".html", ".css"}
-        for src in project_root.rglob("*"):
-            if not src.is_file() or is_excluded(src, project_root):
-                continue
-            if src.suffix.lower() not in source_suffixes:
-                continue
-            rel = src.relative_to(project_root)
-            target = dst / rel
-            target.parent.mkdir(parents=True, exist_ok=True)
-            try:
-                shutil.copy2(src, target)
-            except OSError:
-                continue
+    shutil.copytree(project_root, dst, ignore=ignore, symlinks=True)
     return dst
+
+
+def _tree_snapshot(root: Path) -> Dict[str, str]:
+    import hashlib
+
+    snapshot: Dict[str, str] = {}
+    for path in root.rglob("*"):
+        if not path.is_file() or is_excluded(path, root):
+            continue
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        mode = path.stat().st_mode & 0o7777
+        snapshot[relpath(path, root)] = f"{mode:o}:{digest.hexdigest()}"
+    return snapshot
+
+
+def list_changed_files(source: Path, worktree: Path) -> List[str]:
+    before = _tree_snapshot(source)
+    after = _tree_snapshot(worktree)
+    deleted = {p: before[p] for p in before.keys() - after.keys()}
+    added = {p: after[p] for p in after.keys() - before.keys()}
+    modified = sorted(p for p in before.keys() & after.keys() if before[p] != after[p])
+
+    changes: List[str] = []
+    used_added = set()
+    for old_path, old_hash in sorted(deleted.items()):
+        renamed_to = next(
+            (new_path for new_path, new_hash in sorted(added.items())
+             if new_hash == old_hash and new_path not in used_added),
+            None,
+        )
+        if renamed_to:
+            used_added.add(renamed_to)
+            changes.append(f"R {old_path} -> {renamed_to}")
+        else:
+            changes.append(f"D {old_path}")
+    changes.extend(f"A {p}" for p in sorted(set(added) - used_added))
+    changes.extend(f"M {p}" for p in modified)
+    return changes
 
 
 def run_cmd(cmd: List[str], cwd: Path, timeout: int = 60) -> Tuple[int, str, str]:
@@ -752,37 +777,42 @@ def apply_patches(records: List[ModelRunRecord], source_project: Path, out_dir: 
     worktree_root = ensure_dir(out_dir / "worktrees")
     results: List[PatchResult] = []
     for idx, record in enumerate(records, start=1):
+        def append_result(result: PatchResult) -> None:
+            result.candidate_id = record.candidate_id
+            results.append(result)
+
         patch = extract_diff_block(record.content)
-        patch_file = patch_dir / f"{record.task_id}_{record.provider_name}_{idx}.patch"
+        patch_file = patch_dir / f"{safe_identifier(record.candidate_id or str(idx))}.patch"
         if not patch:
-            results.append(PatchResult(record.task_id, record.provider_name, "no_patch", "", "", None, "", "", "", False, "No diff block found in model output."))
+            append_result(PatchResult(record.task_id, record.provider_name, "no_patch", "", "", None, "", "", "", False, "No diff block found in model output."))
             continue
         patch_file.write_text(patch, encoding="utf-8")
-        worktree = copy_worktree(source_project, worktree_root / f"{record.task_id}_{record.provider_name}_{idx}")
+        worktree = copy_worktree(source_project, worktree_root / safe_identifier(record.candidate_id or str(idx)))
         try:
+            # Establish a repository boundary so Git can never discover and mutate a
+            # parent checkout when the generated worktree lives inside that checkout.
+            init_code, init_out, init_err = run_cmd(["git", "init", "--quiet"], worktree)
+            if init_code != 0:
+                append_result(PatchResult(
+                    record.task_id, record.provider_name, "error", str(patch_file),
+                    str(worktree), init_code, "", init_out, init_err, False,
+                    "Could not initialize the isolated Git boundary."
+                ))
+                continue
             check_code, check_out, check_err = run_cmd(["git", "apply", "--check", str(patch_file)], worktree)
             if check_code != 0:
-                results.append(PatchResult(record.task_id, record.provider_name, "check_failed", str(patch_file), str(worktree), check_code, "", check_out, check_err, False, "git apply --check failed."))
+                append_result(PatchResult(record.task_id, record.provider_name, "check_failed", str(patch_file), str(worktree), check_code, "", check_out, check_err, False, "git apply --check failed."))
                 continue
             if actually_apply:
                 apply_code, apply_out, apply_err = run_cmd(["git", "apply", str(patch_file)], worktree)
-                changed = list_changed_files(worktree)
-                results.append(PatchResult(record.task_id, record.provider_name, "applied" if apply_code == 0 else "apply_failed", str(patch_file), str(worktree), apply_code, ";".join(changed), apply_out, apply_err, apply_code == 0, "Patch applied in isolated copied worktree."))
+                changed = list_changed_files(source_project, worktree)
+                append_result(PatchResult(record.task_id, record.provider_name, "applied" if apply_code == 0 else "apply_failed", str(patch_file), str(worktree), apply_code, ";".join(changed), apply_out, apply_err, apply_code == 0, "Patch applied in isolated copied worktree."))
             else:
-                results.append(PatchResult(record.task_id, record.provider_name, "checked", str(patch_file), str(worktree), check_code, "", check_out, check_err, False, "Patch is syntactically applicable. Use --apply-patches to apply inside copied worktree."))
+                append_result(PatchResult(record.task_id, record.provider_name, "checked", str(patch_file), str(worktree), check_code, "", check_out, check_err, False, "Patch is syntactically applicable. Use --apply-patches to apply inside copied worktree."))
         except Exception as exc:
-            results.append(PatchResult(record.task_id, record.provider_name, "error", str(patch_file), str(worktree), None, "", "", str(exc), False, "Patch application raised exception."))
+            append_result(PatchResult(record.task_id, record.provider_name, "error", str(patch_file), str(worktree), None, "", "", str(exc), False, "Patch application raised exception."))
     return results
 
-
-def list_changed_files(worktree: Path) -> List[str]:
-    changed: List[str] = []
-    for p in worktree.rglob("*"):
-        if p.is_file() and not is_excluded(p, worktree):
-            rel = relpath(p, worktree)
-            if rel == "CODEHARNESS_AGENT_NOTE.md":
-                changed.append(rel)
-    return changed
 
 
 class BuildTesterV02:
@@ -805,7 +835,7 @@ class BuildTesterV02:
             if is_excluded(py, self.project_root):
                 continue
             try:
-                py_compile.compile(str(py), doraise=True)
+                compile(read_text_safe(py), str(py), "exec")
             except Exception as exc:
                 py_errors.append(f"{relpath(py, self.project_root)}: {exc}")
         out, err = self._log("python_py_compile", "\n".join(py_errors), "")
@@ -853,23 +883,29 @@ class BuildTesterV02:
             start = time.perf_counter()
             if not enabled:
                 out, err = self._log(name, "External command detected but not executed. Use --run-build-tests to enable.", "")
-                results.append(CheckResult(name, "skipped", " ".join(cmd), None, round(time.perf_counter()-start, 4), out, err, "Skipped by default for safe offline execution."))
+                results.append(CheckResult(name, "skipped", " ".join(cmd), None, round(time.perf_counter()-start, 4), out, err, "Skipped by default for safe offline execution.", "test"))
                 continue
             try:
                 code, stdout, stderr = run_cmd(cmd, self.project_root, timeout=timeout)
                 out, err = self._log(name, stdout, stderr)
-                results.append(CheckResult(name, "ok" if code == 0 else "failed", " ".join(cmd), code, round(time.perf_counter()-start, 4), out, err, "Real external build/test command."))
+                results.append(CheckResult(name, "ok" if code == 0 else "failed", " ".join(cmd), code, round(time.perf_counter()-start, 4), out, err, "Real external build/test command.", "test"))
             except Exception as exc:
                 out, err = self._log(name, "", str(exc))
-                results.append(CheckResult(name, "error", " ".join(cmd), None, round(time.perf_counter()-start, 4), out, err, "External command raised exception."))
+                results.append(CheckResult(name, "error", " ".join(cmd), None, round(time.perf_counter()-start, 4), out, err, "External command raised exception.", "test"))
         return results
 
     def run_all(self, run_external: bool = False) -> Dict[str, Any]:
         results = self.run_safe_checks() + self.run_external_commands(enabled=run_external)
+        external_results = [r for r in results if r.category == "test"]
+        external_executed = [r for r in external_results if r.status != "skipped"]
         summary = {
             "project_root": str(self.project_root),
             "run_external": run_external,
             "check_count": len(results),
+            "static_check_count": sum(1 for r in results if r.category == "static"),
+            "external_detected_count": len(external_results),
+            "external_executed_count": len(external_executed),
+            "behavior_test_count": len(external_executed),
             "ok_count": sum(1 for r in results if r.status == "ok"),
             "failed_count": sum(1 for r in results if r.status in {"failed", "error"}),
             "warning_count": sum(1 for r in results if r.status == "warning"),
@@ -989,7 +1025,7 @@ section{{margin-top:28px}} table{{width:100%;border-collapse:separate;border-spa
 <header><div class="logo"><div class="badge">AI</div><div>MiMo-CodeHarness v0.2</div></div><div>Real Repo · Patch · Build/Test · Dashboard</div></header>
 <main>
 <div class="hero"><div class="card"><h1>真实代码仓库多 Agent 自动评测 Harness</h1><p class="muted">支持仓库扫描、跨语言依赖分析、任务生成、MiMo/OpenAI-compatible 模型执行、patch 应用、build/test 检查、评分和报告生成。</p><div class="metrics"><div class="metric"><span>文件数</span><b>{repo_summary.get('file_count',0)}</b></div><div class="metric"><span>依赖边</span><b>{dep_summary.get('dependency_count',0)}</b></div><div class="metric"><span>预计 Tokens</span><b>{score_summary.get('total_tokens_est',0)}</b></div></div></div>
-<div class="card"><h2>运行状态</h2><p class="muted">Build/Test: <b class="{'ok' if build_summary.get('all_critical_ok') else 'warn'}">{'OK' if build_summary.get('all_critical_ok') else 'Needs Review'}</b></p><p class="muted">平均评分：<b>{score_summary.get('overall_avg_score',0)}</b> / 100</p><p class="muted">任务数量：<b>{len(tasks)}</b></p><p class="muted">输出目录：<code>{html.escape(str(out_dir))}</code></p></div></div>
+<div class="card"><h2>运行状态</h2><p class="muted">Hard verification: <b class="{'ok' if build_summary.get('verification_summary', {}).get('overall_verdict') in {'PASS', 'NOT_APPLICABLE'} else 'warn'}">{html.escape(str(build_summary.get('verification_summary', {}).get('overall_verdict', 'UNKNOWN')))}</b></p><p class="muted">Baseline checks: <b>{'OK' if build_summary.get('all_critical_ok') else 'Failed'}</b></p><p class="muted">平均评分：<b>{score_summary.get('overall_avg_score',0)}</b> / 100</p><p class="muted">任务数量：<b>{len(tasks)}</b></p><p class="muted">输出目录：<code>{html.escape(str(out_dir))}</code></p></div></div>
 <section class="card"><h2>语言分布</h2><div class="pills">{lang_cards}</div></section>
 <section class="card"><h2>模型评分矩阵</h2><table><tr><th>Provider</th><th>Runs</th><th>Avg Score</th><th>Pass Rate</th><th>Tokens Est.</th></tr>{provider_rows}</table></section>
 <section class="card"><h2>生成任务</h2>{task_cards}</section>
@@ -1086,21 +1122,45 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
     model_runs = run_models(tasks, config, execute, repo_summary, dep_summary, scanner.snippets)
     patch_results = apply_patches(model_runs, project, out_dir, actually_apply=apply_patch_flag)
 
-    # Build/test is run on the first actually patched worktree if available; otherwise on original project.
-    build_target = project
-    applied = [p for p in patch_results if p.applied and p.worktree]
-    if applied:
-        build_target = Path(applied[0].worktree)
-    build_summary = BuildTesterV02(build_target, out_dir / "build_test_logs").run_all(run_external=run_build_tests)
+    # Establish the baseline in an isolated workspace with the same copy policy used
+    # for candidates. This prevents source mutation and environment skew.
+    baseline_worktree = copy_worktree(
+        project, out_dir / "worktrees" / "_baseline"
+    )
+    build_summary = BuildTesterV02(
+        baseline_worktree, out_dir / "build_test_logs"
+    ).run_all(run_external=run_build_tests)
+    candidate_build_summaries: Dict[str, Dict[str, Any]] = {}
+    for patch in patch_results:
+        if patch.applied and patch.worktree:
+            candidate_build_summaries[patch.candidate_id] = BuildTesterV02(
+                Path(patch.worktree),
+                out_dir / "verification" / safe_identifier(patch.candidate_id),
+            ).run_all(run_external=run_build_tests)
+
+    task_map = {task.task_id: task for task in tasks}
+    verification_results = [
+        classify_candidate(
+            task_map.get(patch.task_id),
+            patch,
+            build_summary,
+            candidate_build_summaries.get(patch.candidate_id),
+        )
+        for patch in patch_results
+    ]
+    verification_summary = summarize_verifications(verification_results)
+    build_summary["verification_summary"] = verification_summary
     
     if score_outputs_v03 is not None:
         score_rows = score_outputs_v03(
             tasks, model_runs, patch_results, build_summary,
+            verification_results=verification_results,
+            candidate_build_summaries=candidate_build_summaries,
             llm_review_path=llm_review_path or None,
             human_review_path=human_review_path or None,
             human_rubric_path=human_rubric_path or None,
         )
-        scoring_version = "v0.3.1 evidence-aware + review-ready"
+        scoring_version = "v0.4 descriptive score + hard verification"
     else:
         score_rows = score_outputs(tasks, model_runs, patch_results, build_summary)
         scoring_version = "legacy v0.2"
@@ -1116,9 +1176,14 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
     write_csv(out_dir / "model_runs.csv", [asdict(r) for r in model_runs])
     write_json(out_dir / "patch_results.json", [asdict(p) for p in patch_results])
     write_csv(out_dir / "patch_results.csv", [asdict(p) for p in patch_results])
+    write_json(out_dir / "candidate_build_summaries.json", candidate_build_summaries)
+    write_json(out_dir / "verification_results.json", [result.to_dict() for result in verification_results])
+    write_csv(out_dir / "verification_results.csv", [result.to_dict() for result in verification_results])
+    write_json(out_dir / "verification_summary.json", verification_summary)
     write_csv(out_dir / "evaluation_scores.csv", score_rows)
     write_json(out_dir / "evaluation_summary.json", score_summary)
     token_rows = [{
+        "candidate_id": r.candidate_id,
         "task_id": r.task_id,
         "provider_name": r.provider_name,
         "model": r.model,
@@ -1147,6 +1212,7 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
         "model_run_count": len(model_runs),
         "patch_result_count": len(patch_results),
         "build_summary": build_summary,
+        "verification_summary": verification_summary,
         "score_summary": score_summary,
         "scoring_version": scoring_version,
         "scoring_inputs": {
@@ -1161,13 +1227,15 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
             "token_usage": str(out_dir / "token_usage.csv"),
             "evaluation_scores": str(out_dir / "evaluation_scores.csv"),
             "patch_results": str(out_dir / "patch_results.csv"),
+            "verification_results": str(out_dir / "verification_results.json"),
+            "verification_summary": str(out_dir / "verification_summary.json"),
         },
     }
     write_json(out_dir / "run_log.json", run_log)
     return run_log
 
 
-def main() -> None:
+def main() -> int:
     parser = argparse.ArgumentParser(description="Run MiMo-CodeHarness v0.2 on a real repository.")
     parser.add_argument("--project", default=str(ROOT / "demo_harmony_project"), help="Repository/project path")
     parser.add_argument("--name", default="demo_harmony_v02", help="Output run name")
@@ -1195,7 +1263,8 @@ def main() -> None:
         human_rubric_path=args.human_rubric,
     )
     print(json.dumps(log, ensure_ascii=False, indent=2))
+    return int(log.get("verification_summary", {}).get("exit_code", 0))
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
