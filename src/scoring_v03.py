@@ -336,9 +336,9 @@ def weighted_available_score(component_scores: Mapping[str, Optional[float]], we
 def evidence_level(has_llm: bool, has_human: bool, has_patch: bool, build_score: float) -> str:
     if has_llm and has_human and build_score >= 80 and has_patch:
         return "A"
-    if (has_llm or has_human) and build_score >= 70:
+    if (has_llm or has_human) and build_score >= 60:
         return "B"
-    if build_score >= 70:
+    if build_score >= 60:
         return "C"
     return "D"
 
