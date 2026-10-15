@@ -738,7 +738,8 @@ def _tree_snapshot(root: Path) -> Dict[str, str]:
         with path.open("rb") as handle:
             for chunk in iter(lambda: handle.read(1024 * 1024), b""):
                 digest.update(chunk)
-        snapshot[relpath(path, root)] = digest.hexdigest()
+        mode = path.stat().st_mode & 0o7777
+        snapshot[relpath(path, root)] = f"{mode:o}:{digest.hexdigest()}"
     return snapshot
 
 
