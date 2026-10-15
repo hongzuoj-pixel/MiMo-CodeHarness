@@ -144,6 +144,15 @@ def classify_candidate(
             **common,
         )
 
+    if not changed:
+        return VerificationResult(
+            execution_status="completed",
+            verdict=FAIL,
+            reason_codes=["NO_CHANGED_FILES"],
+            note="The applied candidate produced no detectable content or mode change.",
+            **common,
+        )
+
     if not candidate_summary:
         return VerificationResult(
             execution_status="error",
