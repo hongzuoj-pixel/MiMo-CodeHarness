@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -145,6 +146,43 @@ index 0000000..8baef1b
             result = apply_patches([record], source, output, actually_apply=True)[0]
             self.assertEqual(result.status, "applied")
             self.assertIn("A CODEHARNESS_AGENT_NOTE.md", result.changed_files)
+
+    def test_patch_cannot_escape_to_parent_git_repository(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            subprocess.run(
+                ["git", "init", "--quiet"], cwd=root, check=True, capture_output=True
+            )
+            source = root / "source"
+            output = root / "generated"
+            source.mkdir()
+            diff = """diff --git a/ESCAPE_GUARD.md b/ESCAPE_GUARD.md
+new file mode 100644
+--- /dev/null
++++ b/ESCAPE_GUARD.md
+@@ -0,0 +1 @@
++isolated
+"""
+            record = ModelRunRecord(
+                task_id="T005",
+                provider_name="mock",
+                model="mock",
+                status="completed",
+                dry_run=True,
+                time_seconds=0.0,
+                input_tokens_est=0,
+                output_tokens_est=0,
+                total_tokens_est=0,
+                content=f"```diff\n{diff}```",
+                error="",
+                raw={},
+                candidate_id="candidate-escape-guard",
+            )
+            result = apply_patches([record], source, output, actually_apply=True)[0]
+            self.assertEqual(result.status, "applied")
+            self.assertIn("A ESCAPE_GUARD.md", result.changed_files)
+            self.assertFalse((root / "ESCAPE_GUARD.md").exists())
+            self.assertTrue((Path(result.worktree) / "ESCAPE_GUARD.md").exists())
 
     def test_change_detection_covers_add_modify_delete_and_rename(self) -> None:
         with tempfile.TemporaryDirectory() as td:
