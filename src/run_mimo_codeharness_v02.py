@@ -574,7 +574,6 @@ def mock_model_response(task: HarnessTask, repo_summary: Dict[str, Any], snippet
 ```diff
 diff --git a/CODEHARNESS_AGENT_NOTE.md b/CODEHARNESS_AGENT_NOTE.md
 new file mode 100644
-index 0000000..1111111
 --- /dev/null
 +++ b/CODEHARNESS_AGENT_NOTE.md
 @@ -0,0 +1,5 @@
