@@ -1015,7 +1015,7 @@ section{{margin-top:28px}} table{{width:100%;border-collapse:separate;border-spa
 <header><div class="logo"><div class="badge">AI</div><div>MiMo-CodeHarness v0.2</div></div><div>Real Repo · Patch · Build/Test · Dashboard</div></header>
 <main>
 <div class="hero"><div class="card"><h1>真实代码仓库多 Agent 自动评测 Harness</h1><p class="muted">支持仓库扫描、跨语言依赖分析、任务生成、MiMo/OpenAI-compatible 模型执行、patch 应用、build/test 检查、评分和报告生成。</p><div class="metrics"><div class="metric"><span>文件数</span><b>{repo_summary.get('file_count',0)}</b></div><div class="metric"><span>依赖边</span><b>{dep_summary.get('dependency_count',0)}</b></div><div class="metric"><span>预计 Tokens</span><b>{score_summary.get('total_tokens_est',0)}</b></div></div></div>
-<div class="card"><h2>运行状态</h2><p class="muted">Build/Test: <b class="{'ok' if build_summary.get('all_critical_ok') else 'warn'}">{'OK' if build_summary.get('all_critical_ok') else 'Needs Review'}</b></p><p class="muted">平均评分：<b>{score_summary.get('overall_avg_score',0)}</b> / 100</p><p class="muted">任务数量：<b>{len(tasks)}</b></p><p class="muted">输出目录：<code>{html.escape(str(out_dir))}</code></p></div></div>
+<div class="card"><h2>运行状态</h2><p class="muted">Hard verification: <b class="{'ok' if build_summary.get('verification_summary', {}).get('overall_verdict') in {'PASS', 'NOT_APPLICABLE'} else 'warn'}">{html.escape(str(build_summary.get('verification_summary', {}).get('overall_verdict', 'UNKNOWN')))}</b></p><p class="muted">Baseline checks: <b>{'OK' if build_summary.get('all_critical_ok') else 'Failed'}</b></p><p class="muted">平均评分：<b>{score_summary.get('overall_avg_score',0)}</b> / 100</p><p class="muted">任务数量：<b>{len(tasks)}</b></p><p class="muted">输出目录：<code>{html.escape(str(out_dir))}</code></p></div></div>
 <section class="card"><h2>语言分布</h2><div class="pills">{lang_cards}</div></section>
 <section class="card"><h2>模型评分矩阵</h2><table><tr><th>Provider</th><th>Runs</th><th>Avg Score</th><th>Pass Rate</th><th>Tokens Est.</th></tr>{provider_rows}</table></section>
 <section class="card"><h2>生成任务</h2>{task_cards}</section>
@@ -1139,6 +1139,7 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
         for patch in patch_results
     ]
     verification_summary = summarize_verifications(verification_results)
+    build_summary["verification_summary"] = verification_summary
     
     if score_outputs_v03 is not None:
         score_rows = score_outputs_v03(
@@ -1149,7 +1150,7 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
             human_review_path=human_review_path or None,
             human_rubric_path=human_rubric_path or None,
         )
-        scoring_version = "v0.3.1 evidence-aware + review-ready"
+        scoring_version = "v0.4 descriptive score + hard verification"
     else:
         score_rows = score_outputs(tasks, model_runs, patch_results, build_summary)
         scoring_version = "legacy v0.2"
@@ -1172,6 +1173,7 @@ def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, m
     write_csv(out_dir / "evaluation_scores.csv", score_rows)
     write_json(out_dir / "evaluation_summary.json", score_summary)
     token_rows = [{
+        "candidate_id": r.candidate_id,
         "task_id": r.task_id,
         "provider_name": r.provider_name,
         "model": r.model,
