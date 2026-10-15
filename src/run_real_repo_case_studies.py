@@ -147,7 +147,7 @@ def generate_index(out_dir: Path, rows: List[Dict[str, Any]], execute: bool) -> 
     lines.append(f"- Mode: {'real MiMo/API execution' if execute else 'dry-run/mock execution'}")
     lines.append(f"- Case count: {len(rows)}")
     lines.append("")
-    lines.append("| Case | Type | Status | Files | Tasks | Avg Score | Token Est. | Key Outputs |")
+    lines.append("| Case | Type | Verification | Files | Tasks | Avg Score | Token Est. | Key Outputs |")
     lines.append("|---|---|---:|---:|---:|---:|---:|---|")
     for row in rows:
         outputs = []
@@ -252,8 +252,12 @@ def main() -> int:
             out = log.get("key_outputs", {})
             repo_summary = log.get("repo_summary", {})
             score_summary = log.get("score_summary", {})
+            verification = log.get("verification_summary", {})
+            verdict = str(verification.get("overall_verdict", "ERROR"))
             row.update({
-                "status": "ok",
+                "status": verdict,
+                "verification_verdict": verdict,
+                "verification_exit_code": int(verification.get("exit_code", 4)),
                 "file_count": repo_summary.get("file_count", ""),
                 "dependency_count": log.get("dependency_summary", {}).get("dependency_count", log.get("dependency_summary", {}).get("edge_count", "")),
                 "task_count": log.get("task_count", ""),
@@ -275,6 +279,11 @@ def main() -> int:
     write_json(suite_dir / "case_study_raw_logs.json", raw_logs)
     index_path = generate_index(suite_dir, rows, execute=args.execute)
 
+    suite_exit_code = max(
+        [int(row.get("verification_exit_code", 0) or 0) for row in rows]
+        + [4 if row.get("status") == "failed" else 0 for row in rows]
+        + [0]
+    )
     print(json.dumps({
         "suite_dir": str(suite_dir),
         "index": str(index_path),
@@ -282,8 +291,9 @@ def main() -> int:
         "prepared_count": prepared_count,
         "execute": args.execute,
         "summary_csv": str(suite_dir / "case_study_summary.csv"),
+        "exit_code": suite_exit_code,
     }, ensure_ascii=False, indent=2))
-    return 0
+    return suite_exit_code
 
 
 if __name__ == "__main__":
