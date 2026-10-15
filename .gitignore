@@ -21,6 +21,10 @@ Thumbs.db
 .idea/
 
 # Heavy or temporary generated artifacts
+.mimo/runs/
+build/
+dist/
+*.egg-info/
 outputs/**/worktrees/
 outputs/**/patches/
 outputs/**/build_test_logs/

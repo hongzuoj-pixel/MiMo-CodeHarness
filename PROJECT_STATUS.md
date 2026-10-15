@@ -1,9 +1,14 @@
 # Project Status
 
-Current GitHub-ready version: MiMo-CodeHarness v0.3.1 final clean.
+Current development line: MiMo-CodeHarness v0.5 installable CLI on top of the v0.4 verification core.
 
-Final reported results:
-- STM32 RFID: status OK, average score 78.76, estimated tokens 41,520.
-- SlideNotes: status OK, average score 66.71, estimated tokens 38,675.
+Evidence-backed capabilities:
 
-Final clean scores do not use LLM Judge or human review. These experimental functions are intentionally excluded from this GitHub-clean package.
+- isolated baseline-versus-candidate verification;
+- hard verdicts and stable exit codes;
+- installable `mimo` / `mimo-harness` console entry points;
+- explicit `init`, `doctor`, `run`, `verify`, and `report` workflows;
+- direct patch verification without a model API key;
+- fail-closed API diagnostics and non-overwriting run directories.
+
+Historical v0.3.1 case-study scores remain in the repository for provenance, but they predate hard verification and are labeled unverified. Embedded checks are still lightweight and do not represent a full Keil firmware build.

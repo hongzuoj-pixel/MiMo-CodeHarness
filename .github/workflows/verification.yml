@@ -10,6 +10,28 @@ permissions:
   contents: read
 
 jobs:
+  cli-install:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package
+        run: python -m pip install .
+      - name: Exercise installed CLI
+        run: |
+          mimo --version
+          mimo --config ci-mimo.json init --project demo_harmony_project --mode offline
+          mimo --config ci-mimo.json doctor
+          mimo --config ci-mimo.json run --name cli-install-smoke --limit-tasks 1
+          mimo --config ci-mimo.json report
+
   unit-and-smoke:
     runs-on: ubuntu-latest
     strategy:
