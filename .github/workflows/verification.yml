@@ -43,8 +43,6 @@ jobs:
             exit "$code"
           fi
           cat outputs/mimo_codeharness_v02/ci_validation_v04/patch_results.json
-          find demo_harmony_project -maxdepth 1 -type f -printf 'SOURCE %f\\n'
-          find outputs/mimo_codeharness_v02/ci_validation_v04/worktrees/T005-Xiaomi-MiMo-Pro-005 -maxdepth 1 -type f -printf 'CANDIDATE %f\\n'
           cat outputs/mimo_codeharness_v02/ci_validation_v04/verification_results.json
           python - <<'PY'
           import json
