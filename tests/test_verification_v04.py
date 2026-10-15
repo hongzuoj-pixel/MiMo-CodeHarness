@@ -147,6 +147,18 @@ class VerificationTests(unittest.TestCase):
         self.assertEqual(aggregate["counts"][PASS], 1)
         self.assertEqual(aggregate["counts"][FAIL], 1)
 
+    def test_applied_noop_is_a_failure(self) -> None:
+        patch = self.patch("candidate-noop")
+        patch.changed_files = ""
+        result = classify_candidate(
+            self.task(),
+            patch,
+            summary("ok"),
+            summary("ok"),
+        )
+        self.assertEqual(result.verdict, FAIL)
+        self.assertIn("NO_CHANGED_FILES", result.reason_codes)
+
     def test_missing_required_patch_is_not_a_pass(self) -> None:
         result = classify_candidate(
             self.task(),
