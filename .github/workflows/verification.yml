@@ -42,6 +42,7 @@ jobs:
             echo "Unexpected harness execution error: $code"
             exit "$code"
           fi
+          cat outputs/mimo_codeharness_v02/ci_validation_v04/patch_results.json
           cat outputs/mimo_codeharness_v02/ci_validation_v04/verification_results.json
           python - <<'PY'
           import json
