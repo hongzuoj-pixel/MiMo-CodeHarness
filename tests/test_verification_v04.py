@@ -11,11 +11,13 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from run_mimo_codeharness_v02 import (
     BuildTesterV02,
+    HarnessTask,
     ModelRunRecord,
     apply_patches,
     copy_worktree,
     list_changed_files,
     load_model_config,
+    mock_model_response,
 )
 from scoring_v03 import score_build_test
 from verification_v04 import (
@@ -113,6 +115,36 @@ index 0000000..8baef1b
             self.assertEqual(result.status, "applied")
             self.assertIn("A NOTE.md", result.changed_files)
             self.assertTrue((Path(result.worktree) / "NOTE.md").exists())
+
+    def test_builtin_mock_patch_changes_workspace(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source"
+            output = root / "output"
+            source.mkdir()
+            task = HarnessTask(
+                "T005", "code_refactor", "hard", "title", "description",
+                ["main.py"], "unified diff patch", ["patch"],
+            )
+            content = mock_model_response(task, {"file_count": 1}, {})
+            record = ModelRunRecord(
+                task_id="T005",
+                provider_name="mock",
+                model="mock",
+                status="completed",
+                dry_run=True,
+                time_seconds=0.0,
+                input_tokens_est=0,
+                output_tokens_est=0,
+                total_tokens_est=0,
+                content=content,
+                error="",
+                raw={},
+                candidate_id="candidate-builtin-mock",
+            )
+            result = apply_patches([record], source, output, actually_apply=True)[0]
+            self.assertEqual(result.status, "applied")
+            self.assertIn("A CODEHARNESS_AGENT_NOTE.md", result.changed_files)
 
     def test_change_detection_covers_add_modify_delete_and_rename(self) -> None:
         with tempfile.TemporaryDirectory() as td:
