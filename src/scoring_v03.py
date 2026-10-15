@@ -32,7 +32,6 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 PATCH_REQUIRED_TYPES = {
     "bug_fix",
-    "bug_localization",
     "code_refactor",
     "test_generation",
     "patch_generation",
