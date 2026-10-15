@@ -40,6 +40,7 @@ Binary files and test fixtures are preserved in copied workspaces. A copy error 
 - A bug-fix `PASS` requires at least one baseline failing test to pass in the candidate.
 - A new candidate failure that was not present in the baseline is a regression and yields `FAIL`.
 - A patch that only passes `git apply --check` yields `INSUFFICIENT_EVIDENCE`; it has not been executed.
+- An applied patch with no detectable content or file-mode change yields `FAIL`.
 - Analysis-only tasks may be `NOT_APPLICABLE` and still pass their descriptive quality threshold.
 
 ## Outputs
