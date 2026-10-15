@@ -789,6 +789,16 @@ def apply_patches(records: List[ModelRunRecord], source_project: Path, out_dir: 
         patch_file.write_text(patch, encoding="utf-8")
         worktree = copy_worktree(source_project, worktree_root / safe_identifier(record.candidate_id or str(idx)))
         try:
+            # Establish a repository boundary so Git can never discover and mutate a
+            # parent checkout when the generated worktree lives inside that checkout.
+            init_code, init_out, init_err = run_cmd(["git", "init", "--quiet"], worktree)
+            if init_code != 0:
+                append_result(PatchResult(
+                    record.task_id, record.provider_name, "error", str(patch_file),
+                    str(worktree), init_code, "", init_out, init_err, False,
+                    "Could not initialize the isolated Git boundary."
+                ))
+                continue
             check_code, check_out, check_err = run_cmd(["git", "apply", "--check", str(patch_file)], worktree)
             if check_code != 0:
                 append_result(PatchResult(record.task_id, record.provider_name, "check_failed", str(patch_file), str(worktree), check_code, "", check_out, check_err, False, "git apply --check failed."))
