@@ -68,6 +68,18 @@ python src/run_mimo_codeharness_v02.py \
 
 Review `verification_summary.json` first. Only use the descriptive score to compare candidates with the same verification status.
 
+## Pinned real-repository gate
+
+CI also validates the behavior-test path against `Cat-blizzard/SlideNote` at commit
+`fc0e351f15e5764d4da343c3182da35eb0b7a52e`. The gate requires:
+
+- at least one baseline behavior-test command to execute;
+- the `T005` candidate to execute behavior tests and receive `PASS`;
+- the source checkout to remain clean and free of generated patch files.
+
+Pinning the commit makes the result reproducible and prevents unrelated upstream changes
+from silently changing the harness verdict.
+
 ## CI security boundary
 
 The included workflow uses the `pull_request` event and read-only `contents` permission. It does not use `pull_request_target`, repository secrets, or a privileged token to execute untrusted candidate code. Production deployments should add OS/container sandboxing, CPU and memory limits, network isolation, and per-language dependency caching before enabling arbitrary third-party repositories.
