@@ -11,6 +11,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from run_mimo_codeharness_v02 import (
     BuildTesterV02,
+    ModelRunRecord,
+    apply_patches,
     copy_worktree,
     list_changed_files,
     load_model_config,
@@ -76,6 +78,41 @@ class WorkspaceTests(unittest.TestCase):
                 (source / "main.py").read_text(encoding="utf-8"),
                 "print('source')\n",
             )
+
+    def test_applied_patch_reports_added_file(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source"
+            output = root / "output"
+            source.mkdir()
+            (source / "main.py").write_text("value = 1\n", encoding="utf-8")
+            diff = """diff --git a/NOTE.md b/NOTE.md
+new file mode 100644
+index 0000000..8baef1b
+--- /dev/null
++++ b/NOTE.md
+@@ -0,0 +1 @@
++verified
+"""
+            record = ModelRunRecord(
+                task_id="T005",
+                provider_name="mock",
+                model="mock",
+                status="completed",
+                dry_run=True,
+                time_seconds=0.0,
+                input_tokens_est=0,
+                output_tokens_est=0,
+                total_tokens_est=0,
+                content=f"```diff\n{diff}```",
+                error="",
+                raw={},
+                candidate_id="candidate-patch",
+            )
+            result = apply_patches([record], source, output, actually_apply=True)[0]
+            self.assertEqual(result.status, "applied")
+            self.assertIn("A NOTE.md", result.changed_files)
+            self.assertTrue((Path(result.worktree) / "NOTE.md").exists())
 
     def test_change_detection_covers_add_modify_delete_and_rename(self) -> None:
         with tempfile.TemporaryDirectory() as td:
