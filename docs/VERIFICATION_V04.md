@@ -24,8 +24,8 @@ Batch execution returns the most severe exit code observed across prepared cases
 For each run, the harness:
 
 1. scans and tests the untouched repository to produce a baseline;
-2. creates one isolated copied workspace per candidate;
-3. applies exactly one candidate patch to that workspace;
+2. creates one isolated copied workspace and Git boundary per candidate;
+3. applies exactly one candidate patch inside that boundary, preventing parent-repository mutation;
 4. records added, modified, deleted, and renamed files using SHA-256 snapshots;
 5. runs safe static checks and detected behavior tests in that candidate workspace;
 6. compares the candidate test states with the baseline;
