@@ -38,10 +38,11 @@ jobs:
             --apply-patches
           code=$?
           set -e
-          if [[ "$code" -ne 0 && "$code" -ne 3 ]]; then
-            echo "Unexpected harness exit code: $code"
+          if [[ "$code" -ne 0 && "$code" -ne 2 && "$code" -ne 3 ]]; then
+            echo "Unexpected harness execution error: $code"
             exit "$code"
           fi
+          cat outputs/mimo_codeharness_v02/ci_validation_v04/verification_results.json
           python - <<'PY'
           import json
           from pathlib import Path
