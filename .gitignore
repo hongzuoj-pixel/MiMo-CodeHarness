@@ -25,6 +25,7 @@ Thumbs.db
 build/
 dist/
 *.egg-info/
+tests/docker/wheels/
 outputs/**/worktrees/
 outputs/**/patches/
 outputs/**/build_test_logs/

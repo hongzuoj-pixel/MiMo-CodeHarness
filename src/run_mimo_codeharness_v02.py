@@ -824,11 +824,13 @@ def apply_patches(records: List[ModelRunRecord], source_project: Path, out_dir: 
 
 
 class BuildTesterV02:
-    def __init__(self, project_root: Path, out_dir: Path, checks: Optional[List[Dict[str, Any]]] = None):
+    def __init__(self, project_root: Path, out_dir: Path, checks: Optional[List[Dict[str, Any]]] = None, execution: Optional[Dict[str, Any]] = None):
         from mimo_harness.checks import validate_checks
+        from mimo_harness.execution import validate_execution
         self.project_root = project_root.resolve()
         self.out_dir = ensure_dir(out_dir)
         self.checks = validate_checks(checks)
+        self.execution = validate_execution(execution)
 
     def _log(self, name: str, stdout: str, stderr: str) -> Tuple[str, str]:
         stdout_path = self.out_dir / f"{name}_stdout.log"
@@ -922,19 +924,47 @@ class BuildTesterV02:
 
     def run_all(self, run_external: bool = False) -> Dict[str, Any]:
         from mimo_harness.checks import protected_files, run_check
+        from mimo_harness.execution import CheckCancelled, ExecutionContext
         protected = protected_files(self.project_root)
         results = [asdict(r) for r in self.run_safe_checks()]
         detected = self.detect_external_commands() if self.checks is None else []
         structured = self.checks is not None or bool(detected)
+        context = ExecutionContext(self.project_root, self.out_dir, self.execution)
+        cancelled = False
         if structured:
             specs = self.checks if self.checks is not None else [
                 {"id": name, "adapter": name, "args": ["-q"]}
                 if name in {"pytest", "unittest"} else {"id": name, "adapter": "command", "argv": argv}
                 for name, argv in detected
             ]
-            results.extend(run_check(self.project_root, self.out_dir, spec, run_external) for spec in specs)
+            ready = True
+            if run_external:
+                try:
+                    context.setup()
+                except KeyboardInterrupt:
+                    cancelled, ready = True, False
+                    results.append({"name": "environment", "category": "environment", "status": "cancelled", "reason_codes": ["PREPARATION_CANCELLED"]})
+                except Exception as exc:
+                    ready = False
+                    results.append({"name": "environment", "category": "environment", "status": "error", "reason_codes": ["ENVIRONMENT_PREPARATION_ERROR"], "note": str(exc)})
+            if ready:
+                for spec in specs:
+                    try:
+                        results.append(run_check(self.project_root, self.out_dir, spec, run_external, context=context))
+                    except CheckCancelled as exc:
+                        results.append(exc.row)
+                        cancelled = True
+                        break
         else:
-            results.extend(asdict(r) for r in self.run_external_commands(enabled=run_external))
+            # No detected external commands: do not claim behavior execution.
+            if run_external and self.execution["mode"] != "local":
+                structured = True
+                try:
+                    context.setup()
+                except KeyboardInterrupt:
+                    cancelled = True
+                except Exception as exc:
+                    results.append({"name": "environment", "category": "environment", "status": "error", "reason_codes": ["ENVIRONMENT_PREPARATION_ERROR"], "note": str(exc)})
         external_results = [r for r in results if r["category"] == "test"]
         for row in results:
             protected.update(row.get("protected_files", {}))
@@ -951,7 +981,7 @@ class BuildTesterV02:
             "failed_count": sum(1 for r in results if r["status"] in {"failed", "error"}),
             "warning_count": sum(1 for r in results if r["status"] == "warning"),
             "skipped_count": sum(1 for r in results if r["status"] == "skipped"),
-            "all_critical_ok": all(r["status"] not in {"failed", "error", "insufficient"} for r in results),
+            "all_critical_ok": not cancelled and all(r["status"] not in {"failed", "error", "insufficient"} for r in results),
             "results": results,
             "check_policy": "configured" if self.checks is not None else "legacy-detection",
             "evidence_schema_version": 1 if structured else 0,
@@ -960,8 +990,12 @@ class BuildTesterV02:
             "collected_tests": [nodeid for row in results for nodeid in row.get("collected", [])],
             "target_tests": [nodeid for row in results for nodeid in row.get("target_tests", [])],
             "collection_skips": [item for row in results for item in row.get("collection_skips", [])],
+            "execution_environment": context.metadata(),
+            "cancelled": cancelled,
         }
         write_json(self.out_dir / "build_test_summary.json", summary)
+        if cancelled:
+            raise KeyboardInterrupt
         return summary
 
 
@@ -1168,6 +1202,7 @@ def run_harness(
     human_rubric_path: str = "",
     output_root: Optional[Path] = None,
     checks: Optional[List[Dict[str, Any]]] = None,
+    execution: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     project = project.resolve()
     runs_root = (
@@ -1195,7 +1230,7 @@ def run_harness(
         project, out_dir / "worktrees" / "_baseline"
     )
     build_summary = BuildTesterV02(
-        baseline_worktree, out_dir / "build_test_logs", checks=checks
+        baseline_worktree, out_dir / "build_test_logs", checks=checks, execution=execution
     ).run_all(run_external=run_build_tests)
     candidate_build_summaries: Dict[str, Dict[str, Any]] = {}
     for patch in patch_results:
@@ -1204,6 +1239,7 @@ def run_harness(
                 Path(patch.worktree),
                 out_dir / "verification" / safe_identifier(patch.candidate_id),
                 checks=checks,
+                execution=execution,
             ).run_all(run_external=run_build_tests)
 
     task_map = {task.task_id: task for task in tasks}

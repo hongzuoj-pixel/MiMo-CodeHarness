@@ -273,6 +273,9 @@ def _classify_test_cases(task_type, common, baseline, candidate):
     )
     if len(before) != len(before_rows) or len(after) != len(after_rows):
         return result(ERROR, "DUPLICATE_TEST_IDS", "Duplicate test IDs cannot support a reliable comparison.")
+    base_env, candidate_env = baseline.get("execution_environment", {}), candidate.get("execution_environment", {})
+    if base_env.get("mode") != candidate_env.get("mode") or base_env.get("image_id") != candidate_env.get("image_id"):
+        return result(INSUFFICIENT_EVIDENCE, "EXECUTION_ENVIRONMENT_CHANGED", "Execution backend or resolved Docker image changed between baseline and candidate.")
     for label, summary in (("BASELINE", baseline), ("CANDIDATE", candidate)):
         errors = [r for r in summary.get("results", []) if r["status"] == "error"]
         if errors:

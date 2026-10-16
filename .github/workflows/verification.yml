@@ -10,6 +10,28 @@ permissions:
   contents: read
 
 jobs:
+  docker-acceptance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build disposable acceptance image
+        run: |
+          python -m pip install ".[test]" "pytest==8.4.2"
+          python -m pip download --dest tests/docker/wheels pytest==8.4.2
+          docker build -t mimo-acceptance:ci tests/docker
+      - name: Real Docker isolation acceptance
+        env:
+          MIMO_DOCKER_TEST_IMAGE: mimo-acceptance:ci
+        run: python -m pytest tests/test_docker_execution.py -q --junitxml=docker-acceptance.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: docker-acceptance
+          path: docker-acceptance.xml
+
   cli-install:
     runs-on: ${{ matrix.os }}
     strategy:
