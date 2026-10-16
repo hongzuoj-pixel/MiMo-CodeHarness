@@ -471,6 +471,7 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     top = subprocess.run(
         ["git", "-C", str(project), "rev-parse", "--show-toplevel"],
         text=True,
+        encoding="utf-8",
         capture_output=True,
     )
     if top.returncode != 0:
@@ -482,6 +483,7 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     resolved = subprocess.run(
         ["git", "-C", str(project), "rev-parse", "--verify", f"{base_ref}^{{commit}}"],
         text=True,
+        encoding="utf-8",
         capture_output=True,
     )
     if resolved.returncode != 0:

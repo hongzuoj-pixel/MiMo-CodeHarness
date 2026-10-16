@@ -768,7 +768,7 @@ def list_changed_files(source: Path, worktree: Path) -> List[str]:
 
 
 def run_cmd(cmd: List[str], cwd: Path, timeout: int = 60) -> Tuple[int, str, str]:
-    proc = subprocess.run(cmd, cwd=str(cwd), text=True, capture_output=True, timeout=timeout)
+    proc = subprocess.run(cmd, cwd=str(cwd), text=True, encoding="utf-8", errors="replace", capture_output=True, timeout=timeout)
     return proc.returncode, proc.stdout or "", proc.stderr or ""
 
 
