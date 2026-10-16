@@ -34,11 +34,13 @@ def running(pid):
         api.CloseHandle(handle)
         return code.value == 259
     try:
-        if Path(f"/proc/{pid}/stat").exists() and Path(f"/proc/{pid}/stat").read_text().split()[2] == "Z":
-            return False
+        if sys.platform == "linux":
+            state = Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0]
+            if state == "Z":
+                return False
         os.kill(pid, 0)
         return True
-    except ProcessLookupError:
+    except (ProcessLookupError, FileNotFoundError):
         return False
 
 
