@@ -57,7 +57,7 @@ LANGUAGE_SUFFIXES: Dict[str, List[str]] = {
 }
 SUPPORTED_SUFFIXES = {suffix for values in LANGUAGE_SUFFIXES.values() for suffix in values}
 EXCLUDE_DIRS = {
-    ".git", ".idea", ".vscode", "node_modules", "oh_modules", "build", "dist", "out",
+    ".git", ".mimo", ".idea", ".vscode", "node_modules", "oh_modules", "build", "dist", "out",
     "coverage", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv", "env",
     "target", ".gradle", ".hvigor", "hvigor", "checkpoints", "datasets", "data/raw",
     "outputs",
@@ -704,7 +704,7 @@ def extract_diff_block(content: str) -> str:
 
 
 COPY_EXCLUDE_DIRS = {
-    ".git", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv",
+    ".git", ".mimo", "__pycache__", ".pytest_cache", ".mypy_cache", ".venv", "venv",
     "node_modules", "oh_modules", "build", "dist", "out", "target", "coverage",
     "outputs",
 }
@@ -780,6 +780,14 @@ def apply_patches(records: List[ModelRunRecord], source_project: Path, out_dir: 
         def append_result(result: PatchResult) -> None:
             result.candidate_id = record.candidate_id
             results.append(result)
+
+        if record.status != "completed":
+            append_result(PatchResult(
+                record.task_id, record.provider_name, "error", "", "", None,
+                "", "", record.error, False,
+                "Model execution failed; no candidate patch can be verified."
+            ))
+            continue
 
         patch = extract_diff_block(record.content)
         patch_file = patch_dir / f"{safe_identifier(record.candidate_id or str(idx))}.patch"
@@ -869,8 +877,24 @@ class BuildTesterV02:
         cmds: List[Tuple[str, List[str]]] = []
         if (self.project_root / "package.json").exists():
             cmds.append(("npm_test", ["npm", "test", "--", "--watch=false"]))
-        if (self.project_root / "pyproject.toml").exists() or (self.project_root / "pytest.ini").exists() or any(self.project_root.rglob("test_*.py")):
+        python_tests = [
+            path
+            for path in self.project_root.rglob("test_*.py")
+            if not is_excluded(path, self.project_root)
+        ]
+        explicit_pytest = (
+            (self.project_root / "pyproject.toml").exists()
+            or (self.project_root / "pytest.ini").exists()
+        )
+        uses_unittest = any(
+            "import unittest" in read_text_safe(path, max_chars=8000)
+            or "from unittest" in read_text_safe(path, max_chars=8000)
+            for path in python_tests[:100]
+        )
+        if explicit_pytest or (python_tests and not uses_unittest):
             cmds.append(("pytest", [sys.executable, "-m", "pytest", "-q"]))
+        elif python_tests:
+            cmds.append(("unittest", [sys.executable, "-m", "unittest", "discover", "-v"]))
         if (self.project_root / "go.mod").exists():
             cmds.append(("go_test", ["go", "test", "./..."]))
         if (self.project_root / "Cargo.toml").exists():
@@ -1106,9 +1130,27 @@ This v0.2 implementation has completed the offline harness pipeline and is ready
     return tech_path, paper_path
 
 
-def run_harness(project: Path, name: str, config_path: Path, limit_tasks: int, max_files: int, execute: bool, apply_patch_flag: bool, run_build_tests: bool, llm_review_path: str = "", human_review_path: str = "", human_rubric_path: str = "") -> Dict[str, Any]:
+def run_harness(
+    project: Path,
+    name: str,
+    config_path: Path,
+    limit_tasks: int,
+    max_files: int,
+    execute: bool,
+    apply_patch_flag: bool,
+    run_build_tests: bool,
+    llm_review_path: str = "",
+    human_review_path: str = "",
+    human_rubric_path: str = "",
+    output_root: Optional[Path] = None,
+) -> Dict[str, Any]:
     project = project.resolve()
-    out_dir = ensure_dir(ROOT / "outputs" / "mimo_codeharness_v02" / name)
+    runs_root = (
+        output_root.resolve()
+        if output_root is not None
+        else ROOT / "outputs" / "mimo_codeharness_v02"
+    )
+    out_dir = ensure_dir(runs_root / name)
     start = time.perf_counter()
 
     scanner = RepositoryScanner(project, max_files=max_files)

@@ -185,17 +185,43 @@ git clone https://github.com/hongzuoj-pixel/MiMo-CodeHarness.git
 cd MiMo-CodeHarness
 ```
 
-### 6.2 Python 环境
+### 6.2 安装统一 CLI
 
-推荐 Python 3.10+。
+要求 Python 3.10+；Harness 本身仅使用标准库。
 
 ```bash
-python --version
+python -m pip install -e .
+mimo --version
 ```
 
-当前版本主要使用 Python 标准库。
+旧的 `python src/...` 入口仍然保留，但新用户推荐统一使用 `mimo`。
 
-### 6.3 设置 MiMo API
+### 6.3 初始化并检查项目
+
+先使用明确的离线模式。下面命令会创建 `mimo-harness.json` 和 `.mimo/models.json`，不会调用模型 API。
+
+```bash
+mimo init --mode offline
+mimo doctor
+mimo run --name first-run --limit-tasks 1
+mimo report
+```
+
+运行产物写入 `.mimo/runs/`。CLI 不会静默覆盖已经存在的配置或同名运行目录。
+
+### 6.4 不使用 API Key，直接验证现有补丁
+
+`verify` 会从指定 Git 基线生成隔离副本，只在候选工作区应用补丁，不修改源仓库。
+
+```bash
+git diff > fix.patch
+mimo verify --base HEAD --patch fix.patch --run-tests
+mimo report
+```
+
+不加 `--run-tests` 时只执行静态检查，结果会明确为 `INSUFFICIENT_EVIDENCE`，不会假装通过。验证修复类补丁时可增加 `--task-type bug_fix`，要求提供 fail-to-pass 证据。
+
+### 6.5 设置 MiMo API
 
 不要把 API Key 写进代码，也不要上传到 GitHub。
 
@@ -207,7 +233,17 @@ $env:MIMO_BASE_URL='https://api.xiaomimimo.com/v1'
 $env:MIMO_MODEL='mimo-v2.5-pro'
 ```
 
-测试 API：
+对于尚未初始化的项目，可直接生成 API 模式配置：
+
+```powershell
+mimo init --mode api
+mimo doctor
+mimo run --execute --apply-patches --run-tests
+```
+
+API 模式如果没有启用真实 provider，或者缺少所需环境变量，`doctor` 会直接失败，并且不会输出密钥内容。如果需要替换已有生成配置，应先人工检查，再明确使用 `mimo init --mode api --force`。
+
+旧版 API 连通性检查仍然保留：
 
 ```powershell
 python src\test_mimo_api_connection.py
@@ -255,11 +291,19 @@ Test-Path "outputs\mimo_codeharness_v02\final_slidenotes_v031_clean__slidenotes\
 
 ```text
 MiMo-CodeHarness/
+├── pyproject.toml
+├── mimo-harness.json          # `mimo init` 生成
+├── .mimo/
+│   ├── models.json            # 模型配置，不保存密钥
+│   └── runs/                  # 运行产物，已加入 gitignore
 ├── config/
 │   ├── api_models_mimo.json
 │   ├── case_stm32_clean.local.json
 │   └── case_slidenotes_clean.local.json
 ├── src/
+│   ├── mimo_harness/
+│   │   ├── cli.py
+│   │   └── __main__.py
 │   ├── run_real_repo_case_studies.py
 │   ├── run_mimo_codeharness_v02.py
 │   ├── test_mimo_api_connection.py
@@ -269,9 +313,11 @@ MiMo-CodeHarness/
 ├── docs/
 │   ├── SCORING_SYSTEM_V03.md
 │   ├── SCORING_SYSTEM_V031.md
-│   └── VERIFICATION_V04.md
+│   ├── VERIFICATION_V04.md
+│   └── CLI_V05.md
 ├── tests/
-│   └── test_verification_v04.py
+│   ├── test_verification_v04.py
+│   └── test_cli_v05.py
 ├── .github/workflows/
 │   └── verification.yml
 ├── outputs/
@@ -286,12 +332,14 @@ MiMo-CodeHarness/
 
 ## 9. 当前限制
 
-这个项目目前是工程原型，不是完整工业级 benchmark。
+当前项目已经具备可安装的 beta CLI 和证据化硬验证，但还不是带完整沙箱的工业级 benchmark 服务。
 
 当前限制包括：
 
 - 没有检测并执行行为测试时，候选结果为 `INSUFFICIENT_EVIDENCE`；
 - STM32 项目暂未接入 Keil/ARM 工具链真实固件编译，静态检查不会再被报告为验证成功；
+- `--run-tests` 会在本机执行目标仓库代码；对于不可信仓库，应放入容器或一次性 worker；
+- 当前支持从仓库安装，但还没有发布到 PyPI；
 - final clean 分数不使用 LLM Judge 和人工 review；
 - 自动分数应理解为“证据分层评测结果”，不是绝对真值；
 - 未来需要更多仓库和更多轮重复实验来增强 benchmark 结论。
@@ -300,12 +348,13 @@ MiMo-CodeHarness/
 
 ## 10. 后续计划
 
-后续可以继续升级：
+完成统一 CLI 后，后续继续升级：
 
 - 接入项目专属 build/test adapter，如 STM32/Keil 编译检查；
 - 增加 HarmonyOS、机器人、后端等更多真实仓库；
 - 增加可校准的跨模型 LLM Judge；
 - 增加小样本人工 review 协议；
+- 增加可恢复的运行 manifest，以及容器级资源限制和网络隔离；
 - 做一个可视化对比 dashboard；
 - 将技术报告扩展成本科科研报告或 workshop-style paper draft。
 

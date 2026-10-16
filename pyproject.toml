@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mimo-codeharness"
+version = "0.5.0"
+description = "Evidence-backed repository and code-agent patch verification harness"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "MiMo-CodeHarness contributors"}]
+keywords = ["code-agent", "verification", "testing", "evaluation", "mimo"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.scripts]
+mimo = "mimo_harness.cli:main"
+mimo-harness = "mimo_harness.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/hongzuoj-pixel/MiMo-CodeHarness"
+Repository = "https://github.com/hongzuoj-pixel/MiMo-CodeHarness"
+Issues = "https://github.com/hongzuoj-pixel/MiMo-CodeHarness/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = [
+  "agent_runners",
+  "build_test_runner",
+  "evaluator",
+  "model_output_scorer",
+  "repo_manager",
+  "run_mimo_codeharness_v02",
+  "run_real_repo_case_studies",
+  "scoring_v03",
+  "static_analyzer",
+  "task_generator",
+  "universal_model_runner",
+  "verification_v04",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["mimo_harness*"]

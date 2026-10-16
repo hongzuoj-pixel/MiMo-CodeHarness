@@ -147,6 +147,37 @@ index 0000000..8baef1b
             self.assertEqual(result.status, "applied")
             self.assertIn("A CODEHARNESS_AGENT_NOTE.md", result.changed_files)
 
+    def test_failed_model_execution_becomes_verification_error(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            source = root / "source"
+            source.mkdir()
+            (source / "main.py").write_text("value = 1\n", encoding="utf-8")
+            record = ModelRunRecord(
+                task_id="T005",
+                provider_name="api",
+                model="model",
+                status="failed",
+                dry_run=False,
+                time_seconds=0.0,
+                input_tokens_est=0,
+                output_tokens_est=0,
+                total_tokens_est=0,
+                content="",
+                error="HTTPError: unauthorized",
+                raw={},
+                candidate_id="candidate-api-error",
+            )
+            patch = apply_patches([record], source, root / "output", actually_apply=True)[0]
+            result = classify_candidate(
+                SimpleNamespace(task_id="T005", task_type="code_refactor"),
+                patch,
+                summary("ok"),
+                None,
+            )
+            self.assertEqual(patch.status, "error")
+            self.assertEqual(result.verdict, "ERROR")
+
     def test_patch_cannot_escape_to_parent_git_repository(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
