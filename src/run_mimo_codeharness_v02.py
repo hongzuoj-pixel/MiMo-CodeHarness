@@ -794,7 +794,7 @@ def apply_patches(records: List[ModelRunRecord], source_project: Path, out_dir: 
         if not patch:
             append_result(PatchResult(record.task_id, record.provider_name, "no_patch", "", "", None, "", "", "", False, "No diff block found in model output."))
             continue
-        patch_file.write_text(patch, encoding="utf-8")
+        patch_file.write_text(patch, encoding="utf-8", newline="\n")
         worktree = copy_worktree(source_project, worktree_root / safe_identifier(record.candidate_id or str(idx)))
         try:
             # Establish a repository boundary so Git can never discover and mutate a
@@ -824,9 +824,11 @@ def apply_patches(records: List[ModelRunRecord], source_project: Path, out_dir: 
 
 
 class BuildTesterV02:
-    def __init__(self, project_root: Path, out_dir: Path):
+    def __init__(self, project_root: Path, out_dir: Path, checks: Optional[List[Dict[str, Any]]] = None):
+        from mimo_harness.checks import validate_checks
         self.project_root = project_root.resolve()
         self.out_dir = ensure_dir(out_dir)
+        self.checks = validate_checks(checks)
 
     def _log(self, name: str, stdout: str, stderr: str) -> Tuple[str, str]:
         stdout_path = self.out_dir / f"{name}_stdout.log"
@@ -919,23 +921,45 @@ class BuildTesterV02:
         return results
 
     def run_all(self, run_external: bool = False) -> Dict[str, Any]:
-        results = self.run_safe_checks() + self.run_external_commands(enabled=run_external)
-        external_results = [r for r in results if r.category == "test"]
-        external_executed = [r for r in external_results if r.status != "skipped"]
+        from mimo_harness.checks import protected_files, run_check
+        protected = protected_files(self.project_root)
+        results = [asdict(r) for r in self.run_safe_checks()]
+        detected = self.detect_external_commands() if self.checks is None else []
+        structured = self.checks is not None or bool(detected)
+        if structured:
+            specs = self.checks if self.checks is not None else [
+                {"id": name, "adapter": name, "args": ["-q"]}
+                if name in {"pytest", "unittest"} else {"id": name, "adapter": "command", "argv": argv}
+                for name, argv in detected
+            ]
+            results.extend(run_check(self.project_root, self.out_dir, spec, run_external) for spec in specs)
+        else:
+            results.extend(asdict(r) for r in self.run_external_commands(enabled=run_external))
+        external_results = [r for r in results if r["category"] == "test"]
+        for row in results:
+            protected.update(row.get("protected_files", {}))
+        external_executed = [r for r in external_results if r["status"] != "skipped"]
         summary = {
             "project_root": str(self.project_root),
             "run_external": run_external,
             "check_count": len(results),
-            "static_check_count": sum(1 for r in results if r.category == "static"),
+            "static_check_count": sum(1 for r in results if r["category"] == "static"),
             "external_detected_count": len(external_results),
             "external_executed_count": len(external_executed),
             "behavior_test_count": len(external_executed),
-            "ok_count": sum(1 for r in results if r.status == "ok"),
-            "failed_count": sum(1 for r in results if r.status in {"failed", "error"}),
-            "warning_count": sum(1 for r in results if r.status == "warning"),
-            "skipped_count": sum(1 for r in results if r.status == "skipped"),
-            "all_critical_ok": all(r.status not in {"failed", "error"} for r in results),
-            "results": [asdict(r) for r in results],
+            "ok_count": sum(1 for r in results if r["status"] == "ok"),
+            "failed_count": sum(1 for r in results if r["status"] in {"failed", "error"}),
+            "warning_count": sum(1 for r in results if r["status"] == "warning"),
+            "skipped_count": sum(1 for r in results if r["status"] == "skipped"),
+            "all_critical_ok": all(r["status"] not in {"failed", "error", "insufficient"} for r in results),
+            "results": results,
+            "check_policy": "configured" if self.checks is not None else "legacy-detection",
+            "evidence_schema_version": 1 if structured else 0,
+            "protected_files": protected,
+            "test_cases": [case for row in results for case in row.get("test_cases", [])],
+            "collected_tests": [nodeid for row in results for nodeid in row.get("collected", [])],
+            "target_tests": [nodeid for row in results for nodeid in row.get("target_tests", [])],
+            "collection_skips": [item for row in results for item in row.get("collection_skips", [])],
         }
         write_json(self.out_dir / "build_test_summary.json", summary)
         return summary
@@ -1143,6 +1167,7 @@ def run_harness(
     human_review_path: str = "",
     human_rubric_path: str = "",
     output_root: Optional[Path] = None,
+    checks: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     project = project.resolve()
     runs_root = (
@@ -1170,7 +1195,7 @@ def run_harness(
         project, out_dir / "worktrees" / "_baseline"
     )
     build_summary = BuildTesterV02(
-        baseline_worktree, out_dir / "build_test_logs"
+        baseline_worktree, out_dir / "build_test_logs", checks=checks
     ).run_all(run_external=run_build_tests)
     candidate_build_summaries: Dict[str, Dict[str, Any]] = {}
     for patch in patch_results:
@@ -1178,6 +1203,7 @@ def run_harness(
             candidate_build_summaries[patch.candidate_id] = BuildTesterV02(
                 Path(patch.worktree),
                 out_dir / "verification" / safe_identifier(patch.candidate_id),
+                checks=checks,
             ).run_all(run_external=run_build_tests)
 
     task_map = {task.task_id: task for task in tasks}

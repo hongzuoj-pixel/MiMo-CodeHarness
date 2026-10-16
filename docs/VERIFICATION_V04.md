@@ -7,6 +7,8 @@ MiMo-CodeHarness v0.4 separates two questions that were previously mixed:
 
 A high descriptive score never overrides a failed or missing verification result.
 
+The v0.5.1 Python path strengthens these original rules with per-case evidence. Bug fixes require configured target assertion failures, and missing/skipped tests or changed baseline acceptance inputs prevent `PASS`. See [project checks and pytest evidence](PYTEST_EVIDENCE.md). Historical v0.4 command-level summaries are retained as historical evidence, not upgraded retrospectively.
+
 ## Verdicts and exit codes
 
 | Verdict | Exit code | Meaning |

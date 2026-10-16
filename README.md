@@ -187,9 +187,11 @@ cd MiMo-CodeHarness
 Python 3.10+ is required. The harness itself is stdlib-only.
 
 ```bash
-python -m pip install -e .
+python -m pip install -e ".[test]"
 mimo --version
 ```
+
+For Python behavior verification, install the test extra with `python -m pip install -e ".[test]"` and install your project's own test dependencies in the same interpreter.
 
 The legacy `python src/...` entry points remain available, but new users should use the `mimo` CLI.
 
@@ -216,7 +218,9 @@ mimo verify --base HEAD --patch fix.patch --run-tests
 mimo report
 ```
 
-Omit `--run-tests` for static checks only. That intentionally yields `INSUFFICIENT_EVIDENCE`, not a false pass. Use `--task-type bug_fix` when a fail-to-pass transition is required.
+Omit `--run-tests` for static checks only. That intentionally yields `INSUFFICIENT_EVIDENCE`, not a false pass. For `--task-type bug_fix`, configure explicit `target_tests`: each target must fail a baseline assertion and pass in the candidate. See [project checks and pytest evidence](docs/PYTEST_EVIDENCE.md) for a complete configuration example.
+
+Pytest results now include stable case IDs, execution phases, and JUnit XML. Missing tests, new skip/xfail, changed baseline acceptance inputs, collection errors, and empty suites cannot produce a verified pass. Existing baseline skips are listed explicitly and do not count as executed acceptance tests.
 
 ### 6.5 Configure Xiaomi MiMo API
 

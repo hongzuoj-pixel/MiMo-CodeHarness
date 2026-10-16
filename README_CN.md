@@ -190,9 +190,11 @@ cd MiMo-CodeHarness
 要求 Python 3.10+；Harness 本身仅使用标准库。
 
 ```bash
-python -m pip install -e .
+python -m pip install -e ".[test]"
 mimo --version
 ```
+
+验证 Python 行为测试时，使用 `python -m pip install -e ".[test]"` 安装测试扩展，并在同一解释器中安装目标项目自身的测试依赖。
 
 旧的 `python src/...` 入口仍然保留，但新用户推荐统一使用 `mimo`。
 
@@ -219,7 +221,9 @@ mimo verify --base HEAD --patch fix.patch --run-tests
 mimo report
 ```
 
-不加 `--run-tests` 时只执行静态检查，结果会明确为 `INSUFFICIENT_EVIDENCE`，不会假装通过。验证修复类补丁时可增加 `--task-type bug_fix`，要求提供 fail-to-pass 证据。
+不加 `--run-tests` 时只执行静态检查，结果会明确为 `INSUFFICIENT_EVIDENCE`。使用 `--task-type bug_fix` 时，需要在配置中指定 `target_tests`：每个目标用例必须在基线中因断言失败、在候选中通过。完整配置见[项目检查与 pytest 证据](docs/PYTEST_EVIDENCE.md)。
+
+现在 pytest 会记录稳定用例 ID、执行阶段和 JUnit XML。用例消失、新增 skip/xfail、原有验收文件被修改、收集错误、空测试集均不能获得验证通过。原本就跳过且保持跳过的用例会单独列出，不计作已执行验收。
 
 ### 6.5 设置 MiMo API
 
