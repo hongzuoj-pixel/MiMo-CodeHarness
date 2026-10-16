@@ -23,7 +23,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install package
-        run: python -m pip install .
+        run: python -m pip install ".[test]" "pytest==8.4.2"
+      - name: Installed CLI and pytest evidence regression
+        run: python -m pytest tests -q --junitxml=cli-pytest-results.xml
       - name: Exercise installed CLI
         run: |
           mimo --version
@@ -31,6 +33,11 @@ jobs:
           mimo --config ci-mimo.json doctor
           mimo --config ci-mimo.json run --name cli-install-smoke --limit-tasks 1
           mimo --config ci-mimo.json report
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cli-pytest-${{ matrix.os }}
+          path: cli-pytest-results.xml
 
   unit-and-smoke:
     runs-on: ubuntu-latest
@@ -38,13 +45,19 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.12", "3.13"]
+        pytest-version: ["8.4.2"]
+        include:
+          - python-version: "3.12"
+            pytest-version: "9.0.2"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Unit and regression tests
-        run: python -m unittest discover -s tests -v
+        run: |
+          python -m pip install ".[test]" "pytest==${{ matrix.pytest-version }}"
+          python -m pytest tests -q --junitxml=pytest-results.xml
       - name: Scoring invariants
         run: python src/validate_scoring_v03.py
       - name: Offline end-to-end smoke test
@@ -76,6 +89,11 @@ jobs:
           }
           assert "exit_code" in data
           PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-${{ matrix.python-version }}-${{ matrix.pytest-version }}
+          path: pytest-results.xml
 
   real-python-case:
     runs-on: ubuntu-latest
@@ -127,10 +145,14 @@ jobs:
           )
 
           assert baseline["external_executed_count"] >= 1, baseline
+          assert baseline["test_cases"], baseline
           refactor = next(item for item in results if item["task_id"] == "T005")
           assert refactor["verdict"] == "PASS", refactor
           assert refactor["external_tests_executed"] >= 1, refactor
           assert candidate_builds[refactor["candidate_id"]]["external_executed_count"] >= 1
+          assert candidate_builds[refactor["candidate_id"]]["test_cases"]
+          assert not refactor["missing_tests"], refactor
+          assert not refactor["changed_acceptance_files"], refactor
           assert not Path("external_repos/SlideNote/CODEHARNESS_AGENT_NOTE.md").exists()
           PY
           test -z "$(git -C external_repos/SlideNote status --porcelain)"

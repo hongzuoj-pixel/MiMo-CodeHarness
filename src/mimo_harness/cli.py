@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import importlib.util
 import json
 import os
 import shutil
@@ -16,6 +17,7 @@ from types import SimpleNamespace
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 from mimo_harness import __version__
+from mimo_harness.checks import validate_checks
 from run_mimo_codeharness_v02 import (
     BuildTesterV02,
     ModelRunRecord,
@@ -99,6 +101,7 @@ def load_project_config(path: Path) -> Dict[str, Any]:
     for name in ("apply_patches", "run_build_tests"):
         if not isinstance(data.get(name), bool):
             raise ValueError(f"Configuration '{name}' must be true or false.")
+    validate_checks(data.get("checks"))
     return data
 
 
@@ -209,6 +212,17 @@ def collect_diagnostics(
                 "When output_dir is inside the project, it must be under .mimo/ or outputs/.",
             )
         )
+    for check in cfg.get("checks") or []:
+        check_cwd = (project / check.get("cwd", ".")).resolve()
+        try:
+            check_cwd.relative_to(project)
+            if not check_cwd.is_dir():
+                raise ValueError("directory does not exist")
+        except ValueError as exc:
+            rows.append(Diagnostic(f"check:{check['id']}", "error", f"Invalid cwd: {check_cwd}: {exc}"))
+        if check["adapter"] == "pytest" and importlib.util.find_spec("pytest") is None:
+            rows.append(Diagnostic(f"check:{check['id']}", "error",
+                                   "pytest is not installed in this interpreter. Install the project's test dependencies or pip install pytest."))
 
     model_path = _resolve(base, str(cfg.get("model_config", "")))
     model_cfg: Optional[Dict[str, Any]] = None
@@ -311,6 +325,14 @@ def command_init(args: argparse.Namespace) -> int:
             file=sys.stderr,
         )
         return EXIT_CODES[ERROR]
+    # Save suggestions for review once; subsequent runs reuse the stored policy.
+    detected = BuildTesterV02(project, base / STATE_DIRNAME / "init-logs").detect_external_commands()
+    if not any(name == "unittest" for name, _ in detected):
+        project_cfg["checks"] = [
+            {"id": name, "adapter": "pytest", "args": ["-q"], "cwd": ".", "timeout_seconds": 180}
+            if name == "pytest" else {"id": name, "adapter": "command", "argv": argv, "cwd": ".", "timeout_seconds": 180}
+            for name, argv in detected
+        ]
     try:
         _write_json_new(config_path, project_cfg, args.force)
         _write_json_new(model_path, default_model_config(args.mode), args.force)
@@ -320,6 +342,7 @@ def command_init(args: argparse.Namespace) -> int:
 
     print(f"[OK] Created {config_path}")
     print(f"[OK] Created {model_path}")
+    print("[NEXT] Review project checks in the configuration before enabling --run-tests.")
     if args.mode == "offline":
         print("[MODE] OFFLINE MOCK — no API key is required and no model API will be called.")
     else:
@@ -404,6 +427,7 @@ def command_run(args: argparse.Namespace) -> int:
             apply_patch_flag=apply_patches_flag,
             run_build_tests=run_tests,
             output_root=output_root,
+            checks=cfg.get("checks"),
         )
     except Exception as exc:
         print(f"[ERROR] Harness execution failed: {type(exc).__name__}: {exc}", file=sys.stderr)
@@ -447,6 +471,7 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     top = subprocess.run(
         ["git", "-C", str(project), "rev-parse", "--show-toplevel"],
         text=True,
+        encoding="utf-8",
         capture_output=True,
     )
     if top.returncode != 0:
@@ -458,6 +483,7 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     resolved = subprocess.run(
         ["git", "-C", str(project), "rev-parse", "--verify", f"{base_ref}^{{commit}}"],
         text=True,
+        encoding="utf-8",
         capture_output=True,
     )
     if resolved.returncode != 0:
@@ -519,7 +545,7 @@ def command_verify(args: argparse.Namespace) -> int:
     try:
         resolved_base = _materialize_baseline(project, args.base, baseline_dir)
         baseline_summary = BuildTesterV02(
-            baseline_dir, run_dir / "baseline"
+            baseline_dir, run_dir / "baseline", checks=cfg.get("checks")
         ).run_all(run_external=args.run_tests)
         record = ModelRunRecord(
             task_id="PATCH",
@@ -542,7 +568,7 @@ def command_verify(args: argparse.Namespace) -> int:
         candidate_summary = None
         if patch_result.applied:
             candidate_summary = BuildTesterV02(
-                Path(patch_result.worktree), run_dir / "candidate"
+                Path(patch_result.worktree), run_dir / "candidate", checks=cfg.get("checks")
             ).run_all(run_external=args.run_tests)
         task = SimpleNamespace(task_id="PATCH", task_type=args.task_type)
         result = classify_candidate(task, patch_result, baseline_summary, candidate_summary)

@@ -5,7 +5,7 @@ A high analysis score can never turn an unverified patch into a verified pass.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Mapping, Sequence
 
 PASS = "PASS"
@@ -46,6 +46,10 @@ class VerificationResult:
     regressed_tests: List[str]
     external_tests_executed: int
     note: str
+    missing_tests: List[str] = field(default_factory=list)
+    skipped_tests: List[str] = field(default_factory=list)
+    changed_acceptance_files: List[str] = field(default_factory=list)
+    skipped_collections: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -162,6 +166,9 @@ def classify_candidate(
             **common,
         )
 
+    if baseline_summary.get("evidence_schema_version") or candidate_summary.get("evidence_schema_version"):
+        return _classify_test_cases(task_type, common, baseline_summary, candidate_summary)
+
     baseline_tests = _test_statuses(baseline_summary)
     candidate_tests = _test_statuses(candidate_summary)
     baseline_failed = sorted(
@@ -238,6 +245,76 @@ def classify_candidate(
         note="The applied candidate passed executed behavior tests without regression.",
         **common,
     )
+
+
+def _classify_test_cases(task_type, common, baseline, candidate):
+    """Strict, per-case comparison for structured checks; command success is insufficient."""
+    def result(verdict, reason, note):
+        return VerificationResult(
+            execution_status="error" if verdict == ERROR else "completed",
+            verdict=verdict, reason_codes=[reason], note=note, **common,
+        )
+
+    before_rows = baseline.get("test_cases", [])
+    after_rows = candidate.get("test_cases", [])
+    before = {r["nodeid"]: r for r in before_rows}
+    after = {r["nodeid"]: r for r in after_rows}
+    common.update(
+        baseline_failed_tests=sorted(k for k, r in before.items() if r["status"] == "failed"),
+        candidate_failed_tests=sorted(k for k, r in after.items() if r["status"] == "failed"),
+        fixed_tests=sorted(k for k, r in before.items() if r["status"] == "failed" and after.get(k, {}).get("status") == "passed"),
+        regressed_tests=sorted(k for k, r in after.items() if r["status"] == "failed" and before.get(k, {}).get("status") != "failed"),
+        external_tests_executed=int(candidate.get("external_executed_count", 0)),
+        missing_tests=sorted(set(baseline.get("collected_tests", [])) - set(candidate.get("collected_tests", []))),
+        skipped_tests=sorted(k for k, r in after.items() if r["status"] in {"skipped", "xfail", "xpass"}),
+        changed_acceptance_files=sorted(k for k, digest in baseline.get("protected_files", {}).items()
+                                        if candidate.get("protected_files", {}).get(k) != digest),
+        skipped_collections=sorted(item["nodeid"] for item in candidate.get("collection_skips", [])),
+    )
+    if len(before) != len(before_rows) or len(after) != len(after_rows):
+        return result(ERROR, "DUPLICATE_TEST_IDS", "Duplicate test IDs cannot support a reliable comparison.")
+    for label, summary in (("BASELINE", baseline), ("CANDIDATE", candidate)):
+        errors = [r for r in summary.get("results", []) if r["status"] == "error"]
+        if errors:
+            reason = next(iter(errors[0].get("reason_codes", [])), "CHECK_ERROR")
+            return result(ERROR, f"{label}_{reason}", "Environment, collection, setup, teardown or runner error; not a reproduced defect.")
+    if any(r["status"] == "failed" and r["category"] != "test" for r in candidate.get("results", [])):
+        return result(FAIL, "REQUIRED_CHECK_FAILED", "A required static/build/smoke check failed.")
+    if common["regressed_tests"]:
+        return result(FAIL, "REGRESSION_DETECTED", "New assertion failures were identified by stable test ID.")
+    if common["changed_acceptance_files"]:
+        return result(INSUFFICIENT_EVIDENCE, "ACCEPTANCE_INPUT_CHANGED", "Baseline tests or test configuration changed; independent acceptance review is required.")
+    if common["missing_tests"]:
+        return result(INSUFFICIENT_EVIDENCE, "BASELINE_TESTS_MISSING", "Baseline test IDs disappeared from candidate collection.")
+    if set(common["skipped_collections"]) - {item["nodeid"] for item in baseline.get("collection_skips", [])}:
+        return result(INSUFFICIENT_EVIDENCE, "NEW_COLLECTION_SKIP", "A new module was skipped during collection.")
+    for label, summary, cases in (("BASELINE", baseline, before), ("CANDIDATE", candidate, after)):
+        if any(r["status"] in {"skipped", "insufficient"} for r in summary.get("results", []) if r["category"] != "static"):
+            return result(INSUFFICIENT_EVIDENCE, f"{label}_CHECK_INCOMPLETE", "A required check was disabled, empty, or incomplete.")
+        if any(r.get("adapter") == "command" and r["category"] == "test" for r in summary.get("results", [])):
+            return result(INSUFFICIENT_EVIDENCE, "UNSTRUCTURED_TEST_COMMAND", "Exit codes alone do not provide per-test regression evidence.")
+        if not cases or not any(r["status"] in {"passed", "failed"} for r in cases.values()):
+            return result(INSUFFICIENT_EVIDENCE, "NO_BEHAVIOR_TEST_EXECUTED", "No comparable behavior tests executed.")
+        if set(summary.get("collected_tests", [])) - set(cases):
+            return result(INSUFFICIENT_EVIDENCE, f"{label}_TESTS_NOT_RUN", "Collected tests did not all produce results (for example, fail-fast).")
+    lost_execution = [k for k, r in after.items()
+                      if r["status"] not in {"passed", "failed"}
+                      and (before.get(k, {}).get("status") != r["status"] or r["status"] == "xpass")]
+    if lost_execution:
+        return result(INSUFFICIENT_EVIDENCE, "TESTS_SKIPPED_OR_XFAILED", "Previously executed or new tests were skipped/xfail/xpass.")
+    if task_type in BUG_FIX_TYPES:
+        targets = baseline.get("target_tests", [])
+        if not targets:
+            return result(INSUFFICIENT_EVIDENCE, "TARGET_TESTS_NOT_CONFIGURED", "Bug-fix verification requires explicit target_tests in the pytest check.")
+        if any(k not in before or before[k]["status"] != "failed" or not before[k].get("assertion_failure") for k in targets):
+            return result(INSUFFICIENT_EVIDENCE, "TARGET_NOT_REPRODUCED", "Each target must fail a baseline behavior assertion.")
+        if any(after.get(k, {}).get("status") != "passed" for k in targets):
+            return result(FAIL, "TARGET_NOT_FIXED", "At least one configured defect target still fails.")
+    if common["candidate_failed_tests"]:
+        return result(INSUFFICIENT_EVIDENCE, "PREEXISTING_FAILURES_UNRESOLVED", "Existing failures remain; no full acceptance pass.")
+    if any(r["status"] == "failed" for r in baseline.get("results", []) if r["category"] != "test"):
+        return result(INSUFFICIENT_EVIDENCE, "BASELINE_CHECK_FAILED", "Baseline static/build/smoke failed; comparability is incomplete.")
+    return result(PASS, "BEHAVIOR_TESTS_PASS", "Configured acceptance inputs were preserved and per-test evidence passed without regression.")
 
 
 def summarize_verifications(results: Sequence[VerificationResult]) -> Dict[str, Any]:

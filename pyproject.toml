@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mimo-codeharness"
-version = "0.5.0"
+version = "0.5.1"
 description = "Evidence-backed repository and code-agent patch verification harness"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,6 +20,12 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8.3,<10"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [project.scripts]
 mimo = "mimo_harness.cli:main"

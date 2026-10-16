@@ -11,6 +11,8 @@ mimo --version
 
 The repository has no runtime dependency beyond Python 3.10+ and Git. Target repositories may require their own build and test dependencies.
 
+Install `python -m pip install -e ".[test]"` for pytest verification. As of v0.5.1, project checks can be configured once and pytest comparisons use individual test IDs. See [project checks](PYTEST_EVIDENCE.md). Stdlib unittest detection remains available without pytest.
+
 ## Configuration lifecycle
 
 ```bash
@@ -46,6 +48,8 @@ mimo verify \
 ```
 
 The command archives the selected Git commit into an isolated baseline, creates a separate candidate, applies the patch inside that candidate, and compares detected tests. `--base WORKTREE` is available when intentionally verifying the current filesystem state.
+
+For `--task-type bug_fix`, first configure `target_tests` in the pytest check. Omitting the targets now yields `INSUFFICIENT_EVIDENCE`; an environment/import error does not count as reproducing the defect.
 
 The original checkout is never the patch target. Every run gets a new directory under `.mimo/runs/`; an existing directory is rejected instead of overwritten.
 
