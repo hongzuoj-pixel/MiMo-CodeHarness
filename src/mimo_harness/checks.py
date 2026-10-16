@@ -4,7 +4,6 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -73,10 +72,12 @@ def protected_files(root: Path) -> dict[str, str]:
     return hashes
 
 
-def run_check(root: Path, logs: Path, spec: dict, enabled: bool) -> dict:
+def run_check(root: Path, logs: Path, spec: dict, enabled: bool, context=None) -> dict:
+    from mimo_harness.execution import CheckCancelled, ExecutionContext
     name = spec["id"]
     adapter = spec["adapter"]
     logs.mkdir(parents=True, exist_ok=True)
+    context = context or ExecutionContext(root, logs)
     evidence_path = (logs / f"{name}_tests.json").resolve()
     junit_path = (logs / f"{name}_junit.xml").resolve()
     cwd = (root / spec.get("cwd", ".")).resolve()
@@ -84,18 +85,19 @@ def run_check(root: Path, logs: Path, spec: dict, enabled: bool) -> dict:
     args = spec.get("args", ["-q"])
     case_adapter = adapter in {"pytest", "unittest"}
     argv = (
-        [sys.executable, str(Path(__file__).with_name("pytest_worker.py")), str(evidence_path),
-         json.dumps([*args, f"--junitxml={junit_path}"])]
+        [context.python, context.path(Path(__file__).with_name("pytest_worker.py")), context.path(evidence_path),
+         json.dumps([*args, f"--junitxml={context.path(junit_path)}"])]
         if case_adapter else
-        [sys.executable if part == "{python}" else part for part in spec["argv"]]
+        [context.python if part == "{python}" else part for part in spec["argv"]]
     )
     if adapter == "unittest":
-        argv.extend(["unittest", str(junit_path)])
+        argv.extend(["unittest", context.path(junit_path)])
     # Include custom-named collected Python tests in the pre-execution fingerprint.
     python_files = {
         path.resolve(): hashlib.sha256(path.read_bytes()).hexdigest()
         for path in root.rglob("*.py")
         if path.is_file() and not path.is_symlink()
+        and not set(path.relative_to(root).parts) & {".mimo", ".venv", "venv", "env", "__pycache__", ".git"}
     } if case_adapter and enabled else {}
     row = {
         "name": name, "adapter": adapter, "category": spec.get("category", "test"),
@@ -107,6 +109,7 @@ def run_check(root: Path, logs: Path, spec: dict, enabled: bool) -> dict:
         "test_cases": [], "collected": [], "collection_errors": [],
         "collection_skips": [],
         "reason_codes": [], "target_tests": [f"{name}::{t}" for t in spec.get("target_tests", [])],
+        "execution_environment": context.metadata(),
     }
     stdout = stderr = ""
     start = time.perf_counter()
@@ -114,12 +117,14 @@ def run_check(root: Path, logs: Path, spec: dict, enabled: bool) -> dict:
         evidence_path.unlink(missing_ok=True)
         junit_path.unlink(missing_ok=True)
         try:
-            proc = subprocess.run(argv, cwd=cwd, capture_output=True, text=True,
-                                  encoding="utf-8", errors="replace", timeout=row["timeout_seconds"])
+            proc = context.run(argv, cwd, row["timeout_seconds"], Path(row["stdout_log"]), Path(row["stderr_log"]))
             stdout, stderr = proc.stdout, proc.stderr
             row.update(returncode=proc.returncode, status="ok" if proc.returncode == 0 else "failed",
                        note="Executed configured check with shell=False.")
-            if case_adapter:
+            if proc.status != "completed":
+                row.update(status="cancelled" if proc.status == "cancelled" else "error",
+                           reason_codes=[{"timeout": "CHECK_TIMEOUT", "cancelled": "CHECK_CANCELLED"}.get(proc.status, "CHECK_EXECUTION_ERROR")])
+            elif case_adapter:
                 if not evidence_path.is_file():
                     row.update(status="error", reason_codes=["PYTEST_EVIDENCE_MISSING"])
                 else:
@@ -135,6 +140,8 @@ def run_check(root: Path, logs: Path, spec: dict, enabled: bool) -> dict:
                     row["protected_files"] = {}
                     for case in data["cases"].values():
                         source = Path(case.get("file", "")).resolve()
+                        if context.mode == "docker" and str(case.get("file", "")).startswith("/workspace/"):
+                            source = root.resolve() / str(case["file"])[len("/workspace/"):]
                         if source in python_files:
                             row["protected_files"][source.relative_to(root.resolve()).as_posix()] = python_files[source]
                     row["test_evidence"] = str(evidence_path)
@@ -159,14 +166,21 @@ def run_check(root: Path, logs: Path, spec: dict, enabled: bool) -> dict:
                         row.update(status="error", reason_codes=["PYTEST_INCONSISTENT_RESULT"])
                     elif proc.returncode == 0 and any(c["status"] == "failed" for c in row["test_cases"]):
                         row.update(status="error", reason_codes=["PYTEST_INCONSISTENT_RESULT"])
-        except subprocess.TimeoutExpired as exc:
-            stdout = exc.stdout.decode("utf-8", errors="replace") if isinstance(exc.stdout, bytes) else exc.stdout or ""
-            stderr = "Check exceeded configured timeout."
-            row.update(status="error", reason_codes=["CHECK_TIMEOUT"])
-        except (OSError, ValueError, TypeError, KeyError) as exc:
+        except KeyboardInterrupt:
+            row.update(status="cancelled", reason_codes=["CHECK_CANCELLED"])
+        except (OSError, ValueError, TypeError, KeyError, RuntimeError) as exc:
             stderr = f"{type(exc).__name__}: {exc}"
-            row.update(status="error", reason_codes=["CHECK_EXECUTION_ERROR"])
-    Path(row["stdout_log"]).write_text(stdout, encoding="utf-8")
-    Path(row["stderr_log"]).write_text(stderr, encoding="utf-8")
+            row.update(status="error", reason_codes=["CHECK_EXECUTION_ERROR"], note=stderr)
+    if not Path(row["stdout_log"]).exists():
+        Path(row["stdout_log"]).write_text(stdout, encoding="utf-8")
+    if not Path(row["stderr_log"]).exists():
+        Path(row["stderr_log"]).write_text(stderr, encoding="utf-8")
+    if row["reason_codes"]:
+        with Path(row["stderr_log"]).open("a", encoding="utf-8") as handle:
+            handle.write("\n" + ",".join(row["reason_codes"]) + "\n")
     row["time_seconds"] = round(time.perf_counter() - start, 4)
+    row["execution_environment"] = context.metadata()
+    (logs / f"{name}_check.json").write_text(json.dumps(row, ensure_ascii=False, indent=2), encoding="utf-8")
+    if row["status"] == "cancelled":
+        raise CheckCancelled(row)
     return row

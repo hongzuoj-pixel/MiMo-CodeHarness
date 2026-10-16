@@ -18,6 +18,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 from mimo_harness import __version__
 from mimo_harness.checks import validate_checks
+from mimo_harness.execution import validate_execution
 from run_mimo_codeharness_v02 import (
     BuildTesterV02,
     ModelRunRecord,
@@ -102,6 +103,7 @@ def load_project_config(path: Path) -> Dict[str, Any]:
         if not isinstance(data.get(name), bool):
             raise ValueError(f"Configuration '{name}' must be true or false.")
     validate_checks(data.get("checks"))
+    data["execution"] = validate_execution(data.get("execution"))
     return data
 
 
@@ -116,6 +118,7 @@ def default_project_config(mode: str = "offline") -> Dict[str, Any]:
         "max_files": 800,
         "apply_patches": True,
         "run_build_tests": False,
+        "execution": {"mode": "local", "env_allowlist": [], "prepare": []},
     }
 
 
@@ -220,9 +223,16 @@ def collect_diagnostics(
                 raise ValueError("directory does not exist")
         except ValueError as exc:
             rows.append(Diagnostic(f"check:{check['id']}", "error", f"Invalid cwd: {check_cwd}: {exc}"))
-        if check["adapter"] == "pytest" and importlib.util.find_spec("pytest") is None:
+        if check["adapter"] == "pytest" and cfg.get("execution", {}).get("mode", "local") == "local" and importlib.util.find_spec("pytest") is None:
             rows.append(Diagnostic(f"check:{check['id']}", "error",
                                    "pytest is not installed in this interpreter. Install the project's test dependencies or pip install pytest."))
+    execution = cfg["execution"]
+    rows.append(Diagnostic("execution", "ok", execution["mode"] + " (clean environment; allowlist names only)"))
+    if execution["mode"] == "docker":
+        available = sys.platform == "linux" and bool(shutil.which("docker")) and os.getuid() != 0
+        rows.append(Diagnostic("docker", "ok" if available else "error",
+                               "Linux Docker client available; image/daemon checked during preparation." if available else
+                               "Docker mode requires Docker on a non-root Linux host; no local fallback."))
 
     model_path = _resolve(base, str(cfg.get("model_config", "")))
     model_cfg: Optional[Dict[str, Any]] = None
@@ -428,7 +438,10 @@ def command_run(args: argparse.Namespace) -> int:
             run_build_tests=run_tests,
             output_root=output_root,
             checks=cfg.get("checks"),
+            execution=cfg.get("execution"),
         )
+    except KeyboardInterrupt:
+        return _record_cancelled(output_root / name, project)
     except Exception as exc:
         print(f"[ERROR] Harness execution failed: {type(exc).__name__}: {exc}", file=sys.stderr)
         return EXIT_CODES[ERROR]
@@ -542,10 +555,12 @@ def command_verify(args: argparse.Namespace) -> int:
         return EXIT_CODES[ERROR]
 
     ensure_dir(run_dir)
+    write_json(run_dir / "verification_policy.json", {"checks": cfg.get("checks"), "execution": cfg.get("execution"), "task_type": args.task_type})
+    (run_dir / "input.patch").write_text(patch_text, encoding="utf-8", newline="\n")
     try:
         resolved_base = _materialize_baseline(project, args.base, baseline_dir)
         baseline_summary = BuildTesterV02(
-            baseline_dir, run_dir / "baseline", checks=cfg.get("checks")
+            baseline_dir, run_dir / "baseline", checks=cfg.get("checks"), execution=cfg.get("execution")
         ).run_all(run_external=args.run_tests)
         record = ModelRunRecord(
             task_id="PATCH",
@@ -568,11 +583,13 @@ def command_verify(args: argparse.Namespace) -> int:
         candidate_summary = None
         if patch_result.applied:
             candidate_summary = BuildTesterV02(
-                Path(patch_result.worktree), run_dir / "candidate", checks=cfg.get("checks")
+                Path(patch_result.worktree), run_dir / "candidate", checks=cfg.get("checks"), execution=cfg.get("execution")
             ).run_all(run_external=args.run_tests)
         task = SimpleNamespace(task_id="PATCH", task_type=args.task_type)
         result = classify_candidate(task, patch_result, baseline_summary, candidate_summary)
         verification = summarize_verifications([result])
+    except KeyboardInterrupt:
+        return _record_cancelled(run_dir, project)
     except Exception as exc:
         print(f"[ERROR] Verification failed: {type(exc).__name__}: {exc}", file=sys.stderr)
         return EXIT_CODES[ERROR]
@@ -617,6 +634,16 @@ def _latest_run(output_root: Path) -> Optional[Path]:
     return max(candidates, key=lambda p: p.stat().st_mtime) if candidates else None
 
 
+def _record_cancelled(run_dir: Path, project: Path) -> int:
+    summary = {"overall_verdict": "CANCELLED", "exit_code": 130, "counts": {"CANCELLED": 1}}
+    write_json(run_dir / "verification_summary.json", summary)
+    write_json(run_dir / "run_log.json", {"mode": "interrupted", "project": str(project),
+               "output_dir": str(run_dir), "verification_summary": summary,
+               "key_outputs": {"verification_summary": str(run_dir / "verification_summary.json")}})
+    print(f"[RESULT] CANCELLED — processes cleaned up; existing evidence: {run_dir}", file=sys.stderr)
+    return 130
+
+
 def command_report(args: argparse.Namespace) -> int:
     config_path = _config_path(args.config)
     try:
@@ -648,8 +675,12 @@ def command_report(args: argparse.Namespace) -> int:
         "| Verdict | Count |",
         "|---|---:|",
     ]
-    for key in ("PASS", "FAIL", "INSUFFICIENT_EVIDENCE", "ERROR", "NOT_APPLICABLE"):
+    for key in ("PASS", "FAIL", "INSUFFICIENT_EVIDENCE", "ERROR", "NOT_APPLICABLE", "CANCELLED"):
         lines.append(f"| {key} | {counts.get(key, 0)} |")
+    if verification.get("run_errors"):
+        lines.extend(["", "## Run errors", ""])
+        for error in verification["run_errors"]:
+            lines.append(f"- {error['stage']}/{error['check']}: {', '.join(error['reason_codes'])}")
     lines.extend(["", "## Evidence files", ""])
     for key, value in (log.get("key_outputs") or {}).items():
         if value:
@@ -729,7 +760,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    return int(args.handler(args))
+    try:
+        return int(args.handler(args))
+    except KeyboardInterrupt:
+        print("[RESULT] CANCELLED", file=sys.stderr)
+        return 130
 
 
 if __name__ == "__main__":

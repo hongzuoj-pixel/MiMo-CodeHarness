@@ -222,6 +222,12 @@ Omit `--run-tests` for static checks only. That intentionally yields `INSUFFICIE
 
 Pytest results now include stable case IDs, execution phases, and JUnit XML. Missing tests, new skip/xfail, changed baseline acceptance inputs, collection errors, and empty suites cannot produce a verified pass. Existing baseline skips are listed explicitly and do not count as executed acceptance tests.
 
+### Execution environments
+
+The default `local` backend uses the current interpreter with a clean environment and per-run home/temp directories. Use `execution.mode: "venv"` for fresh baseline/candidate dependency environments, or the Linux Docker backend for resource and network controls. Preparation commands are explicit, logs are streamed, and managed descendants are cleaned up on timeout, cancellation and normal exit. An interrupted CLI run retains evidence and returns `130`.
+
+See [execution isolation and configuration](docs/EXECUTION_ISOLATION.md) and the [end-to-end acceptance matrix](docs/ACCEPTANCE_MATRIX.md). Docker is never silently replaced with local execution.
+
 ### 6.5 Configure Xiaomi MiMo API
 
 Do not write your API key into source code or commit it to GitHub.
@@ -339,7 +345,7 @@ Current limitations:
 
 - A candidate receives `INSUFFICIENT_EVIDENCE` when no behavior test is detected or executed.
 - The embedded STM32 case still does not perform full Keil firmware compilation; static checks alone are never reported as verified success.
-- `--run-tests` executes repository code on the local machine. Use a container or disposable worker for untrusted repositories.
+- Local and venv execution run trusted project code with host permissions. Docker execution is currently supported on non-root Linux Docker workers; Windows Docker/WSL is not certified.
 - The package is installable from the repository but is not yet published to PyPI.
 - LLM Judge and human review are not used in the final clean scores.
 - Scores should be interpreted as evidence-aware automatic evaluation results, not absolute ground truth.
@@ -355,7 +361,7 @@ Planned improvements after the installable CLI:
 - Add more real repositories, including HarmonyOS, robotics, and backend projects.
 - Add optional calibrated LLM Judge with stricter JSON schema and cross-model judging.
 - Add manual review protocol for small-sample validation.
-- Add resumable run manifests and container-backed resource/network isolation.
+- Add resumable run manifests and input-aware caches; broaden certified container platforms.
 - Build a web dashboard for comparing multiple repositories and multiple models.
 - Convert the current technical report into a more complete undergraduate research report or workshop-style paper draft.
 

@@ -225,6 +225,12 @@ mimo report
 
 现在 pytest 会记录稳定用例 ID、执行阶段和 JUnit XML。用例消失、新增 skip/xfail、原有验收文件被修改、收集错误、空测试集均不能获得验证通过。原本就跳过且保持跳过的用例会单独列出，不计作已执行验收。
 
+### 选择运行环境
+
+默认 `local` 模式使用当前解释器，但会清理环境变量，并为每次检查准备独立的用户与临时目录。设置 `execution.mode: "venv"` 可为基线、每个候选分别创建全新依赖环境；Linux Docker 模式提供资源和网络限制。依赖准备命令需要明确配置，日志实时写入磁盘；超时、中断和正常结束时均会清理受管理的子进程。CLI 中断会保存已有证据并返回 `130`。
+
+配置见[执行隔离说明](docs/EXECUTION_ISOLATION.md)，完整流程验收见[验收矩阵](docs/ACCEPTANCE_MATRIX.md)。请求 Docker 但环境不可用时会明确失败，不会自动改用本机执行。
+
 ### 6.5 设置 MiMo API
 
 不要把 API Key 写进代码，也不要上传到 GitHub。
@@ -342,7 +348,7 @@ MiMo-CodeHarness/
 
 - 没有检测并执行行为测试时，候选结果为 `INSUFFICIENT_EVIDENCE`；
 - STM32 项目暂未接入 Keil/ARM 工具链真实固件编译，静态检查不会再被报告为验证成功；
-- `--run-tests` 会在本机执行目标仓库代码；对于不可信仓库，应放入容器或一次性 worker；
+- local/venv 模式以当前用户权限执行可信项目代码；Docker 当前认证范围是非 root Linux worker，Windows Docker/WSL 尚未认证；
 - 当前支持从仓库安装，但还没有发布到 PyPI；
 - final clean 分数不使用 LLM Judge 和人工 review；
 - 自动分数应理解为“证据分层评测结果”，不是绝对真值；
@@ -358,7 +364,7 @@ MiMo-CodeHarness/
 - 增加 HarmonyOS、机器人、后端等更多真实仓库；
 - 增加可校准的跨模型 LLM Judge；
 - 增加小样本人工 review 协议；
-- 增加可恢复的运行 manifest，以及容器级资源限制和网络隔离；
+- 增加可恢复的运行 manifest、按输入识别的缓存，以及更多容器平台认证；
 - 做一个可视化对比 dashboard；
 - 将技术报告扩展成本科科研报告或 workshop-style paper draft。
 

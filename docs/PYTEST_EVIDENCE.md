@@ -61,7 +61,7 @@ Summaries include `test_cases`, `collected_tests`, `target_tests`, `protected_fi
 
 ## Scope
 
-This is local test execution, not a container sandbox or proof of business completeness. Baseline and candidate still share the interpreter's dependency environment. Test hooks and project code are trusted in local mode; hashes are a conservative acceptance-change check, not tamper-proof attestation against malicious code. Subprocess-group cancellation, independent dependency environments, and container execution remain separate planned work.
+The default local backend shares the interpreter's dependencies and is not a sandbox. v0.5.2 adds independent venvs, managed process cleanup, and a Linux Docker backend; see [execution isolation](EXECUTION_ISOLATION.md). Test hooks/project code are trusted in local mode. Acceptance hashes are a conservative change check, not tamper-proof attestation or proof of business completeness.
 
 The regression suite invokes real pytest subprocesses for repair success, unchanged defects, same-count regressions, deletion, weakening, skips/xfail, parametrized case loss, collection/setup/teardown errors, empty suites, fail-fast, missing pytest, timeouts, and HEAD-based CLI verification in a path with spaces and Chinese characters. CI runs the suite on Python 3.10/3.12/3.13, Linux/Windows, and pytest 8.4.2/9.0.2, and retains the pinned SlideNote behavior gate.
 
