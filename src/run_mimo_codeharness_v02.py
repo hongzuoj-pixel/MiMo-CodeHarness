@@ -1253,6 +1253,16 @@ def run_harness(
         for patch in patch_results
     ]
     verification_summary = summarize_verifications(verification_results)
+    baseline_errors = [row for row in build_summary.get("results", []) if row.get("status") == "error"]
+    if baseline_errors:
+        # A requested runtime failure is a run error even for analysis-only tasks.
+        # Do not fabricate an errored candidate or let NOT_APPLICABLE hide it.
+        verification_summary.update(
+            overall_verdict="ERROR", exit_code=4,
+            run_errors=[{"stage": "baseline", "check": row["name"],
+                         "reason_codes": row.get("reason_codes", ["BASELINE_CHECK_ERROR"]),
+                         "note": row.get("note", "")} for row in baseline_errors],
+        )
     build_summary["verification_summary"] = verification_summary
     
     if score_outputs_v03 is not None:

@@ -15,7 +15,7 @@ import pytest
 
 from mimo_harness.execution import ExecutionContext, clean_environment, run_process, validate_execution
 from mimo_harness.cli import main
-from run_mimo_codeharness_v02 import BuildTesterV02, copy_worktree
+from run_mimo_codeharness_v02 import BuildTesterV02, run_harness
 
 
 def running(pid):
@@ -184,6 +184,22 @@ def test_requested_docker_never_silently_falls_back(tmp_path, monkeypatch):
     assert summary["execution_environment"]["mode"] == "docker"
     assert summary["results"][-1]["status"] == "error"
     assert summary["external_executed_count"] == 0
+
+
+def test_analysis_only_run_cannot_hide_runtime_failure(tmp_path, monkeypatch):
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "main.py").write_text("VALUE = 1\n", encoding="utf-8")
+    config = tmp_path / "models.json"
+    config.write_text(json.dumps({"models": [{"name": "mock", "provider_type": "mock", "enabled": True}]}), encoding="utf-8")
+    import mimo_harness.execution as execution
+    monkeypatch.setattr(execution.shutil, "which", lambda _: None)
+    log = run_harness(root, "runtime-failure", config, 1, 100, False, False, True,
+                      output_root=tmp_path / "runs", checks=[],
+                      execution={"mode": "docker", "image": "missing-image"})
+    assert log["verification_summary"]["overall_verdict"] == "ERROR"
+    assert log["verification_summary"]["exit_code"] == 4
+    assert log["verification_summary"]["run_errors"][0]["stage"] == "baseline"
 
 
 @pytest.mark.skipif(os.name == "nt", reason="POSIX SIGINT integration; Windows Job cleanup tested by real timeout and normal exit")

@@ -677,6 +677,10 @@ def command_report(args: argparse.Namespace) -> int:
     ]
     for key in ("PASS", "FAIL", "INSUFFICIENT_EVIDENCE", "ERROR", "NOT_APPLICABLE", "CANCELLED"):
         lines.append(f"| {key} | {counts.get(key, 0)} |")
+    if verification.get("run_errors"):
+        lines.extend(["", "## Run errors", ""])
+        for error in verification["run_errors"]:
+            lines.append(f"- {error['stage']}/{error['check']}: {', '.join(error['reason_codes'])}")
     lines.extend(["", "## Evidence files", ""])
     for key, value in (log.get("key_outputs") or {}).items():
         if value:
