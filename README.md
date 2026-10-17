@@ -83,6 +83,7 @@ Generates repository-level tasks such as:
 - Uses Xiaomi MiMo Pro API through environment variables.
 - Records model outputs, response time, and token usage.
 - API keys are never stored in source code.
+- A shared runtime supports mock, OpenAI-compatible, Anthropic and mapped generic HTTP final-text responses, with explicit usage/completion states, bounded deadlines/retries and recovery-aware budgets. See [provider configuration](docs/MODEL_PROVIDERS.md).
 
 ### Patch and build/test checks
 
@@ -267,6 +268,8 @@ mimo run --execute --apply-patches --run-tests
 ```
 
 `doctor` fails closed when API mode has no real provider or its required key is missing. It never prints the secret value. To replace an existing generated configuration, review it first and then use `mimo init --mode api --force` deliberately.
+
+The default is one network attempt. Configure retries and request/token/estimated-cost reservations in `.mimo/models.json`; resumed branches share their original budget. Incomplete or truncated model answers cannot be applied as completed patches. See [model providers and execution limits](docs/MODEL_PROVIDERS.md), the [reviewed product plan](docs/PRODUCT_PLAN.md) and [remaining acceptance gates](docs/ACCEPTANCE_MATRIX.md).
 
 The legacy API connectivity check is still available:
 

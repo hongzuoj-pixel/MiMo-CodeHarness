@@ -32,6 +32,8 @@ mimo resume --run .mimo/runs/patch-check --name patch-recheck
 
 `token_usage.csv` marks `reused_from_checkpoint`; inherited token estimates describe the saved response, not a new paid invocation. If a provider completes a request just before the process dies but the response was not checkpointed, retry can call the provider again. This is not an exactly-once billing protocol.
 
+v0.8 reserves each real HTTP attempt before sending. Failed and interrupted calls consume their reservations; successful model-response reuse consumes no new request. A locked `.provider-budgets/<lineage-id>/ledger.json` beside the run directories coordinates all descendants, including repeated resumes from an older ancestor. Preserve this coordinator with backups used for recovery. Missing/damaged accounting blocks additional calls instead of resetting the budget; each attempt's sealed accounting snapshot remains portable. See [provider budgets and their estimation boundaries](MODEL_PROVIDERS.md).
+
 The run lock is released by the OS even after abrupt process termination. A concurrent resume is rejected while another process owns the source run's lock. A leftover `.run.lock` file is normal and should not be deleted to bypass an active run.
 
 ## Identity and invalidation

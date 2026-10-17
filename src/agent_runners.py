@@ -81,9 +81,11 @@ class MockAgentRunner(BaseAgentRunner):
         return AgentRunResult(task.get("task_id"), self.agent_name, self.model_name, "ok", len(prompt), len(json.dumps(response, ensure_ascii=False)), round(time.perf_counter()-start,4), str(out_path))
 
 class DeepSeekRunner(BaseAgentRunner):
-    def __init__(self, model_name: str = "deepseek-chat", api_key_env: str = "DEEPSEEK_API_KEY"):
+    def __init__(self, model_name: str = "deepseek-chat", api_key_env: str = "DEEPSEEK_API_KEY", runtime=None):
         super().__init__("DeepSeek", model_name)
         self.api_key_env = api_key_env
+        from mimo_harness.model_runtime import ModelRuntime
+        self.runtime = runtime or ModelRuntime()
 
     def run_task(self, task: Dict, output_dir: str | Path) -> AgentRunResult:
         start = time.perf_counter()
@@ -96,22 +98,17 @@ class DeepSeekRunner(BaseAgentRunner):
             out_path.write_text(json.dumps({"error": error, "prompt_preview": prompt[:500]}, ensure_ascii=False, indent=2), encoding="utf-8")
             return AgentRunResult(task.get("task_id"), self.agent_name, self.model_name, "skipped", len(prompt), 0, round(time.perf_counter()-start,4), str(out_path), error)
         try:
-            from openai import OpenAI  # optional dependency
-            client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
-            resp = client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": "You are a rigorous software engineering Code Agent."},
-                    {"role": "user", "content": prompt},
-                ],
-                stream=False,
-            )
-            content = resp.choices[0].message.content
+            response = self.runtime.complete({"name": self.agent_name, "model": self.model_name,
+                "provider_type": "openai_compatible", "api_key_env": self.api_key_env,
+                "base_url": "https://api.deepseek.com/v1"}, prompt)
+            content = response.content
             out_path.write_text(json.dumps({"task_id": task.get("task_id"), "agent": self.agent_name, "model": self.model_name, "response": content}, ensure_ascii=False, indent=2), encoding="utf-8")
             return AgentRunResult(task.get("task_id"), self.agent_name, self.model_name, "ok", len(prompt), len(content or ""), round(time.perf_counter()-start,4), str(out_path))
         except Exception as exc:
-            out_path.write_text(json.dumps({"error": str(exc), "prompt_preview": prompt[:500]}, ensure_ascii=False, indent=2), encoding="utf-8")
-            return AgentRunResult(task.get("task_id"), self.agent_name, self.model_name, "error", len(prompt), 0, round(time.perf_counter()-start,4), str(out_path), str(exc))
+            from mimo_harness.providers import ProviderError
+            error = f"{exc.code}: {exc}" if isinstance(exc, ProviderError) else type(exc).__name__
+            out_path.write_text(json.dumps({"error": error}, ensure_ascii=False, indent=2), encoding="utf-8")
+            return AgentRunResult(task.get("task_id"), self.agent_name, self.model_name, "error", len(prompt), 0, round(time.perf_counter()-start,4), str(out_path), error)
 
 class CLIAgentRunner(BaseAgentRunner):
     def __init__(self, agent_name: str, command_template: str, model_name: str = "cli-default", timeout_seconds: int = 600):

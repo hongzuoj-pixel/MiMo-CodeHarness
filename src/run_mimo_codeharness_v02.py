@@ -29,7 +29,7 @@ import time
 import traceback
 import urllib.request
 from collections import Counter, defaultdict
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -113,6 +113,11 @@ class ModelRunRecord:
     error: str
     raw: Dict[str, Any]
     candidate_id: str = ""
+    provider_type: str = "unknown"
+    finish_reason: str = "unknown"
+    usage_source: str = "estimated"
+    error_code: str = ""
+    attempts: list = field(default_factory=list)
 
 
 @dataclass
@@ -484,10 +489,10 @@ class TaskGeneratorV02:
 def load_model_config(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Model config does not exist: {path}")
-    text = path.read_text(encoding="utf-8")
-    for key, value in os.environ.items():
-        text = text.replace("${" + key + "}", value)
-    return json.loads(text)
+    from mimo_harness.providers import validate_model_config
+    config = json.loads(path.read_text(encoding="utf-8"))
+    validate_model_config(config)
+    return config
 
 
 def build_prompt(task: HarnessTask, repo_summary: Dict[str, Any], dep_summary: Dict[str, Any], snippets: Dict[str, str]) -> str:
@@ -611,42 +616,12 @@ new file mode 100644
 """.strip()
 
 
-def call_model(task: HarnessTask, model_cfg: Dict[str, Any], prompt: str, execute: bool, repo_summary: Dict[str, Any], snippets: Dict[str, str]) -> Tuple[str, Dict[str, Any], int, int, int]:
-    provider_type = model_cfg.get("provider_type", "openai_compatible")
-    if (not execute) or provider_type == "mock":
-        content = mock_model_response(task, repo_summary, snippets)
-        return content, {"mock": True}, estimate_tokens(prompt), estimate_tokens(content), estimate_tokens(prompt) + estimate_tokens(content)
-    api_key_env = model_cfg.get("api_key_env", "MIMO_API_KEY")
-    api_key = os.getenv(api_key_env, "")
-    if not api_key:
-        raise RuntimeError(f"Missing API key environment variable: {api_key_env}")
-    base_url = model_cfg.get("base_url") or os.getenv("MIMO_BASE_URL", "")
-    if not base_url:
-        raise RuntimeError("Missing base_url. Set config base_url or MIMO_BASE_URL.")
-    base_url = normalize_openai_chat_url(base_url)
-    model = os.getenv("MIMO_MODEL") or model_cfg.get("model", "mimo-v2.5-pro")
-    timeout = int(model_cfg.get("timeout_seconds", 180))
-    max_tokens = int(model_cfg.get("max_tokens", 4000))
-    temperature = float(model_cfg.get("temperature", 0.2))
-    headers = {
-        # Xiaomi MiMo official docs use the custom `api-key` header.
-        # This avoids HTTP 401 invalid_key errors caused by using Authorization: Bearer.
-        "api-key": api_key,
-        "Content-Type": "application/json",
-    }
-    body = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": "You are a rigorous repository-level code agent evaluator. Prefer precise file paths and safe patches."},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": temperature,
-        "max_completion_tokens": max_tokens,
-    }
-    raw = http_post_json(base_url, headers, body, timeout)
-    content = raw.get("choices", [{}])[0].get("message", {}).get("content", "")
-    input_tokens, output_tokens, total_tokens = extract_usage(raw, prompt, content)
-    return content, raw, input_tokens, output_tokens, total_tokens
+def call_model(task: HarnessTask, model_cfg: Dict[str, Any], prompt: str, execute: bool,
+               repo_summary: Dict[str, Any], snippets: Dict[str, str], runtime=None, candidate_id="standalone"):
+    from mimo_harness.model_runtime import ModelRuntime
+    runtime = runtime or ModelRuntime()
+    return runtime.complete(model_cfg, prompt, offline=not execute,
+                            mock_content=mock_model_response(task, repo_summary, snippets), candidate_id=candidate_id)
 
 
 def safe_identifier(value: str) -> str:
@@ -654,7 +629,10 @@ def safe_identifier(value: str) -> str:
     return cleaned[:64] or "candidate"
 
 
-def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, repo_summary: Dict[str, Any], dep_summary: Dict[str, Any], snippets: Dict[str, str], checkpoint=None) -> List[ModelRunRecord]:
+def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, repo_summary: Dict[str, Any], dep_summary: Dict[str, Any], snippets: Dict[str, str], checkpoint=None, ledger_path=None) -> List[ModelRunRecord]:
+    from mimo_harness.model_runtime import ModelRuntime
+    from mimo_harness.providers import ProviderError
+    runtime = ModelRuntime(config, checkpoint=checkpoint, ledger_path=ledger_path)
     models = [m for m in config.get("models", []) if m.get("enabled", True)]
     if not models:
         raise ValueError("Model config contains no enabled models.")
@@ -678,16 +656,27 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
             content = ""
             raw: Dict[str, Any] = {}
             in_tok = out_tok = total_tok = 0
+            response = None
+            error_code = ""
+            attempts = []
             try:
-                content, raw, in_tok, out_tok, total_tok = call_model(task, model_cfg, prompt, execute, repo_summary, snippets)
+                response = call_model(task, model_cfg, prompt, execute, repo_summary, snippets,
+                                      runtime=runtime, candidate_id=candidate_id)
+                content, raw, in_tok, out_tok, total_tok = response
+            except ProviderError as exc:
+                status, error_code, attempts = "failed", exc.code, exc.attempts
+                error = f"{exc.code}: {exc}"
+                response = exc.completion
+                if response is not None:
+                    content, raw, in_tok, out_tok, total_tok = response
             except Exception as exc:
                 status = "failed"
-                error = f"{type(exc).__name__}: {exc}"
-                raw = {"traceback": traceback.format_exc(limit=4)}
+                error_code = "INTERNAL_PROVIDER_ERROR"
+                error = f"{error_code}: {type(exc).__name__}"
             rows.append(ModelRunRecord(
                 task_id=task.task_id,
                 provider_name=str(model_cfg.get("name", "unknown")),
-                model=str(model_cfg.get("model", "unknown")),
+                model=getattr(response, "model", str(model_cfg.get("model", "unknown"))),
                 status=status,
                 dry_run=not execute or model_cfg.get("provider_type") == "mock",
                 time_seconds=round(time.perf_counter() - start, 4),
@@ -698,6 +687,11 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
                 error=error,
                 raw=raw,
                 candidate_id=candidate_id,
+                provider_type=getattr(response, "provider_type", model_cfg.get("provider_type", "openai_compatible")),
+                finish_reason=getattr(response, "finish_reason", "unknown"),
+                usage_source=getattr(response, "usage_source", "estimated" if status == "completed" else "unavailable"),
+                error_code=error_code,
+                attempts=attempts or getattr(response, "attempts", []),
             ))
             if checkpoint is not None:
                 checkpoint.record(candidate_id, signature, asdict(rows[-1]))
@@ -1236,7 +1230,8 @@ def run_harness(
     dep_summary = reasoner.summary()
     tasks = TaskGeneratorV02(files, edges, scanner.snippets).generate(limit=limit_tasks)
     config = load_model_config(config_path)
-    model_runs = run_models(tasks, config, execute, repo_summary, dep_summary, scanner.snippets, checkpoint=checkpoint)
+    model_runs = run_models(tasks, config, execute, repo_summary, dep_summary, scanner.snippets,
+                            checkpoint=checkpoint, ledger_path=out_dir / "provider_ledger.json")
     patch_results = apply_patches(model_runs, project, out_dir, actually_apply=apply_patch_flag)
 
     # Establish the baseline in an isolated workspace with the same copy policy used
@@ -1322,8 +1317,18 @@ def run_harness(
         "dry_run": r.dry_run,
         "status": r.status,
         "reused_from_checkpoint": r.candidate_id in (checkpoint.data["reused_candidates"] if checkpoint else []),
+        "provider_type": r.provider_type,
+        "usage_source": r.usage_source,
+        "finish_reason": r.finish_reason,
+        "error_code": r.error_code,
+        "request_attempts": len(r.attempts),
     } for r in model_runs]
     write_csv(out_dir / "token_usage.csv", token_rows)
+    ledger = json.loads((out_dir / "provider_ledger.json").read_text(encoding="utf-8"))
+    provider_summary = {"schema_version": 1, "budget": ledger["summary"],
+                        "models": [{key: value for key, value in asdict(r).items()
+                                    if key not in {"raw", "content"}} for r in model_runs]}
+    write_json(out_dir / "provider_summary.json", provider_summary)
     dashboard = generate_dashboard(out_dir, repo_summary, dep_summary, tasks, score_summary, build_summary)
     tech_report, paper_draft = generate_reports(out_dir, project, repo_summary, dep_summary, tasks, score_summary, build_summary)
 
@@ -1340,6 +1345,7 @@ def run_harness(
         "dependency_summary": dep_summary,
         "task_count": len(tasks),
         "model_run_count": len(model_runs),
+        "provider_summary": provider_summary,
         "patch_result_count": len(patch_results),
         "build_summary": build_summary,
         "verification_summary": verification_summary,
@@ -1355,6 +1361,7 @@ def run_harness(
             "technical_report": str(tech_report),
             "paper_draft": str(paper_draft),
             "token_usage": str(out_dir / "token_usage.csv"),
+            "provider_summary": str(out_dir / "provider_summary.json"),
             "evaluation_scores": str(out_dir / "evaluation_scores.csv"),
             "patch_results": str(out_dir / "patch_results.csv"),
             "verification_results": str(out_dir / "verification_results.json"),

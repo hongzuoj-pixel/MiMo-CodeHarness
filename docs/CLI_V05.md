@@ -2,6 +2,8 @@
 
 The `mimo` command is the supported user entry point introduced in v0.5. It wraps the existing verification core without removing the legacy Python scripts. v0.6 adds versioned input identities and conservative [run recovery](RUN_RECOVERY.md).
 
+v0.8 unifies final-text model providers and adds explicit completion/usage states, bounded HTTP workers, opt-in retries and durable reservations across recovery branches. [Configure providers and budgets](MODEL_PROVIDERS.md); [review the remaining product milestones](PRODUCT_PLAN.md).
+
 ## Installation
 
 ```bash
