@@ -200,7 +200,10 @@ def propose(config, snapshot: Path, root: Path, request: dict, manifest, budget)
         if outcome.status != "completed" or outcome.returncode != 0:
             raise ValueError("AGENT_" + (outcome.status.upper() if outcome.status != "completed" else "EXIT_ERROR"))
         try:
-            response = json.loads(outcome.stdout)
+            # ProcessOutcome uses replacement decoding for human-readable tails.
+            # The wire contract must reject invalid UTF-8 rather than silently
+            # replacing bytes inside an otherwise parseable patch string.
+            response = json.loads(outcome.stdout_bytes.decode("utf-8"))
         except (ValueError, RecursionError) as exc:
             raise ValueError("AGENT_INVALID_JSON") from exc
         if (not isinstance(response, dict) or type(response.get("schema_version")) is not int or response["schema_version"] != 1
