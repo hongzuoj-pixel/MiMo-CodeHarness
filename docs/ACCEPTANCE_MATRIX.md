@@ -20,6 +20,11 @@ The final product is accepted by complete workflows and failure scenarios, not b
 | Docker resource/network/root boundary | Dedicated Linux Docker CI job | Non-root, read-only root, no socket/ambient key, bounded memory/PIDs, network disabled |
 | Docker timeout and normal teardown | Actual containers inspected after command | Container removal confirmed |
 | Missing Docker/runtime/preparation | Failure fixtures | Explicit ERROR; no local fallback |
+| Interrupted models and abrupt process death → resume | `test_run_recovery.py` public CLI and actual processes | Completed model outputs reused; incomplete/failed calls retried; original evidence retained |
+| Previous PASS → changed external behavior → resume | Actual baseline/candidate pytest on WORKTREE and HEAD | Fresh execution yields FAIL; no cached verdict |
+| Binary/test/config/provider/environment/engine/patch/ref changes | Input invalidation fixtures | ERROR before model reuse or project commands |
+| Damaged snapshots/checkpoints/evidence and concurrent recovery | File corruption fixtures and actual OS locks | No unsafe reuse or overwrite |
+| Docker recovery and mutable image tag | Dedicated Docker CLI recovery test | New containers per attempt; changed image ID rejected |
 | Real external repository regression | Fixed SlideNote commit gate | Structured case evidence and clean source |
 | Python/pytest/platform compatibility | Python 3.10/3.12/3.13; pytest 8/9; Linux/Windows | All jobs pass; JUnit retained even on failure |
 
@@ -27,7 +32,7 @@ Run ordinary checks with `python -m pytest tests -q --junitxml=results.xml`. Doc
 
 ## Final stable-release gates still pending
 
-- Versioned run manifests, complete input/config/test/environment hashes and safe resume/cache invalidation.
+- Generalized cross-run caches/migration remain deferred; current recovery reuses only completed model responses within a validated run lineage. Network preparation and external services require pinned inputs and fresh execution.
 - Portable offline HTML/JSON/JUnit evidence bundles, relocation checks and a user-facing PR workflow that blocks bad/insufficient/error results while retaining artifacts.
 - Unified provider/Agent contract, limited repair loop, retry/budget/truncation/usage tests; live paid-provider validation only when credentials and budget are available.
 - Certified Node/GenericCommand support and additional real defect cases; Keil/firmware/hardware behavior remain separately scoped.

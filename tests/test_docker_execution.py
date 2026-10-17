@@ -2,12 +2,14 @@
 import json
 import os
 import subprocess
+import uuid
 from pathlib import Path
 
 import pytest
 
 from mimo_harness.checks import run_check
 from mimo_harness.execution import ExecutionContext
+from mimo_harness.cli import default_project_config, main
 from run_mimo_codeharness_v02 import BuildTesterV02
 
 IMAGE = os.getenv("MIMO_DOCKER_TEST_IMAGE")
@@ -88,3 +90,42 @@ def test_docker_dependency_layers_are_separate(tmp_path):
         assert (outcome.returncode == 0) == (i == 0)
     for ctx in contexts:
         assert_removed(ctx.containers)
+
+
+def test_cli_recovery_uses_fresh_containers_and_rejects_retagged_image(tmp_path, monkeypatch):
+    root = tmp_path / "project"
+    root.mkdir()
+    monkeypatch.chdir(root)
+    (root / "value.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (root / "test_value.py").write_text("from value import VALUE\ndef test_value(): assert VALUE == 2\n", encoding="utf-8")
+    patch = tmp_path / "fix.patch"
+    patch.write_text("--- a/value.py\n+++ b/value.py\n@@ -1 +1 @@\n-VALUE = 1\n+VALUE = 2\n", encoding="utf-8")
+    alias = "mimo-resume-" + uuid.uuid4().hex
+    cfg = default_project_config()
+    cfg["execution"] = policy(image=alias)
+    cfg["checks"] = [{"id": "unit", "adapter": "pytest", "target_tests": ["test_value.py::test_value"]}]
+    (root / "mimo-harness.json").write_text(json.dumps(cfg), encoding="utf-8")
+    subprocess.run(["docker", "tag", IMAGE, alias], check=True)
+    try:
+        assert main(["verify", "--patch", str(patch), "--base", "WORKTREE", "--task-type", "bug_fix",
+                     "--run-tests", "--name", "first"]) == 0
+        first = root / ".mimo/runs/first"
+        assert main(["resume", "--run", str(first), "--name", "second"]) == 0
+        second = root / ".mimo/runs/second"
+        manifests = [json.loads((p / "run_manifest.json").read_text()) for p in (first, second)]
+        assert manifests[0]["fingerprint"] == manifests[1]["fingerprint"]
+        names = []
+        for attempt in (first, second):
+            for name in ("baseline", "candidate"):
+                summary = json.loads((attempt / f"{name}_summary.json").read_text())
+                names.extend(summary["execution_environment"]["container_names"])
+        assert len(set(names)) == len(names)
+        assert_removed(names)
+        build = tmp_path / "retag"
+        build.mkdir()
+        (build / "Dockerfile").write_text(f"FROM {IMAGE}\nLABEL mimo.recovery=new-image\n", encoding="utf-8")
+        subprocess.run(["docker", "build", "-t", alias, str(build)], check=True, capture_output=True)
+        assert main(["resume", "--run", str(first), "--name", "retagged"]) == 4
+        assert not (root / ".mimo/runs/retagged/baseline").exists()
+    finally:
+        subprocess.run(["docker", "image", "rm", alias], capture_output=True)

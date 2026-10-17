@@ -228,6 +228,15 @@ The default `local` backend uses the current interpreter with a clean environmen
 
 See [execution isolation and configuration](docs/EXECUTION_ISOLATION.md) and the [end-to-end acceptance matrix](docs/ACCEPTANCE_MATRIX.md). Docker is never silently replaced with local execution.
 
+### Continue an interrupted run
+
+```bash
+mimo resume --run .mimo/runs/first-run --name continued-run
+mimo report --run .mimo/runs/continued-run
+```
+
+CLI runs save versioned input fingerprints and individual model checkpoints. Recovery preserves the original run, validates source/config/environment and evidence integrity, reuses completed model responses, and rebuilds/retests in fresh workspaces. Changed inputs return an error instead of reusing an old verdict. See [run identities and recovery](docs/RUN_RECOVERY.md).
+
 ### 6.5 Configure Xiaomi MiMo API
 
 Do not write your API key into source code or commit it to GitHub.

@@ -231,6 +231,15 @@ mimo report
 
 配置见[执行隔离说明](docs/EXECUTION_ISOLATION.md)，完整流程验收见[验收矩阵](docs/ACCEPTANCE_MATRIX.md)。请求 Docker 但环境不可用时会明确失败，不会自动改用本机执行。
 
+### 恢复中断的运行
+
+```bash
+mimo resume --run .mimo/runs/first-run --name continued-run
+mimo report --run .mimo/runs/continued-run
+```
+
+CLI 会保存版本化输入指纹，并在每次模型调用完成后写入检查点。恢复会保留原运行，检查源码、配置、环境与证据完整性，复用已完成的模型输出，再用全新工作区和依赖环境重跑构建与测试。输入改变时会明确报错。详细边界见[运行指纹与恢复](docs/RUN_RECOVERY.md)。
+
 ### 6.5 设置 MiMo API
 
 不要把 API Key 写进代码，也不要上传到 GitHub。

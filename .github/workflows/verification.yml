@@ -54,6 +54,7 @@ jobs:
           mimo --config ci-mimo.json init --project demo_harmony_project --mode offline
           mimo --config ci-mimo.json doctor
           mimo --config ci-mimo.json run --name cli-install-smoke --limit-tasks 1
+          mimo --config ci-mimo.json resume --run .mimo/runs/cli-install-smoke --name cli-install-resumed
           mimo --config ci-mimo.json report
       - uses: actions/upload-artifact@v4
         if: always()

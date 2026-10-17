@@ -248,7 +248,7 @@ class RepositoryScanner:
 
     def scan(self) -> List[FileRecord]:
         files: List[FileRecord] = []
-        for path in self.project_root.rglob("*"):
+        for path in sorted(self.project_root.rglob("*")):
             if len(files) >= self.max_files:
                 break
             if is_excluded(path, self.project_root) or not path.is_file():
@@ -654,7 +654,7 @@ def safe_identifier(value: str) -> str:
     return cleaned[:64] or "candidate"
 
 
-def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, repo_summary: Dict[str, Any], dep_summary: Dict[str, Any], snippets: Dict[str, str]) -> List[ModelRunRecord]:
+def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, repo_summary: Dict[str, Any], dep_summary: Dict[str, Any], snippets: Dict[str, str], checkpoint=None) -> List[ModelRunRecord]:
     models = [m for m in config.get("models", []) if m.get("enabled", True)]
     if not models:
         raise ValueError("Model config contains no enabled models.")
@@ -662,6 +662,16 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
     for task in tasks:
         prompt = build_prompt(task, repo_summary, dep_summary, snippets)
         for model_cfg in models:
+            candidate_id = f"{task.task_id}-{safe_identifier(model_cfg.get('name', 'unknown'))}-{len(rows) + 1:03d}"
+            signature = None
+            if checkpoint is not None:
+                from mimo_harness.manifests import digest
+                signature = digest({"prompt": prompt, "model": model_cfg, "execute": execute,
+                                    "candidate_id": candidate_id})
+                saved = checkpoint.reuse(candidate_id, signature)
+                if saved is not None:
+                    rows.append(ModelRunRecord(**saved))
+                    continue
             start = time.perf_counter()
             status = "completed"
             error = ""
@@ -674,7 +684,6 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
                 status = "failed"
                 error = f"{type(exc).__name__}: {exc}"
                 raw = {"traceback": traceback.format_exc(limit=4)}
-            candidate_id = f"{task.task_id}-{safe_identifier(model_cfg.get('name', 'unknown'))}-{len(rows) + 1:03d}"
             rows.append(ModelRunRecord(
                 task_id=task.task_id,
                 provider_name=str(model_cfg.get("name", "unknown")),
@@ -690,6 +699,8 @@ def run_models(tasks: List[HarnessTask], config: Dict[str, Any], execute: bool, 
                 raw=raw,
                 candidate_id=candidate_id,
             ))
+            if checkpoint is not None:
+                checkpoint.record(candidate_id, signature, asdict(rows[-1]))
     return rows
 
 
@@ -1203,6 +1214,8 @@ def run_harness(
     output_root: Optional[Path] = None,
     checks: Optional[List[Dict[str, Any]]] = None,
     execution: Optional[Dict[str, Any]] = None,
+    checkpoint=None,
+    display_project: Optional[Path] = None,
 ) -> Dict[str, Any]:
     project = project.resolve()
     runs_root = (
@@ -1216,12 +1229,14 @@ def run_harness(
     scanner = RepositoryScanner(project, max_files=max_files)
     files = scanner.scan()
     repo_summary = scanner.summary()
+    if display_project is not None:
+        repo_summary["project_root"] = str(display_project)
     reasoner = DependencyReasoner(project, files, scanner.snippets)
     edges = reasoner.analyze()
     dep_summary = reasoner.summary()
     tasks = TaskGeneratorV02(files, edges, scanner.snippets).generate(limit=limit_tasks)
     config = load_model_config(config_path)
-    model_runs = run_models(tasks, config, execute, repo_summary, dep_summary, scanner.snippets)
+    model_runs = run_models(tasks, config, execute, repo_summary, dep_summary, scanner.snippets, checkpoint=checkpoint)
     patch_results = apply_patches(model_runs, project, out_dir, actually_apply=apply_patch_flag)
 
     # Establish the baseline in an isolated workspace with the same copy policy used
@@ -1306,6 +1321,7 @@ def run_harness(
         "total_tokens_est": r.total_tokens_est,
         "dry_run": r.dry_run,
         "status": r.status,
+        "reused_from_checkpoint": r.candidate_id in (checkpoint.data["reused_candidates"] if checkpoint else []),
     } for r in model_runs]
     write_csv(out_dir / "token_usage.csv", token_rows)
     dashboard = generate_dashboard(out_dir, repo_summary, dep_summary, tasks, score_summary, build_summary)
