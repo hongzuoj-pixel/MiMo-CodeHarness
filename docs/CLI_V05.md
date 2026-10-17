@@ -1,6 +1,6 @@
 # Installable CLI v0.5
 
-The `mimo` command is the supported user entry point for the v0.5 development line. It wraps the existing v0.4 verification core without removing the legacy Python scripts.
+The `mimo` command is the supported user entry point introduced in v0.5. It wraps the existing verification core without removing the legacy Python scripts. v0.6 adds versioned input identities and conservative [run recovery](RUN_RECOVERY.md).
 
 ## Installation
 
@@ -35,6 +35,7 @@ Neither file is overwritten unless `--force` is explicitly supplied. Offline and
 | `mimo doctor` | Validate Python, Git, paths, model config, and API prerequisites | No |
 | `mimo run` | Run scanning, task generation, agents, candidate verification, and reports | Only in API mode |
 | `mimo verify` | Verify one local unified diff against an isolated baseline | No |
+| `mimo resume --run PATH` | Validate inputs, recover completed model responses, rerun all checks in a new attempt | Original API mode only |
 | `mimo report` | Generate a concise Markdown summary for a completed run | No |
 
 ## Direct patch verification
@@ -63,5 +64,6 @@ The CLI preserves the v0.4 automation contract:
 | `2` | Verification `FAIL` |
 | `3` | `INSUFFICIENT_EVIDENCE` |
 | `4` | Configuration, environment, or execution `ERROR` |
+| `130` | Interrupted run; partial evidence retained |
 
 Static checks alone cannot produce a verified pass. `--run-tests` executes detected repository tests locally; use a container or disposable worker for untrusted code.

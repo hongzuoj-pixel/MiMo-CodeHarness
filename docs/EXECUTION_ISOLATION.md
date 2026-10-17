@@ -34,7 +34,7 @@ Add this block to your project configuration and replace the requirements path w
 
 Include pytest in those dependencies when using the pytest adapter. `{python}` is the environment interpreter; use it in Python preparation/build/test commands. Bare `pip` should be avoided. Preparation is prohibited in local mode to avoid accidental global installation. Network-dependent preparation is subject to host networking in venv mode; use locks/hashes and offline wheels for repeatability.
 
-Preparation runs independently against each version's copied files. Failure stops that workspace's checks and produces `ERROR`. No fallback imports dependencies from the harness's venv. `pip freeze --all`, preparation argv/cwd/results, stdout/stderr, and execution metadata are retained next to the check logs. A new run name is required to retry; checkpoint/resume is not implemented yet.
+Preparation runs independently against each version's copied files. Failure stops that workspace's checks and produces `ERROR`. No fallback imports dependencies from the harness's venv. `pip freeze --all`, preparation argv/cwd/results, stdout/stderr, and execution metadata are retained next to the check logs. Since v0.6.0, [recovery](RUN_RECOVERY.md) creates a new attempt after validating input fingerprints; dependency environments and all checks are recreated.
 
 ## Linux Docker
 

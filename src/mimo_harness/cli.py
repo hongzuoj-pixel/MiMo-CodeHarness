@@ -19,12 +19,15 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 from mimo_harness import __version__
 from mimo_harness.checks import validate_checks
 from mimo_harness.execution import validate_execution
+from mimo_harness.manifests import (
+    MANIFEST_NAME, RecoverySource, RunLock, RunManifest, atomic_json, source_inventory,
+)
 from run_mimo_codeharness_v02 import (
     BuildTesterV02,
     ModelRunRecord,
+    COPY_EXCLUDE_DIRS,
     apply_patches,
     copy_worktree,
-    ensure_dir,
     run_harness,
     write_json,
 )
@@ -386,6 +389,48 @@ def _run_name(prefix: str) -> str:
     )
 
 
+def _run_directory(output_root: Path, name: str) -> Path:
+    if not name or name in {".", ".."} or any(c in name for c in '/\\:') or Path(name).name != name:
+        raise ValueError("Run name must be a single directory name, without path separators.")
+    return output_root / name
+
+
+def _snapshot_worktree(project: Path, destination: Path) -> None:
+    before = source_inventory(project, COPY_EXCLUDE_DIRS)
+    copy_worktree(project, destination)
+    if before != source_inventory(destination) or before != source_inventory(project, COPY_EXCLUDE_DIRS):
+        raise ValueError("Project changed while capturing inputs; retry after edits stop.")
+
+
+def _execute_attempt(run_dir: Path, project: Path, operation) -> int:
+    # mkdir is the reservation: two invocations can never share one output tree.
+    run_dir.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        run_dir.mkdir()
+    except FileExistsError:
+        print(f"[ERROR] Run directory already exists: {run_dir}. Choose a new --name.", file=sys.stderr)
+        return EXIT_CODES[ERROR]
+    with RunLock(run_dir):
+        state = {}
+        try:
+            code = operation(state)
+        except KeyboardInterrupt:
+            code = _record_cancelled(run_dir, project)
+        except Exception as exc:
+            print(f"[ERROR] Execution failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+            summary = {"overall_verdict": ERROR, "exit_code": 4, "counts": {ERROR: 1},
+                       "run_errors": [{"stage": "execution", "check": "runtime", "reason_codes": ["EXECUTION_ERROR"]}]}
+            atomic_json(run_dir / "verification_summary.json", summary)
+            atomic_json(run_dir / "run_log.json", {"mode": "error", "project": str(project),
+                        "output_dir": str(run_dir), "verification_summary": summary,
+                        "key_outputs": {"verification_summary": str(run_dir / "verification_summary.json")}})
+            code = EXIT_CODES[ERROR]
+        manifest = state.get("manifest")
+        if manifest is not None:
+            manifest.finish("CANCELLED" if code == 130 else "ERROR" if code == 4 else "COMPLETED", code)
+        return code
+
+
 def command_run(args: argparse.Namespace) -> int:
     config_path = _config_path(args.config)
     try:
@@ -414,21 +459,25 @@ def command_run(args: argparse.Namespace) -> int:
         args.run_tests, args.no_run_tests, bool(cfg.get("run_build_tests", False))
     )
     name = args.name or _run_name("run")
-    if (output_root / name).exists():
-        print(
-            f"[ERROR] Run directory already exists: {output_root / name}. Choose a new --name.",
-            file=sys.stderr,
-        )
-        return EXIT_CODES[ERROR]
+    run_dir = _run_directory(output_root, name)
 
     print(
         "[MODE] API execution — configured providers will be called."
         if execute
         else "[MODE] OFFLINE MOCK — no model API will be called."
     )
-    try:
+    def operate(state):
+        snapshot = run_dir / "inputs/project"
+        _snapshot_worktree(project, snapshot)
+        options = {"execute": execute, "apply_patches": apply_patches_flag, "run_tests": run_tests,
+                   "limit_tasks": args.limit_tasks or int(cfg["limit_tasks"]),
+                   "max_files": args.max_files or int(cfg["max_files"])}
+        manifest = RunManifest(run_dir, "run", {"project": str(project), "config": str(config_path),
+                               "model_config": str(model_config)}, options, cfg,
+                               previous=getattr(args, "recovery_source", None))
+        state["manifest"] = manifest
         log = run_harness(
-            project=project,
+            project=snapshot,
             name=name,
             config_path=model_config,
             limit_tasks=args.limit_tasks or int(cfg.get("limit_tasks", 6)),
@@ -439,18 +488,20 @@ def command_run(args: argparse.Namespace) -> int:
             output_root=output_root,
             checks=cfg.get("checks"),
             execution=cfg.get("execution"),
+            checkpoint=manifest,
+            display_project=project,
         )
-    except KeyboardInterrupt:
-        return _record_cancelled(output_root / name, project)
-    except Exception as exc:
-        print(f"[ERROR] Harness execution failed: {type(exc).__name__}: {exc}", file=sys.stderr)
-        return EXIT_CODES[ERROR]
+        log["project"] = str(project)
+        log["key_outputs"]["run_manifest"] = str(run_dir / MANIFEST_NAME)
+        log["reused_candidates"] = manifest.data["reused_candidates"]
+        atomic_json(run_dir / "run_log.json", log)
+        verification = log.get("verification_summary", {})
+        print(f"[RESULT] {verification.get('overall_verdict', ERROR)}")
+        print(f"[OUTPUT] {log.get('output_dir', '')}")
+        print(f"[SUMMARY] {log.get('key_outputs', {}).get('verification_summary', '')}")
+        return int(verification.get("exit_code", EXIT_CODES[ERROR]))
 
-    verification = log.get("verification_summary", {})
-    print(f"[RESULT] {verification.get('overall_verdict', ERROR)}")
-    print(f"[OUTPUT] {log.get('output_dir', '')}")
-    print(f"[SUMMARY] {log.get('key_outputs', {}).get('verification_summary', '')}")
-    return int(verification.get("exit_code", EXIT_CODES[ERROR]))
+    return _execute_attempt(run_dir, project, operate)
 
 
 def _safe_extract_tar(payload: bytes, destination: Path) -> None:
@@ -478,7 +529,7 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     if destination.exists():
         shutil.rmtree(destination)
     if base_ref.upper() == "WORKTREE":
-        copy_worktree(project, destination)
+        _snapshot_worktree(project, destination)
         return "WORKTREE"
 
     top = subprocess.run(
@@ -502,7 +553,7 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     if resolved.returncode != 0:
         raise ValueError(f"Git base ref does not resolve to a commit: {base_ref}")
     archive = subprocess.run(
-        ["git", "-C", str(project), "archive", "--format=tar", base_ref],
+        ["git", "-C", str(project), "archive", "--format=tar", resolved.stdout.strip()],
         capture_output=True,
     )
     if archive.returncode != 0:
@@ -523,7 +574,7 @@ def command_verify(args: argparse.Namespace) -> int:
     project = _resolve(base, args.project or str(cfg.get("project", ".")))
     patch_path = _resolve(Path.cwd(), args.patch)
     output_root = _resolve(base, str(cfg.get("output_dir", ".mimo/runs")))
-    run_dir = output_root / (args.name or _run_name("verify"))
+    run_dir = _run_directory(output_root, args.name or _run_name("verify"))
     baseline_dir = run_dir / "worktrees" / "_baseline"
 
     if not project.is_dir():
@@ -549,16 +600,26 @@ def command_verify(args: argparse.Namespace) -> int:
         return EXIT_CODES[ERROR]
 
     try:
-        patch_text = patch_path.read_text(encoding="utf-8")
+        patch_bytes = patch_path.read_bytes()
+        # Keep original bytes for identity; normalize only the text used by git
+        # so Windows write_text cannot turn CRLF input into CR-CR-LF output.
+        patch_text = patch_bytes.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
     except UnicodeDecodeError:
         print("[ERROR] Patch must be a UTF-8 unified diff.", file=sys.stderr)
         return EXIT_CODES[ERROR]
 
-    ensure_dir(run_dir)
-    write_json(run_dir / "verification_policy.json", {"checks": cfg.get("checks"), "execution": cfg.get("execution"), "task_type": args.task_type})
-    (run_dir / "input.patch").write_text(patch_text, encoding="utf-8", newline="\n")
-    try:
-        resolved_base = _materialize_baseline(project, args.base, baseline_dir)
+    def operate(state):
+        snapshot = run_dir / "inputs/project"
+        resolved_base = _materialize_baseline(project, args.base, snapshot)
+        (run_dir / "input.patch").write_bytes(patch_bytes)
+        previous = getattr(args, "recovery_source", None)
+        options = {"base": args.base, "task_type": args.task_type, "run_tests": args.run_tests}
+        origin = {"project": str(project), "config": str(config_path),
+                  "patch": previous.data["origin"]["patch"] if previous else str(patch_path)}
+        manifest = RunManifest(run_dir, "verify", origin, options, cfg, resolved_base, previous)
+        state["manifest"] = manifest
+        write_json(run_dir / "verification_policy.json", {"checks": cfg.get("checks"), "execution": cfg.get("execution"), "task_type": args.task_type})
+        copy_worktree(snapshot, baseline_dir)
         baseline_summary = BuildTesterV02(
             baseline_dir, run_dir / "baseline", checks=cfg.get("checks"), execution=cfg.get("execution")
         ).run_all(run_external=args.run_tests)
@@ -578,7 +639,7 @@ def command_verify(args: argparse.Namespace) -> int:
             candidate_id="local-patch",
         )
         patch_result = apply_patches(
-            [record], baseline_dir, run_dir, actually_apply=True
+            [record], snapshot, run_dir, actually_apply=True
         )[0]
         candidate_summary = None
         if patch_result.applied:
@@ -588,44 +649,41 @@ def command_verify(args: argparse.Namespace) -> int:
         task = SimpleNamespace(task_id="PATCH", task_type=args.task_type)
         result = classify_candidate(task, patch_result, baseline_summary, candidate_summary)
         verification = summarize_verifications([result])
-    except KeyboardInterrupt:
-        return _record_cancelled(run_dir, project)
-    except Exception as exc:
-        print(f"[ERROR] Verification failed: {type(exc).__name__}: {exc}", file=sys.stderr)
-        return EXIT_CODES[ERROR]
+        write_json(run_dir / "patch_result.json", asdict(patch_result))
+        write_json(run_dir / "baseline_summary.json", baseline_summary)
+        if candidate_summary is not None:
+            write_json(run_dir / "candidate_summary.json", candidate_summary)
+        write_json(run_dir / "verification_result.json", result.to_dict())
+        write_json(run_dir / "verification_summary.json", verification)
+        run_log = {
+            "mode": "direct_patch_verification",
+            "project": str(project),
+            "patch": str(patch_path),
+            "base": args.base,
+            "resolved_base": resolved_base,
+            "task_type": args.task_type,
+            "run_build_tests": args.run_tests,
+            "output_dir": str(run_dir),
+            "verification_summary": verification,
+            "key_outputs": {
+                "verification_summary": str(run_dir / "verification_summary.json"),
+                "verification_result": str(run_dir / "verification_result.json"),
+                "baseline_summary": str(run_dir / "baseline_summary.json"),
+                "candidate_summary": str(run_dir / "candidate_summary.json") if candidate_summary else "",
+                "run_manifest": str(run_dir / MANIFEST_NAME),
+            },
+        }
+        write_json(run_dir / "run_log.json", run_log)
 
-    write_json(run_dir / "patch_result.json", asdict(patch_result))
-    write_json(run_dir / "baseline_summary.json", baseline_summary)
-    if candidate_summary is not None:
-        write_json(run_dir / "candidate_summary.json", candidate_summary)
-    write_json(run_dir / "verification_result.json", result.to_dict())
-    write_json(run_dir / "verification_summary.json", verification)
-    run_log = {
-        "mode": "direct_patch_verification",
-        "project": str(project),
-        "patch": str(patch_path),
-        "base": args.base,
-        "resolved_base": resolved_base,
-        "task_type": args.task_type,
-        "run_build_tests": args.run_tests,
-        "output_dir": str(run_dir),
-        "verification_summary": verification,
-        "key_outputs": {
-            "verification_summary": str(run_dir / "verification_summary.json"),
-            "verification_result": str(run_dir / "verification_result.json"),
-            "baseline_summary": str(run_dir / "baseline_summary.json"),
-            "candidate_summary": str(run_dir / "candidate_summary.json") if candidate_summary else "",
-        },
-    }
-    write_json(run_dir / "run_log.json", run_log)
+        print(f"[RESULT] {result.verdict}")
+        print(f"[REASONS] {', '.join(result.reason_codes)}")
+        print(f"[CHANGED] {', '.join(result.changed_files) or 'none'}")
+        print(f"[OUTPUT] {run_dir}")
+        if not args.run_tests:
+            print("[NOTE] Behavior tests were not executed. Use --run-tests for executable evidence.")
+        return int(verification["exit_code"])
 
-    print(f"[RESULT] {result.verdict}")
-    print(f"[REASONS] {', '.join(result.reason_codes)}")
-    print(f"[CHANGED] {', '.join(result.changed_files) or 'none'}")
-    print(f"[OUTPUT] {run_dir}")
-    if not args.run_tests:
-        print("[NOTE] Behavior tests were not executed. Use --run-tests for executable evidence.")
-    return int(verification["exit_code"])
+    return _execute_attempt(run_dir, project, operate)
 
 
 def _latest_run(output_root: Path) -> Optional[Path]:
@@ -644,6 +702,30 @@ def _record_cancelled(run_dir: Path, project: Path) -> int:
     return 130
 
 
+def command_resume(args: argparse.Namespace) -> int:
+    root = _resolve(Path.cwd(), args.run)
+    if not root.is_dir():
+        raise ValueError(f"Recovery run directory does not exist: {root}")
+    with RunLock(root):
+        try:
+            source = RecoverySource(root)
+            origin, options = source.data["origin"], source.data["options"]
+            if args.config != CONFIG_FILENAME and _config_path(args.config) != Path(origin["config"]):
+                raise ValueError("Recovery uses the original configuration path; start a new run to change it.")
+            common = dict(config=origin["config"], project=origin["project"],
+                          name=args.name or _run_name("resume"), recovery_source=source)
+            print(f"[RESUME] {root} — completed model responses may be reused; all checks run fresh.")
+            if source.data["kind"] == "verify":
+                return command_verify(SimpleNamespace(**common, patch=str(root / "input.patch"),
+                    base=options["base"], task_type=options["task_type"], run_tests=options["run_tests"]))
+            return command_run(SimpleNamespace(**common, execute=options["execute"], offline=not options["execute"],
+                apply_patches=options["apply_patches"], no_apply_patches=not options["apply_patches"],
+                run_tests=options["run_tests"], no_run_tests=not options["run_tests"],
+                limit_tasks=options["limit_tasks"], max_files=options["max_files"]))
+        except (KeyError, TypeError) as exc:
+            raise ValueError("Malformed recovery manifest; start a new run.") from exc
+
+
 def command_report(args: argparse.Namespace) -> int:
     config_path = _config_path(args.config)
     try:
@@ -659,6 +741,11 @@ def command_report(args: argparse.Namespace) -> int:
 
     log = _read_json(run_dir / "run_log.json")
     verification = log.get("verification_summary", {})
+    manifest_path = run_dir / MANIFEST_NAME
+    manifest = _read_json(manifest_path) if manifest_path.is_file() else None
+    if manifest is not None and manifest.get("status") == "RUNNING":
+        # A crash can occur after writing results but before sealing the attempt.
+        verification = {"overall_verdict": "INCOMPLETE", "exit_code": 4, "counts": {}}
     verdict = verification.get("overall_verdict", "UNKNOWN")
     counts = verification.get("counts", {})
     lines = [
@@ -677,6 +764,14 @@ def command_report(args: argparse.Namespace) -> int:
     ]
     for key in ("PASS", "FAIL", "INSUFFICIENT_EVIDENCE", "ERROR", "NOT_APPLICABLE", "CANCELLED"):
         lines.append(f"| {key} | {counts.get(key, 0)} |")
+    if manifest is not None:
+        lines.extend(["", "## Run identity and recovery", "",
+                      f"- Input fingerprint: `{manifest.get('fingerprint', '')}`",
+                      f"- Manifest status: `{manifest.get('status', '')}`",
+                      f"- Reused completed model responses: {len(manifest.get('reused_candidates', []))}",
+                      "- Build/test verdicts and dependency environments are recreated for every attempt."])
+        if manifest.get("resumed_from"):
+            lines.append(f"- Resumed from: `{manifest['resumed_from']['directory']}`")
     if verification.get("run_errors"):
         lines.extend(["", "## Run errors", ""])
         for error in verification["run_errors"]:
@@ -751,6 +846,11 @@ def build_parser() -> argparse.ArgumentParser:
     verify.add_argument("--run-tests", action="store_true", help="Execute detected project tests")
     verify.set_defaults(handler=command_verify)
 
+    resume = sub.add_parser("resume", help="Recover into a new run; validate inputs and rerun all checks.")
+    resume.add_argument("--run", required=True, help="Original run directory with run_manifest.json")
+    resume.add_argument("--name", help="New output run name; the original is preserved")
+    resume.set_defaults(handler=command_resume)
+
     report = sub.add_parser("report", help="Generate a concise report for a completed run.")
     report.add_argument("--run", help="Run directory; defaults to the latest completed run")
     report.set_defaults(handler=command_report)
@@ -765,6 +865,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     except KeyboardInterrupt:
         print("[RESULT] CANCELLED", file=sys.stderr)
         return 130
+    except (ValueError, OSError) as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return EXIT_CODES[ERROR]
 
 
 if __name__ == "__main__":
