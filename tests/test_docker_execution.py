@@ -26,6 +26,34 @@ def assert_removed(names):
         assert subprocess.run(["docker", "inspect", name], capture_output=True).returncode != 0
 
 
+def test_cli_agent_two_round_repair_and_private_credentials_in_real_docker(tmp_path, monkeypatch):
+    from test_cli_repair import case, repair, read
+    c = case(tmp_path, secret=True, timeout=30, budget=2)
+    monkeypatch.setenv("REPAIR_TEST_KEY", "docker-cli-agent-credential-canary")
+    config = json.loads(c.config.read_text())
+    config["execution"] = policy()
+    c.config.write_text(json.dumps(config), encoding="utf-8")
+    agent = json.loads(c.agent.read_text())
+    agent["execution"] = policy(env_allowlist=["REPAIR_TEST_KEY"])
+    c.agent.write_text(json.dumps(agent), encoding="utf-8")
+    assert repair(c) == 0
+    run = tmp_path / "runs/first"
+    h = read(c)
+    assert [r["verification"]["verdict"] for r in h["rounds"]] == ["FAIL", "PASS"]
+    names = []
+    for path in (run / "agent_runs").glob("*/logs/execution_environment.json"):
+        environment = json.loads(path.read_text())
+        assert environment["image_id"].startswith("sha256:")
+        names.extend(environment["container_names"])
+    names.extend(read(c, file="baseline_summary.json")["execution_environment"]["container_names"])
+    for row in h["rounds"]:
+        names.extend(row["candidate_summary"]["execution_environment"]["container_names"])
+    assert_removed(names)
+    bundle = tmp_path / "repair-docker.zip"
+    assert main(["export", "--run", str(run), "--output", str(bundle)]) == 0
+    assert main(["gate", "--bundle", str(bundle)]) == 0
+
+
 def test_docker_resources_network_credentials_and_evidence(tmp_path, monkeypatch):
     root = tmp_path / "project with spaces"
     root.mkdir()

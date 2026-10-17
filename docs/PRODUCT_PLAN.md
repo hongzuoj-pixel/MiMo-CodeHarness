@@ -11,8 +11,9 @@ Priorities are ordered by user dependency, with a concrete exit condition:
 | Priority | Work | Completion condition |
 |---|---|---|
 | P0 · implemented | Isolated baseline/candidate verification, stable Python case evidence, recovery, portable reports, PASS-only gates | Existing Linux/Windows/Python/pytest/Docker/browser gates remain green |
-| P1 · current batch | Unified HTTP/mock provider contract, bounded deadlines/retries, explicit usage/completion states, persistent request/token/cost reservations | Real local HTTP fault injection; API → pytest → export/gate; interruption and branching recovery cannot reset budgets; old configs and offline execution work |
-| P2 | Certified external CLI Agent runner and a limited repair loop | Explicit argv, isolated workspace and process cleanup; each round preserves its patch and independent test evidence; unchanged baseline acceptance; shared budgets and a finite round limit; no tool call silently accepted by the text-only runner |
+| P1 · implemented | Unified HTTP/mock provider contract, bounded deadlines/retries, explicit usage/completion states, persistent request/token/cost reservations | Real local HTTP fault injection; API → pytest → export/gate; interruption and branching recovery cannot reset budgets; old configs and offline execution work |
+| P2a · current batch | Generic external CLI Agent protocol and limited pytest bug-fix repair loop | Explicit argv, separate Agent/acceptance workspaces and credentials, process cleanup and bounded output; each round preserves its patch and independent test evidence; unchanged baseline acceptance; shared invocation/time budget, finite rounds, recovery and portable strict gate |
+| P2b | Live vendor CLI adapters | Validate each claimed vendor's actual command/events, credentials, completion states and internal spending limits with explicit allowance; no tool call silently accepted by the text-only HTTP runner |
 | P3 | Additional real defect cases and certified Node/GenericCommand checks | At least one independent bug-fix and regression case per claimed adapter; structured case evidence rather than command exit alone; documented dependency/setup boundaries |
 | P4 | New-user workflow and actionable diagnosis | Complete install/configure/run/fail/recover/export walkthrough; at least three independent new users can follow the guide, with observed problems addressed and their results recorded |
 | P5 | Release and final completeness sign-off | Clean wheel/sdist installation, upgrade/support notes, maintainer-selected license, supported matrix and failure-injection acceptance rerun after the last functional change |
@@ -31,6 +32,8 @@ P2–P4 may be scoped into smaller batches, but a capability is not advertised a
 - Validate all of this without a paid provider, then separately record any live-provider trial with its model, credentials availability, explicit spending allowance and observed results. Local protocol tests cannot substitute for a live-provider claim.
 
 ## Final release record
+
+P2 is deliberately split at its verifiable integration boundary. The generic CLI protocol is exercised by real local processes and dedicated Docker acceptance, including failure injection and two-round repair; the included adapter is deterministic and does not claim model repair quality. No opaque CLI's internal model requests, tokens or invoice can be inferred from invocation count. See [CLI_AGENTS.md](CLI_AGENTS.md). Node adapters, real defect diversity and independent new-user trials remain necessary before stable-release sign-off.
 
 Use [ACCEPTANCE_MATRIX.md](ACCEPTANCE_MATRIX.md) as the executable inventory. The final record must identify the exact commit/tree, supported environments, passed/failed/skipped checks, install artifacts, real defect cases, usability evidence and any remaining exclusions. Keil firmware compilation and hardware behavior require their own toolchains and acceptance; they are not inferred from lightweight embedded scans.
 

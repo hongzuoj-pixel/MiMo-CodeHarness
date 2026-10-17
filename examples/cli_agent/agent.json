@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "argv": ["{python}", "demo_agent.py", "{request}"],
+  "timeout_seconds": 30,
+  "max_output_bytes": 262144,
+  "execution": {"mode": "local", "env_allowlist": []},
+  "budget": {"max_invocations": 2, "max_reserved_seconds": 60}
+}

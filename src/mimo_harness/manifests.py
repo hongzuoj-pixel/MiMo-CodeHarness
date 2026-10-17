@@ -208,6 +208,8 @@ class RecoverySource:
             raise ValueError("Malformed recovery identity.")
         if digest(self.data.get("inputs")) != self.data.get("fingerprint"):
             raise ValueError("Damaged run fingerprint.")
+        if self.data["options"] != self.data["inputs"].get("options"):
+            raise ValueError("Run options disagree with the input fingerprint.")
         saved = read_object(safe_file(self.root, "inputs/source_manifest.json"))
         if digest(saved) != self.data["inputs"].get("source_sha256"):
             raise ValueError("Damaged source inventory.")
@@ -230,6 +232,23 @@ class RecoverySource:
             self.provider_ledger = read_object(path)
             from mimo_harness.model_runtime import validate_ledger
             validate_ledger(self.provider_ledger)
+        self.agent_ledger = None
+        if self.data.get("agent_ledger") is not None:
+            reference = self.data["agent_ledger"]
+            if not isinstance(reference, dict) or reference.get("path") != "agent_ledger.json":
+                raise ValueError("Invalid Agent ledger reference.")
+            path = safe_file(self.root, reference["path"])
+            if file_digest(path) != reference.get("sha256"):
+                raise ValueError("Agent ledger changed.")
+            from mimo_harness.cli_agents import validate_agent_ledger
+            self.agent_ledger = validate_agent_ledger(read_object(path))
+        if self.data["options"].get("workflow") == "repair":
+            expected = self.data["options"].get("task_sha256")
+            if file_digest(safe_file(self.root, "inputs/task.txt")) != expected:
+                raise ValueError("Saved repair task changed.")
+            original = Path(self.data["origin"]["task_file"])
+            if original.exists() and file_digest(original) != expected:
+                raise ValueError("Original repair task changed; start a new run.")
         self.records = {}
         for key, checkpoint in self.data.get("model_checkpoints", {}).items():
             if not isinstance(checkpoint, dict) or any(not isinstance(checkpoint.get(k), str)
@@ -273,6 +292,25 @@ class RunManifest:
                   "engine_sha256": engine_identity(),
                   "environment": environment_identity(policy["execution"], policy.get("checks"), salt,
                                                        root / "identity-home")}
+        if origin.get("agent_config"):
+            from mimo_harness.cli_agents import load_agent_config
+            agent = load_agent_config(Path(origin["agent_config"]))
+            files = {}
+            for arg in agent["argv"]:
+                if arg.startswith("-") or arg in {"{python}", "{request}", "{workspace}"}:
+                    continue
+                path = Path(arg)
+                if not path.is_absolute():
+                    path = root / "inputs/project" / agent["cwd"] / path
+                try:
+                    if path.is_file():
+                        files[arg] = file_digest(path)
+                except OSError:
+                    # An inline program/JSON argument is not necessarily a path.
+                    pass
+            inputs["agent"] = {"config_sha256": file_digest(Path(origin["agent_config"])), "argv_files": files,
+                "environment": environment_identity(agent["execution"], [{"argv": agent["argv"]}], salt,
+                                                      root / "identity-home-agent")}
         if previous and inputs != previous.data["inputs"]:
             changed = sorted(key for key in inputs if inputs[key] != previous.data["inputs"].get(key))
             raise ValueError("Recovery inputs changed (" + ", ".join(changed) + "); start a new run.")
@@ -292,6 +330,12 @@ class RunManifest:
         path = self.root / "provider_ledger.json"
         atomic_json(path, ledger)
         self.data["provider_ledger"] = {"path": path.name, "sha256": file_digest(path)}
+        self.save()
+
+    def save_agent_ledger(self, ledger):
+        path = self.root / "agent_ledger.json"
+        atomic_json(path, ledger)
+        self.data["agent_ledger"] = {"path": path.name, "sha256": file_digest(path)}
         self.save()
 
     def reuse(self, candidate_id: str, signature: str):
@@ -316,7 +360,7 @@ class RunManifest:
 
     def finish(self, status: str, exit_code: int):
         artifacts = {}
-        ignored = {"inputs", "worktrees", "identity-home", "checkpoints"}
+        ignored = {"inputs", "worktrees", "identity-home", "identity-home-agent", "checkpoints", "agent_runs"}
         for directory, dirs, files in os.walk(self.root):
             parent = Path(directory)
             dirs[:] = [name for name in dirs if name != "runtime" and
