@@ -159,8 +159,8 @@ def _proof(reader, summary, original_root):
             tests = list(ET.fromstring(xml).iter("testcase"))
         except ET.ParseError as exc:
             raise ValueError("Damaged JUnit XML.") from exc
-        if len(tests) < len(expected):
-            raise ValueError("JUnit omits recorded test cases.")
+        if len(tests) != len(expected) + len(raw.get("collection_skips", [])):
+            raise ValueError("JUnit case count disagrees with recorded cases and collection skips.")
         if sum(t.find("failure") is not None for t in tests) != sum(c["status"] == "failed" for c in expected):
             raise ValueError("JUnit and recorded assertion failures disagree.")
         if any(t.find("error") is not None for t in tests):

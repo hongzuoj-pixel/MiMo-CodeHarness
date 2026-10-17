@@ -142,7 +142,7 @@ def reseal(run, relative):
     write(run / "run_manifest.json", m)
 
 
-@pytest.mark.parametrize("change", ["summary", "recorder", "junit", "junit-skip", "missing-log", "snapshot", "input-inventory"])
+@pytest.mark.parametrize("change", ["summary", "recorder", "junit", "junit-skip", "junit-extra", "missing-log", "snapshot", "input-inventory"])
 def test_gate_rejects_corruption_and_cross_checks_even_resealed_summaries(tmp_path, monkeypatch, change):
     root, patch = setup_project(tmp_path, monkeypatch)
     run = verify(root, patch)
@@ -167,6 +167,9 @@ def test_gate_rejects_corruption_and_cross_checks_even_resealed_summaries(tmp_pa
         reseal(run, "candidate/unit_junit.xml")
     elif change == "junit-skip":
         (run / "candidate/unit_junit.xml").write_text('<testsuite><testcase name="test_value"><skipped/></testcase></testsuite>')
+        reseal(run, "candidate/unit_junit.xml")
+    elif change == "junit-extra":
+        (run / "candidate/unit_junit.xml").write_text('<testsuite><testcase name="test_value"/><testcase name="unrelated"/></testsuite>')
         reseal(run, "candidate/unit_junit.xml")
     elif change == "missing-log":
         (run / "candidate/unit_stdout.log").unlink()
