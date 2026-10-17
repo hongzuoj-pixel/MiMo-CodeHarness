@@ -56,7 +56,7 @@ Example generic adapter fields inside a model object:
 }
 ```
 
-Whole-value `${MAX_TOKENS}` and `${TEMPERATURE}` placeholders become JSON numbers. Prompt and maximum-token placeholders are required; credentials belong in headers. Header values containing credentials use `${API_KEY}`; arbitrary environment substitution in configuration JSON is no longer performed. This avoids expanding secret values into saved model signatures or breaking JSON quoting.
+Whole-value `${MAX_TOKENS}` and `${TEMPERATURE}` placeholders become JSON numbers. Expansion is a single pass over template text: inserted prompts retain literal `${MODEL}`, `${MAX_TOKENS}` and similar code unchanged, including inside prefixed/suffixed prompt fields. Prompt and maximum-token placeholders are required; credentials belong in headers. Header values containing credentials use `${API_KEY}`; arbitrary environment substitution in configuration JSON is no longer performed. This avoids expanding secret values into saved model signatures or breaking JSON quoting.
 
 These adapters accept final text responses. Tool/function calls, unsupported termination reasons, malformed/empty replies and output/context truncation are failed model runs, with diagnostic reason codes. Partial text/known usage may be retained locally but no patch from it is applied. The legacy `CLIAgentRunner` is not a certified isolated Agent integration; use `mimo verify --patch PATH` for independently produced patches until P2 is accepted.
 

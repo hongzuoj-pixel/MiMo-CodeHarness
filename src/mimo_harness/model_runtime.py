@@ -6,6 +6,7 @@ import email.utils
 import json
 import os
 import random
+import re
 import subprocess
 import sys
 import time
@@ -99,8 +100,8 @@ def request_data(model, prompt, secret):
             if isinstance(value, str):
                 if value in replacements:
                     return replacements[value]
-                for key, item in replacements.items():
-                    value = value.replace(key, str(item))
+                return re.sub(r"\$\{(?:MODEL|PROMPT|MAX_TOKENS|TEMPERATURE)\}",
+                              lambda match: str(replacements[match.group(0)]), value)
             elif isinstance(value, dict):
                 return {k: replace(v) for k, v in value.items()}
             elif isinstance(value, list):

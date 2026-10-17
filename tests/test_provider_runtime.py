@@ -520,3 +520,14 @@ def test_legacy_universal_entry_uses_the_same_wire_contract(gateway):
     result = universal.call_model({"task_id": "T1"}, m, config(m), dry_run=False)
     assert result["usage_source"] == "provider" and result["input_tokens"] == 0
     assert state["requests"][0]["headers"]["Authorization"] == "Bearer " + SECRET
+
+
+def test_generic_template_expands_once_and_preserves_literals_inside_prompt(gateway):
+    url, state = gateway([{"body": {"answer": "done", "finish": "stop", "usage": {"input_tokens": 0, "output_tokens": 0}}}])
+    m = model(url, "generic_http")
+    m["body_template"]["input"] = "prefix ${PROMPT}"
+    prompt = "code=${MAX_TOKENS}; model=${MODEL}; temperature=${TEMPERATURE}"
+    ModelRuntime(config(m)).complete(m, prompt)
+    sent = state["requests"][0]["body"]
+    assert sent["input"] == "prefix " + prompt
+    assert sent["limit"] == 64
