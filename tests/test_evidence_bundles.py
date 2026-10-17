@@ -336,3 +336,15 @@ def test_preexisting_module_skip_is_preserved_in_junit_cross_check(tmp_path, mon
     bundle = tmp_path / "with-skips.zip"
     assert main(["export", "--run", str(run), "--output", str(bundle)]) == 0
     assert main(["gate", "--bundle", str(bundle)]) == 0
+
+
+def test_parent_pytest_configuration_cannot_change_acceptance_implicitly(tmp_path, monkeypatch):
+    root, patch = setup_project(tmp_path, monkeypatch)
+    (tmp_path / "pytest.ini").write_text("[pytest]\naddopts = -k unrelated_parent_selection\n", encoding="utf-8")
+    failed = verify(root, patch, name="outside-config", expected=4)
+    assert main(["gate", "--run", str(failed)]) == 4
+    (root / "pytest.ini").write_text("[pytest]\n", encoding="utf-8")
+    run = verify(root, patch, name="explicit-config")
+    baseline = read(run / "baseline_summary.json")
+    assert baseline["collected_tests"] == ["unit::test_value.py::test_value"]
+    assert main(["gate", "--run", str(run)]) == 0

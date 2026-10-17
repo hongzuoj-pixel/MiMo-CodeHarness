@@ -35,6 +35,7 @@ The expected patch is compared byte-for-byte through SHA-256. A different Git ba
 - Manifest completion status, verification summary and run-log consistency.
 - Recomputed per-candidate classifications and aggregate counts using the existing baseline/candidate verifier. A saved summary that merely says PASS is insufficient.
 - For PASS, recorder JSON versus summarized test IDs/results/exit codes, JUnit case/failure/error consistency, required logs and behavior execution. An exit-zero generic command cannot substitute for per-test evidence.
+- Pytest IDs/conftest lookup are rooted in the copied workspace. A pytest configuration selected from outside that workspace is an error, not an undeclared acceptance input. Nested plain projects can add an explicit `pytest.ini` containing `[pytest]` to prevent inheriting a parent repository's settings.
 - Bundle inventory, original run seal, portable report JSON and the versioned canonical offline HTML. Unknown bundle/renderer versions fail closed.
 
 Bundle schema and renderer version are currently `1`; future changes to the canonical renderer must preserve the version-1 reader/renderer or introduce a new explicitly supported format version. Hashes detect accidental changes and inconsistent evidence, not an attacker rewriting every unsigned record. This is not a digital signature, proof of all business behavior, or a general-purpose source backup.

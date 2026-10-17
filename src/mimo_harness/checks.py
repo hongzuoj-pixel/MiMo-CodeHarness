@@ -83,6 +83,10 @@ def run_check(root: Path, logs: Path, spec: dict, enabled: bool, context=None) -
     cwd = (root / spec.get("cwd", ".")).resolve()
     cwd.relative_to(root.resolve())
     args = spec.get("args", ["-q"])
+    if adapter == "pytest":
+        # Stable IDs and conftest discovery are bounded to the copied workspace,
+        # not to a monorepo/CI directory containing the run's output folder.
+        args = [*args, f"--rootdir={context.path(root)}", f"--confcutdir={context.path(root)}"]
     case_adapter = adapter in {"pytest", "unittest"}
     argv = (
         [context.python, context.path(Path(__file__).with_name("pytest_worker.py")), context.path(evidence_path),

@@ -17,6 +17,7 @@ def main():
     project.mkdir()
     (project / "value.py").write_text("VALUE = 1\n", encoding="utf-8")
     (project / "test_value.py").write_text("from value import VALUE\ndef test_value(): assert VALUE == 2\n", encoding="utf-8")
+    (project / "pytest.ini").write_text("[pytest]\n", encoding="utf-8")
     cli = [sys.executable, "-m", "mimo_harness"]
     subprocess.run([*cli, "init"], cwd=project, check=True)
     cfg = json.loads((project / "mimo-harness.json").read_text())

@@ -103,6 +103,17 @@ def main() -> int:
         return 4
 
     class Recorder:
+        def pytest_configure(self, config):
+            if config.inipath is not None:
+                try:
+                    Path(config.inipath).resolve().relative_to(Path(config.rootpath).resolve())
+                except ValueError as exc:
+                    raise pytest.UsageError(
+                        "Pytest configuration is outside the captured workspace. "
+                        "Add a project pytest.ini (even an empty [pytest] file), "
+                        "or select a configuration inside the project explicitly."
+                    ) from exc
+
         @pytest.hookimpl(hookwrapper=True)
         def pytest_runtest_makereport(self, item, call):
             outcome = yield
