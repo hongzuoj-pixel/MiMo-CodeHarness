@@ -110,6 +110,9 @@ def test_cli_recovery_uses_fresh_containers_and_rejects_retagged_image(tmp_path,
         assert main(["verify", "--patch", str(patch), "--base", "WORKTREE", "--task-type", "bug_fix",
                      "--run-tests", "--name", "first"]) == 0
         first = root / ".mimo/runs/first"
+        bundle = tmp_path / "docker-evidence.zip"
+        assert main(["export", "--run", str(first), "--output", str(bundle)]) == 0
+        assert main(["gate", "--bundle", str(bundle)]) == 0
         assert main(["resume", "--run", str(first), "--name", "second"]) == 0
         second = root / ".mimo/runs/second"
         manifests = [json.loads((p / "run_manifest.json").read_text()) for p in (first, second)]
@@ -127,5 +130,42 @@ def test_cli_recovery_uses_fresh_containers_and_rejects_retagged_image(tmp_path,
         subprocess.run(["docker", "build", "-t", alias, str(build)], check=True, capture_output=True)
         assert main(["resume", "--run", str(first), "--name", "retagged"]) == 4
         assert not (root / ".mimo/runs/retagged/baseline").exists()
+        assert main(["gate", "--bundle", str(bundle)]) == 0  # historical evidence needs no live daemon/image lookup
     finally:
         subprocess.run(["docker", "image", "rm", alias], capture_output=True)
+
+
+def test_ci_runner_enforces_real_patch_gate_and_keeps_failed_evidence(tmp_path):
+    root = tmp_path / "baseline"
+    root.mkdir()
+    (root / "value.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (root / "test_value.py").write_text("from value import VALUE\ndef test_value(): assert VALUE in (1, 2)\n", encoding="utf-8")
+    cfg = default_project_config()
+    cfg["execution"] = policy()
+    cfg["checks"] = [{"id": "unit", "adapter": "pytest"}]
+    (root / "mimo-harness.json").write_text(json.dumps(cfg), encoding="utf-8")
+    def git(*argv):
+        return subprocess.run(["git", *argv], cwd=root, check=True, capture_output=True, text=True).stdout.strip()
+    git("init", "-q")
+    git("add", ".")
+    git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "base")
+    base = git("rev-parse", "HEAD")
+    (root / "value.py").write_text("VALUE = 2\n", encoding="utf-8")
+    git("add", "value.py")
+    git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "good")
+    good = git("rev-parse", "HEAD")
+    (root / "value.py").write_text("VALUE = 3\n", encoding="utf-8")
+    git("add", "value.py")
+    git("-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "bad")
+    bad = git("rev-parse", "HEAD")
+    git("checkout", "-q", base)
+    script = Path(__file__).resolve().parents[1] / "examples/ci/verify_pr.py"
+    import sys
+    for head, expected, name in ((good, 0, "good"), (bad, 2, "bad")):
+        output = tmp_path / name
+        completed = subprocess.run([sys.executable, str(script), "--project", str(root),
+            "--base", base, "--head", head, "--image", IMAGE, "--output", str(output)], capture_output=True, text=True)
+        assert completed.returncode == expected, completed.stdout + completed.stderr
+        assert (output / "evidence.zip").is_file()
+        assert json.loads((output / "gate.json").read_text())["allowed"] is (expected == 0)
+        assert (root / "value.py").read_text() == "VALUE = 1\n"

@@ -10,6 +10,42 @@ permissions:
   contents: read
 
 jobs:
+  evidence-gate-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install harness and test dependencies
+        run: python -m pip install ".[test]" "pytest==8.4.2"
+      - name: Actual CLI gate exits and portable PASS/FAIL evidence
+        run: python tests/ci_gate_contract.py --output .mimo/ci-evidence-contract
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Browser checks for offline evidence reports
+        shell: bash
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: |
+          npm install --prefix "$RUNNER_TEMP/mimo-ui-tools" playwright@1.56.0
+          python -m zipfile -e .mimo/ci-evidence-contract/PASS/evidence.zip .mimo/ci-evidence-contract/PASS/view
+          python -m zipfile -e .mimo/ci-evidence-contract/FAIL/evidence.zip .mimo/ci-evidence-contract/FAIL/view
+          node tests/check_offline_report.cjs "$RUNNER_TEMP/mimo-ui-tools/node_modules/playwright" .mimo/ci-evidence-contract .mimo/browser-qa
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidence-gate-contract
+          path: |
+            .mimo/ci-evidence-contract/PASS/evidence.zip
+            .mimo/ci-evidence-contract/PASS/gate.json
+            .mimo/ci-evidence-contract/FAIL/evidence.zip
+            .mimo/ci-evidence-contract/FAIL/gate.json
+            .mimo/browser-qa
+          include-hidden-files: true
+          if-no-files-found: error
+
   docker-acceptance:
     runs-on: ubuntu-latest
     steps:
@@ -56,6 +92,8 @@ jobs:
           mimo --config ci-mimo.json run --name cli-install-smoke --limit-tasks 1
           mimo --config ci-mimo.json resume --run .mimo/runs/cli-install-smoke --name cli-install-resumed
           mimo --config ci-mimo.json report
+          mimo export --run .mimo/runs/cli-install-resumed --output cli-install-evidence.zip
+          python -c "import subprocess,sys; r=subprocess.run(['mimo','gate','--bundle','cli-install-evidence.zip','--json']); assert r.returncode == 3, r.returncode"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

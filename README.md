@@ -237,6 +237,15 @@ mimo report --run .mimo/runs/continued-run
 
 CLI runs save versioned input fingerprints and individual model checkpoints. Recovery preserves the original run, validates source/config/environment and evidence integrity, reuses completed model responses, and rebuilds/retests in fresh workspaces. Changed inputs return an error instead of reusing an old verdict. See [run identities and recovery](docs/RUN_RECOVERY.md).
 
+### Export evidence and enforce a CI gate
+
+```bash
+mimo export --run .mimo/runs/first-run --output evidence.zip
+mimo gate --bundle evidence.zip --json
+```
+
+Extract the ZIP and open `index.html` for an offline report with portable JSON/JUnit/log links. The strict gate recomputes the verdict and only returns success for an intact `PASS`; a successful export or `NOT_APPLICABLE` is not approval. See [evidence bundles, exit codes and the opt-in PR workflow](docs/EVIDENCE_AND_CI.md). Required merge checks must be enabled by the repository maintainer.
+
 ### 6.5 Configure Xiaomi MiMo API
 
 Do not write your API key into source code or commit it to GitHub.

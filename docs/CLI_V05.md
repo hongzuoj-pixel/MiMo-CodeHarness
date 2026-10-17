@@ -37,6 +37,8 @@ Neither file is overwritten unless `--force` is explicitly supplied. Offline and
 | `mimo verify` | Verify one local unified diff against an isolated baseline | No |
 | `mimo resume --run PATH` | Validate inputs, recover completed model responses, rerun all checks in a new attempt | Original API mode only |
 | `mimo report` | Generate a concise Markdown summary for a completed run | No |
+| `mimo export --run PATH --output ZIP` | Export a portable, hash-indexed offline evidence package | No |
+| `mimo gate --run PATH` / `--bundle ZIP` | Recompute acceptance from saved evidence; only intact PASS returns zero | No |
 
 ## Direct patch verification
 
@@ -67,3 +69,5 @@ The CLI preserves the v0.4 automation contract:
 | `130` | Interrupted run; partial evidence retained |
 
 Static checks alone cannot produce a verified pass. `--run-tests` executes detected repository tests locally; use a container or disposable worker for untrusted code.
+
+The administrative export code is not an acceptance decision. The strict v0.7 gate maps NOT_APPLICABLE to `3` and cancellation/incomplete evidence to `4`; see [portable evidence and CI](EVIDENCE_AND_CI.md).

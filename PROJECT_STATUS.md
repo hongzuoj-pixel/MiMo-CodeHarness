@@ -1,13 +1,13 @@
 # Project Status
 
-Current development line: MiMo-CodeHarness v0.6.0, per-test evidence, controlled execution and input-validated recovery.
+Current development line: MiMo-CodeHarness v0.7.0, portable evidence and strict automation gates.
 
 Evidence-backed capabilities:
 
 - isolated baseline-versus-candidate verification;
 - hard verdicts and stable exit codes;
 - installable `mimo` / `mimo-harness` console entry points;
-- explicit `init`, `doctor`, `run`, `verify`, `resume`, and `report` workflows;
+- explicit `init`, `doctor`, `run`, `verify`, `resume`, `report`, `export`, and `gate` workflows;
 - direct patch verification without a model API key;
 - fail-closed API diagnostics and non-overwriting run directories.
 - project-level pytest/build/smoke check policies with explicit argv, cwd and timeout;
@@ -19,5 +19,7 @@ Evidence-backed capabilities:
 - interruption exit 130 and preserved partial evidence; [acceptance matrix](docs/ACCEPTANCE_MATRIX.md).
 - versioned input/environment/engine fingerprints, immutable input snapshots and atomic per-model checkpoints;
 - recovery into new attempts with OS locks and evidence integrity validation; all builds/tests execute fresh; [recovery boundaries](docs/RUN_RECOVERY.md).
+- bounded, hash-indexed offline evidence ZIPs with HTML/JSON/JUnit/logs and relocation checks;
+- strict recomputed PASS-only gates, expected base/patch binding and an opt-in trusted-base Docker PR runner; [deployment boundaries](docs/EVIDENCE_AND_CI.md).
 
 Historical v0.3.1 case-study scores remain in the repository for provenance, but they predate hard verification and are labeled unverified. Embedded checks are still lightweight and do not represent a full Keil firmware build.

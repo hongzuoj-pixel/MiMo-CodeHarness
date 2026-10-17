@@ -240,6 +240,15 @@ mimo report --run .mimo/runs/continued-run
 
 CLI 会保存版本化输入指纹，并在每次模型调用完成后写入检查点。恢复会保留原运行，检查源码、配置、环境与证据完整性，复用已完成的模型输出，再用全新工作区和依赖环境重跑构建与测试。输入改变时会明确报错。详细边界见[运行指纹与恢复](docs/RUN_RECOVERY.md)。
 
+### 导出证据并用于 CI 门禁
+
+```bash
+mimo export --run .mimo/runs/first-run --output evidence.zip
+mimo gate --bundle evidence.zip --json
+```
+
+解压 ZIP 后直接打开 `index.html`，即可离线查看报告及相对链接的 JSON、JUnit、日志。严格门禁会重算结论，仅完整可信的 `PASS` 返回成功；导出成功或 `NOT_APPLICABLE` 不代表可合并。详细说明及可选 PR 工作流见[证据包与 CI 门禁](docs/EVIDENCE_AND_CI.md)。合并阻断需要维护者启用 required check，不会静默修改仓库保护规则。
+
 ### 6.5 设置 MiMo API
 
 不要把 API Key 写进代码，也不要上传到 GitHub。
