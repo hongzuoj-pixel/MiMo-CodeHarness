@@ -51,6 +51,10 @@ if behavior == "timeout":
     time.sleep(60)
 if behavior == "overflow":
     print("x" * 1000000)
+elif behavior == "invalid_utf8":
+    patch = {patches!r}[0]
+    payload = json.dumps({{"schema_version": 1, "status": "completed", "patch": patch + "#marker"}}).encode("utf-8")
+    sys.stdout.buffer.write(payload.replace(b"#marker", b"#\\xff"))
 elif behavior == "invalid":
     print("not json")
 elif behavior == "exit":
@@ -209,7 +213,7 @@ def test_missing_agent_credentials_and_overlapping_test_environment_block_prefli
 
 
 @pytest.mark.parametrize("behavior,error", [("timeout", "AGENT_TIMEOUT"), ("overflow", "AGENT_OUTPUT_LIMIT"),
-    ("invalid", "AGENT_INVALID_JSON"), ("exit", "AGENT_EXIT_ERROR"),
+    ("invalid", "AGENT_INVALID_JSON"), ("invalid_utf8", "AGENT_INVALID_JSON"), ("exit", "AGENT_EXIT_ERROR"),
     ("incomplete", "AGENT_INCOMPLETE_RESPONSE"), ("tools", "AGENT_INCOMPLETE_RESPONSE")])
 def test_process_and_protocol_failures_cannot_pass(tmp_path, behavior, error):
     c = case(tmp_path, behavior=behavior, timeout=0.2 if behavior == "timeout" else 3)

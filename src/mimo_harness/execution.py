@@ -24,6 +24,7 @@ class ProcessOutcome:
     status: str
     stdout: str
     stderr: str
+    stdout_bytes: bytes = b""
 
 
 class CheckCancelled(KeyboardInterrupt):
@@ -171,13 +172,15 @@ def run_process(argv, cwd: Path, *, timeout=180, env=None,
         def tail(handle):
             handle.seek(0, 2)
             handle.seek(max(0, handle.tell() - 1024 * 1024))
-            return handle.read().decode("utf-8", errors="replace")
-        stdout, stderr = tail(out), tail(err)
+            return handle.read()
+        stdout_bytes, stderr_bytes = tail(out), tail(err)
+        stdout = stdout_bytes.decode("utf-8", errors="replace")
+        stderr = stderr_bytes.decode("utf-8", errors="replace")
         out.close()
         err.close()
     if code == 125:
         status = "error"
-    return ProcessOutcome(code, status, stdout, stderr)
+    return ProcessOutcome(code, status, stdout, stderr, stdout_bytes)
 
 
 def validate_execution(value: Any) -> dict:
