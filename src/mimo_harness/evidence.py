@@ -17,6 +17,7 @@ ROOT_FILES = {
     "run_log.json", "verification_summary.json", "verification_result.json", "verification_results.json",
     "baseline_summary.json", "candidate_summary.json", "candidate_build_summaries.json",
     "patch_result.json", "patch_results.json", "tasks.json", "input.patch", "token_usage.csv",
+    "provider_summary.json", "provider_ledger.json",
 }
 LOG_DIRS = {"baseline", "candidate", "build_test_logs", "verification"}
 
@@ -193,6 +194,20 @@ def inspect_evidence(reader, *, expect_base=None, expect_patch_sha256=None) -> d
     if summary != log.get("verification_summary") or summary.get("exit_code") != m.get("exit_code"):
         raise ValueError("Manifest, run log and verification summary disagree.")
     report["summary"] = summary
+    if m.get("provider_ledger"):
+        from mimo_harness.model_runtime import validate_ledger
+        reference = m["provider_ledger"]
+        if not isinstance(reference, dict) or reference.get("path") != "provider_ledger.json":
+            raise ValueError("Invalid provider budget ledger reference.")
+        payload = reader.read("evidence/provider_ledger.json")
+        if hashlib.sha256(payload).hexdigest() != reference.get("sha256"):
+            raise ValueError("Provider budget ledger disagrees with the run manifest.")
+        ledger = object_from_bytes(payload)
+        validate_ledger(ledger)
+        if "evidence/provider_summary.json" in reader.names:
+            providers = _load(reader, "provider_summary.json")
+            if providers.get("budget") != ledger["summary"] or providers != log.get("provider_summary"):
+                raise ValueError("Provider summary disagrees with its reservations or run log.")
     if expect_base is not None and m["inputs"].get("resolved_base") != expect_base:
         decision["reason_codes"] = ["EXPECTED_BASE_MISMATCH"]
         return report
@@ -218,6 +233,10 @@ def inspect_evidence(reader, *, expect_base=None, expect_patch_sha256=None) -> d
         tasks = {row["task_id"]: row for row in _load(reader, "tasks.json")}
         baseline = _load(reader, "build_test_logs/build_test_summary.json")
         patches = _load(reader, "patch_results.json")
+        if "evidence/provider_summary.json" in reader.names:
+            models = {r["candidate_id"]: r for r in _load(reader, "provider_summary.json")["models"]}
+            if any(p.get("applied") and models.get(p["candidate_id"], {}).get("status") != "completed" for p in patches):
+                raise ValueError("A failed or missing model response cannot have an applied patch.")
         builds = _load(reader, "candidate_build_summaries.json")
         results = [classify_candidate(tasks.get(p["task_id"]), p, baseline, builds.get(p["candidate_id"])) for p in patches]
         saved = _load(reader, "verification_results.json")

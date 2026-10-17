@@ -19,6 +19,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 from mimo_harness import __version__
 from mimo_harness.checks import validate_checks
 from mimo_harness.execution import validate_execution
+from mimo_harness.providers import validate_model_config
 from mimo_harness.manifests import (
     MANIFEST_NAME, RecoverySource, RunLock, RunManifest, atomic_json, source_inventory,
 )
@@ -131,6 +132,8 @@ def default_model_config(mode: str = "offline") -> Dict[str, Any]:
             "default_timeout_seconds": 180,
             "default_max_tokens": 4000,
             "default_temperature": 0.2,
+            "runtime": {"max_attempts": 1},
+            "budget": {"max_requests": 100},
             "models": [
                 {
                     "name": "Xiaomi-MiMo-Pro",
@@ -142,6 +145,8 @@ def default_model_config(mode: str = "offline") -> Dict[str, Any]:
                     "max_tokens": 4000,
                     "temperature": 0.2,
                     "timeout_seconds": 240,
+                    "auth_header": "api-key",
+                    "max_tokens_field": "max_completion_tokens",
                 }
             ],
         }
@@ -149,6 +154,8 @@ def default_model_config(mode: str = "offline") -> Dict[str, Any]:
         "default_timeout_seconds": 60,
         "default_max_tokens": 2000,
         "default_temperature": 0.2,
+        "runtime": {"max_attempts": 1},
+        "budget": {"max_requests": 100},
         "models": [
             {
                 "name": "LocalMock",
@@ -241,6 +248,7 @@ def collect_diagnostics(
     model_cfg: Optional[Dict[str, Any]] = None
     try:
         model_cfg = _read_json(model_path)
+        validate_model_config(model_cfg)
         enabled = [m for m in model_cfg.get("models", []) if m.get("enabled", True)]
         if not enabled:
             raise ValueError("Model configuration contains no enabled models.")
@@ -249,6 +257,7 @@ def collect_diagnostics(
         )
     except (ValueError, AttributeError) as exc:
         rows.append(Diagnostic("model_config", "error", str(exc)))
+        model_cfg = None
 
     mode = mode_override or str(cfg.get("mode", "offline")).lower()
     rows.append(
@@ -497,6 +506,9 @@ def command_run(args: argparse.Namespace) -> int:
         atomic_json(run_dir / "run_log.json", log)
         verification = log.get("verification_summary", {})
         print(f"[RESULT] {verification.get('overall_verdict', ERROR)}")
+        for row in log.get("provider_summary", {}).get("models", []):
+            if row.get("status") == "failed":
+                print(f"[MODEL ERROR] {row['candidate_id']}: {row['error']}")
         print(f"[OUTPUT] {log.get('output_dir', '')}")
         print(f"[SUMMARY] {log.get('key_outputs', {}).get('verification_summary', '')}")
         return int(verification.get("exit_code", EXIT_CODES[ERROR]))
@@ -776,6 +788,26 @@ def command_report(args: argparse.Namespace) -> int:
         lines.extend(["", "## Run errors", ""])
         for error in verification["run_errors"]:
             lines.append(f"- {error['stage']}/{error['check']}: {', '.join(error['reason_codes'])}")
+    provider_budget = (log.get("provider_summary") or {}).get("budget")
+    if provider_budget is None and (run_dir / "provider_ledger.json").is_file():
+        provider_budget = _read_json(run_dir / "provider_ledger.json").get("summary")
+    if provider_budget:
+        budget = provider_budget
+        cost = budget['reserved_estimated_cost_usd']
+        if cost is None:
+            cost = f"Unknown ({budget['requests_without_pricing']} unpriced request(s)); known-price reservations: {budget['known_price_reservations_usd']}"
+        lines.extend(["", "## Model requests and budget", "",
+                      f"- Reserved requests across recovery lineage: {budget['reserved_requests']}",
+                      f"- Reserved tokens: {budget['reserved_tokens']}",
+                      f"- Reserved estimated cost (configured prices, USD): {cost}",
+                      f"- Requests without provider-reported usage: {budget['requests_without_provider_usage']}",
+                      "- Reservations include failed/interrupted attempts; estimated cost is not a provider invoice."])
+        models = (log.get("provider_summary") or {}).get("models", [])
+        if models:
+            lines.extend(["", "| Candidate | State | Finish | Usage | Attempts | Error code |",
+                          "|---|---|---|---|---:|---|"])
+            for row in models:
+                lines.append(f"| {row['candidate_id']} | {row['status']} | {row['finish_reason']} | {row['usage_source']} | {len(row['attempts'])} | {row['error_code']} |")
     lines.extend(["", "## Evidence files", ""])
     for key, value in (log.get("key_outputs") or {}).items():
         if value:

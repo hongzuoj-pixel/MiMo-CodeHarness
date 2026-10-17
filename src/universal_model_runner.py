@@ -133,99 +133,23 @@ def _normalize_openai_chat_url(base_url: str) -> str:
 
 
 
-def call_model(task: Dict[str, Any], model_cfg: Dict[str, Any], global_cfg: Dict[str, Any], dry_run: bool = True) -> Dict[str, Any]:
-    provider_type = model_cfg.get("provider_type", "openai_compatible")
-    prompt = build_prompt(task)
-    timeout = int(model_cfg.get("timeout_seconds", global_cfg.get("default_timeout_seconds", 120)))
-    max_tokens = int(model_cfg.get("max_tokens", global_cfg.get("default_max_tokens", 2000)))
-    temperature = float(model_cfg.get("temperature", global_cfg.get("default_temperature", 0.2)))
-
-    if dry_run or provider_type == "mock":
-        return _mock_response(task, model_cfg)
-
-    api_key_env = model_cfg.get("api_key_env")
-    api_key = os.getenv(api_key_env or "")
-    if not api_key:
-        raise RuntimeError(f"Missing API key environment variable: {api_key_env}")
-
-    model = model_cfg.get("model")
-    base_url = model_cfg.get("base_url")
-    if not base_url:
-        raise RuntimeError("Missing base_url in model config")
-
-    if provider_type == "openai_compatible":
-        auth_header = model_cfg.get("auth_header", "authorization_bearer")
-        if auth_header == "api-key":
-            headers = {"api-key": api_key, "Content-Type": "application/json"}
-        else:
-            headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-        token_field = model_cfg.get("max_tokens_field", "max_tokens")
-        body = {
-            "model": model,
-            "messages": [
-                {"role": "system", "content": "You are a rigorous code-agent evaluation assistant."},
-                {"role": "user", "content": prompt},
-            ],
-            "temperature": temperature,
-            token_field: max_tokens,
-        }
-        raw = _http_post_json(_normalize_openai_chat_url(base_url), headers, body, timeout)
-        content = raw["choices"][0]["message"]["content"]
-        return {"provider": model_cfg.get("name"), "model": model, "content": content, "raw": raw}
-
-    if provider_type == "anthropic":
-        headers = {
-            "x-api-key": api_key,
-            "anthropic-version": model_cfg.get("anthropic_version", "2023-06-01"),
-            "Content-Type": "application/json",
-        }
-        body = {
-            "model": model,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "messages": [{"role": "user", "content": prompt}],
-        }
-        raw = _http_post_json(base_url, headers, body, timeout)
-        parts = raw.get("content", [])
-        content = "\n".join(part.get("text", "") for part in parts if isinstance(part, dict))
-        return {"provider": model_cfg.get("name"), "model": model, "content": content, "raw": raw}
-
-    if provider_type == "generic_http":
-        headers_template = model_cfg.get("headers", {})
-        headers = {
-            k: str(v).replace("${API_KEY}", api_key)
-            for k, v in headers_template.items()
-        }
-        body_template = model_cfg.get("body_template", {})
-        replacements = {
-            "${MODEL}": str(model),
-            "${PROMPT}": prompt,
-            "${TEMPERATURE}": str(temperature),
-            "${MAX_TOKENS}": str(max_tokens),
-        }
-
-        def replace_value(value: Any) -> Any:
-            if isinstance(value, str):
-                for old, new in replacements.items():
-                    value = value.replace(old, new)
-                return value
-            if isinstance(value, dict):
-                return {k: replace_value(v) for k, v in value.items()}
-            if isinstance(value, list):
-                return [replace_value(v) for v in value]
-            return value
-
-        body = replace_value(body_template)
-        raw = _http_post_json(base_url, headers, body, timeout)
-        path = model_cfg.get("response_path", ["choices", 0, "message", "content"])
-        content = _extract_path(raw, path)
-        return {"provider": model_cfg.get("name"), "model": model, "content": str(content), "raw": raw}
-
-    raise RuntimeError(f"Unsupported provider_type: {provider_type}")
+def call_model(task: Dict[str, Any], model_cfg: Dict[str, Any], global_cfg: Dict[str, Any], dry_run: bool = True, runtime=None) -> Dict[str, Any]:
+    from mimo_harness.model_runtime import ModelRuntime
+    runtime = runtime or ModelRuntime({**global_cfg, "models": global_cfg.get("models", [model_cfg])})
+    response = runtime.complete(model_cfg, build_prompt(task), offline=dry_run,
+                                mock_content=_mock_response(task, model_cfg)["content"],
+                                candidate_id=str(task.get("task_id", "standalone")))
+    return {"provider": model_cfg.get("name"), "model": response.model,
+            "content": response.content, "raw": response.raw,
+            "usage_source": response.usage_source, "finish_reason": response.finish_reason,
+            "attempts": response.attempts, "input_tokens": response.input_tokens,
+            "output_tokens": response.output_tokens, "total_tokens": response.total_tokens}
 
 
 def run_matrix(config_path: str | Path, task_path: str | Path, out_jsonl: str | Path, out_csv: str | Path, limit_tasks: Optional[int], execute: bool, only_enabled: bool = True) -> List[ModelRunResult]:
     config = _load_json(config_path)
+    from mimo_harness.model_runtime import ModelRuntime
+    runtime = ModelRuntime(config, ledger_path=Path(out_jsonl).with_suffix(".providers.json"))
     tasks = _load_json(task_path)
     if limit_tasks is not None:
         tasks = tasks[:limit_tasks]
@@ -244,14 +168,16 @@ def run_matrix(config_path: str | Path, task_path: str | Path, out_jsonl: str | 
             error = ""
             content = ""
             raw: Dict[str, Any] = {}
+            metadata = {"usage_source": "unavailable"}
             try:
-                response = call_model(task, model_cfg, config, dry_run=dry_run)
+                response = call_model(task, model_cfg, config, dry_run=dry_run, runtime=runtime)
                 content = response.get("content", "")
                 raw = response.get("raw", {})
+                metadata = {k: response[k] for k in ("usage_source", "finish_reason", "attempts", "input_tokens", "output_tokens", "total_tokens")}
             except Exception as exc:  # keep matrix robust; one failed provider cannot break all tests
                 status = "failed"
-                error = f"{type(exc).__name__}: {exc}"
-                raw = {"traceback": traceback.format_exc(limit=3)}
+                from mimo_harness.providers import ProviderError
+                error = f"{exc.code}: {exc}" if isinstance(exc, ProviderError) else type(exc).__name__
             elapsed = round(time.perf_counter() - started, 4)
             record = {
                 "task_id": task.get("task_id"),
@@ -265,6 +191,7 @@ def run_matrix(config_path: str | Path, task_path: str | Path, out_jsonl: str | 
                 "content": content,
                 "error": error,
                 "raw": raw,
+                **metadata,
             }
             all_records.append(record)
             results.append(ModelRunResult(

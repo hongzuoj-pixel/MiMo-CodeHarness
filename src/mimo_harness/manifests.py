@@ -219,6 +219,17 @@ class RecoverySource:
         for relative, expected in self.data.get("artifacts", {}).items():
             if file_digest(safe_file(self.root, relative)) != expected:
                 raise ValueError(f"Recovery evidence changed: {relative}")
+        self.provider_ledger = None
+        ledger = self.data.get("provider_ledger")
+        if ledger is not None:
+            if not isinstance(ledger, dict) or ledger.get("path") != "provider_ledger.json":
+                raise ValueError("Invalid provider budget ledger reference.")
+            path = safe_file(self.root, ledger["path"])
+            if file_digest(path) != ledger.get("sha256"):
+                raise ValueError("Provider budget ledger changed; start a new run.")
+            self.provider_ledger = read_object(path)
+            from mimo_harness.model_runtime import validate_ledger
+            validate_ledger(self.provider_ledger)
         self.records = {}
         for key, checkpoint in self.data.get("model_checkpoints", {}).items():
             if not isinstance(checkpoint, dict) or any(not isinstance(checkpoint.get(k), str)
@@ -271,10 +282,17 @@ class RunManifest:
                      "environment_salt": salt, "inputs": inputs, "fingerprint": digest(inputs),
                      "resumed_from": {"run_id": previous.data["run_id"], "directory": str(previous.root)} if previous else None,
                      "model_checkpoints": {}, "artifacts": {}, "reused_candidates": []}
+        self.data["provider_budget_id"] = previous.data.get("provider_budget_id", previous.data["run_id"]) if previous else self.data["run_id"]
         self.save()
 
     def save(self):
         atomic_json(self.root / MANIFEST_NAME, self.data)
+
+    def save_provider_ledger(self, ledger):
+        path = self.root / "provider_ledger.json"
+        atomic_json(path, ledger)
+        self.data["provider_ledger"] = {"path": path.name, "sha256": file_digest(path)}
+        self.save()
 
     def reuse(self, candidate_id: str, signature: str):
         if not self.previous or candidate_id not in self.previous.records:
