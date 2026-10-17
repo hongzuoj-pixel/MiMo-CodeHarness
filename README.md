@@ -229,6 +229,14 @@ The default `local` backend uses the current interpreter with a clean environmen
 
 See [execution isolation and configuration](docs/EXECUTION_ISOLATION.md) and the [end-to-end acceptance matrix](docs/ACCEPTANCE_MATRIX.md). Docker is never silently replaced with local execution.
 
+### External CLI Agent repair
+
+`mimo repair --agent-config agent.json --task-file issue.txt --max-rounds 3 --name fix-001` runs a finite proposal → independent pytest acceptance → failure-feedback loop. Configure explicit defect `target_tests` first. Each round starts from the original baseline, preserves its cumulative patch and JSON/JUnit evidence, and cannot weaken the baseline acceptance files to obtain PASS. The original project remains available for review.
+
+Agent execution uses explicit argv, separate credentials, timeout/output limits and durable invocation/time reservations shared across recovery branches. `resume`, `report`, `export` and the PASS-only gate support the complete repair workflow. External CLI tokens/costs are unavailable; configure actual spending limits in the Agent/provider.
+
+Start with the [complete free two-round example and Agent protocol](docs/CLI_AGENTS.md). The supported integration is the generic JSON protocol; vendor-specific CLI/event adapters and live paid validation remain separate acceptance work.
+
 ### Continue an interrupted run
 
 ```bash

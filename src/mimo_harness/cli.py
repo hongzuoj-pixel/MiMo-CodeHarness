@@ -374,7 +374,19 @@ def command_init(args: argparse.Namespace) -> int:
 
 def command_doctor(args: argparse.Namespace) -> int:
     config_path = _config_path(args.config)
-    rows, _ = collect_diagnostics(config_path)
+    rows, cfg = collect_diagnostics(config_path)
+    if getattr(args, "agent_config", None) and cfg is not None:
+        try:
+            from mimo_harness.cli_agents import load_agent_config, preflight_agent
+            agent = load_agent_config(_resolve(Path.cwd(), args.agent_config))
+            preflight_agent(agent, _resolve(config_path.parent, cfg["project"]))
+            if {k.upper() for k in agent["execution"]["env_allowlist"]} & {k.upper() for k in cfg["execution"]["env_allowlist"]}:
+                raise ValueError("Agent and acceptance env_allowlist must be disjoint.")
+            if not any(c.get("target_tests") for c in (cfg.get("checks") or []) if c["adapter"] == "pytest"):
+                raise ValueError("Repair requires explicit pytest target_tests.")
+            rows.append(Diagnostic("cli_agent", "OK", "Agent configuration/credentials available; no Agent invoked. Docker availability is checked during setup."))
+        except (ValueError, OSError) as exc:
+            rows.append(Diagnostic("cli_agent", "ERROR", str(exc)))
     if args.json:
         print(_json_dump({"healthy": not _has_errors(rows), "checks": [r.to_dict() for r in rows]}))
     else:
@@ -427,8 +439,11 @@ def _execute_attempt(run_dir: Path, project: Path, operation) -> int:
             code = _record_cancelled(run_dir, project)
         except Exception as exc:
             print(f"[ERROR] Execution failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+            reason = str(exc).split(":", 1)[0]
+            if reason not in {"AGENT_BUDGET_EXHAUSTED", "BASELINE_TARGET_NOT_REPRODUCED"}:
+                reason = "EXECUTION_ERROR"
             summary = {"overall_verdict": ERROR, "exit_code": 4, "counts": {ERROR: 1},
-                       "run_errors": [{"stage": "execution", "check": "runtime", "reason_codes": ["EXECUTION_ERROR"]}]}
+                       "run_errors": [{"stage": "execution", "check": "runtime", "reason_codes": [reason]}]}
             atomic_json(run_dir / "verification_summary.json", summary)
             atomic_json(run_dir / "run_log.json", {"mode": "error", "project": str(project),
                         "output_dir": str(run_dir), "verification_summary": summary,
@@ -727,6 +742,10 @@ def command_resume(args: argparse.Namespace) -> int:
             common = dict(config=origin["config"], project=origin["project"],
                           name=args.name or _run_name("resume"), recovery_source=source)
             print(f"[RESUME] {root} — completed model responses may be reused; all checks run fresh.")
+            if options.get("workflow") == "repair":
+                from mimo_harness.repair import command_repair
+                return command_repair(SimpleNamespace(**common, agent_config=origin["agent_config"],
+                    task_file=str(root / "inputs/task.txt"), base=options["base"], max_rounds=options["max_rounds"]))
             if source.data["kind"] == "verify":
                 return command_verify(SimpleNamespace(**common, patch=str(root / "input.patch"),
                     base=options["base"], task_type=options["task_type"], run_tests=options["run_tests"]))
@@ -808,6 +827,20 @@ def command_report(args: argparse.Namespace) -> int:
                           "|---|---|---|---|---:|---|"])
             for row in models:
                 lines.append(f"| {row['candidate_id']} | {row['status']} | {row['finish_reason']} | {row['usage_source']} | {len(row['attempts'])} | {row['error_code']} |")
+    if (run_dir / "repair_history.json").is_file():
+        history = _read_json(run_dir / "repair_history.json")
+        lines.extend(["", "## Repair rounds", "", f"- Stop reason: `{history['stop_reason']}`",
+                      "- Each candidate was tested against the original baseline; prior failures remain in the evidence.",
+                      "", "| Round | Agent | Verdict | Reasons |", "|---:|---|---|---|"])
+        for row in history["rounds"]:
+            result = row["verification"]
+            lines.append(f"| {row['round']} | {row['agent_status']} | {result['verdict']} | {', '.join(result['reason_codes'])} |")
+    if (run_dir / "agent_ledger.json").is_file():
+        accounting = _read_json(run_dir / "agent_ledger.json")["summary"]
+        lines.extend(["", "## External Agent budget", "",
+                      f"- Invocations reserved across recovery branches: {accounting['invocations_reserved']}",
+                      f"- Command timeout seconds reserved: {accounting['seconds_reserved']}",
+                      "- Internal model requests, tokens and monetary charges are unavailable; configure spending limits in your Agent/provider."])
     lines.extend(["", "## Evidence files", ""])
     for key, value in (log.get("key_outputs") or {}).items():
         if value:
@@ -899,6 +932,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     doctor = sub.add_parser("doctor", help="Check the environment without running the harness.")
     doctor.add_argument("--json", action="store_true", help="Emit machine-readable diagnostics")
+    doctor.add_argument("--agent-config", help="Also preflight an external CLI Agent without invoking it")
     doctor.set_defaults(handler=command_doctor)
 
     run = sub.add_parser("run", help="Run repository scanning, agents, verification, and reports.")
@@ -929,6 +963,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     verify.add_argument("--run-tests", action="store_true", help="Execute detected project tests")
     verify.set_defaults(handler=command_verify)
+
+    from mimo_harness.repair import command_repair
+    repair = sub.add_parser("repair", help="Run a bounded external CLI Agent repair loop with fixed pytest acceptance.")
+    repair.add_argument("--project", help="Override the configured project directory")
+    repair.add_argument("--agent-config", required=True, help="Versioned Agent argv/execution/budget JSON")
+    repair.add_argument("--task-file", required=True, help="UTF-8 defect description (at most 64 KiB)")
+    repair.add_argument("--base", default="HEAD", help="Git commit/ref, or WORKTREE")
+    repair.add_argument("--max-rounds", type=_positive_int, default=3, help="Maximum proposal rounds (1–100)")
+    repair.add_argument("--name", help="Stable output run name")
+    repair.set_defaults(handler=command_repair)
 
     resume = sub.add_parser("resume", help="Recover into a new run; validate inputs and rerun all checks.")
     resume.add_argument("--run", required=True, help="Original run directory with run_manifest.json")

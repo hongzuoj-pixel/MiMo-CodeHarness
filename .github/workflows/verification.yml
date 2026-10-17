@@ -94,6 +94,14 @@ jobs:
           mimo --config ci-mimo.json report
           mimo export --run .mimo/runs/cli-install-resumed --output cli-install-evidence.zip
           python -c "import subprocess,sys; r=subprocess.run(['mimo','gate','--bundle','cli-install-evidence.zip','--json']); assert r.returncode == 3, r.returncode"
+      - name: Complete external CLI repair example with installed package
+        run: |
+          mimo --config examples/cli_agent/mimo-harness.json doctor --agent-config examples/cli_agent/agent.json
+          mimo --config examples/cli_agent/mimo-harness.json repair --agent-config examples/cli_agent/agent.json --task-file examples/cli_agent/task.txt --base WORKTREE --max-rounds 2 --name installed-repair
+          mimo --config examples/cli_agent/mimo-harness.json resume --run examples/cli_agent/.mimo/runs/installed-repair --name recovered-repair
+          mimo --config examples/cli_agent/mimo-harness.json report --run examples/cli_agent/.mimo/runs/recovered-repair
+          mimo export --run examples/cli_agent/.mimo/runs/recovered-repair --output cli-repair-evidence.zip
+          mimo gate --bundle cli-repair-evidence.zip
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -17,9 +17,9 @@ ROOT_FILES = {
     "run_log.json", "verification_summary.json", "verification_result.json", "verification_results.json",
     "baseline_summary.json", "candidate_summary.json", "candidate_build_summaries.json",
     "patch_result.json", "patch_results.json", "tasks.json", "input.patch", "token_usage.csv",
-    "provider_summary.json", "provider_ledger.json",
+    "provider_summary.json", "provider_ledger.json", "repair_history.json", "agent_ledger.json",
 }
-LOG_DIRS = {"baseline", "candidate", "build_test_logs", "verification"}
+LOG_DIRS = {"baseline", "candidate", "build_test_logs", "verification", "patches"}
 
 
 def json_bytes(value):
@@ -56,6 +56,8 @@ class RunReader:
             raise ValueError("A supported run manifest is required; legacy reports remain readable.")
         if not isinstance(m.get("inputs"), dict) or digest(m["inputs"]) != m.get("fingerprint"):
             raise ValueError("Damaged run fingerprint.")
+        if m.get("options") != m["inputs"].get("options"):
+            raise ValueError("Run options disagree with the input fingerprint.")
         if m.get("status") not in {"RUNNING", "COMPLETED", "ERROR", "CANCELLED"}:
             raise ValueError("Unsupported run state.")
         source = read_object(safe_file(self.root, "inputs/source_manifest.json"))
@@ -79,7 +81,7 @@ class RunReader:
         for name in names:
             p = PurePosixPath(name)
             wanted = name in ROOT_FILES or (p.parts[0] in LOG_DIRS and "runtime" not in p.parts
-                                          and p.suffix in {".json", ".xml", ".log", ".txt"})
+                                          and p.suffix in {".json", ".xml", ".log", ".txt", ".patch"})
             if wanted:
                 self.paths["evidence/" + portable_name(name)] = safe_file(self.root, name)
         self.names = set(self.paths)
@@ -194,6 +196,15 @@ def inspect_evidence(reader, *, expect_base=None, expect_patch_sha256=None) -> d
     if summary != log.get("verification_summary") or summary.get("exit_code") != m.get("exit_code"):
         raise ValueError("Manifest, run log and verification summary disagree.")
     report["summary"] = summary
+    if m.get("agent_ledger") is not None:
+        from mimo_harness.cli_agents import validate_agent_ledger
+        reference = m["agent_ledger"]
+        if not isinstance(reference, dict) or reference.get("path") != "agent_ledger.json":
+            raise ValueError("Invalid Agent budget ledger reference.")
+        payload = reader.read("evidence/agent_ledger.json")
+        if hashlib.sha256(payload).hexdigest() != reference.get("sha256"):
+            raise ValueError("Agent budget ledger disagrees with the run manifest.")
+        validate_agent_ledger(object_from_bytes(payload))
     if m.get("provider_ledger"):
         from mimo_harness.model_runtime import validate_ledger
         reference = m["provider_ledger"]
@@ -211,7 +222,10 @@ def inspect_evidence(reader, *, expect_base=None, expect_patch_sha256=None) -> d
     if expect_base is not None and m["inputs"].get("resolved_base") != expect_base:
         decision["reason_codes"] = ["EXPECTED_BASE_MISMATCH"]
         return report
-    if expect_patch_sha256 is not None and m["inputs"].get("patch_sha256") != expect_patch_sha256:
+    repair = m["options"].get("workflow") == "repair"
+    history = _load(reader, "repair_history.json") if repair and "evidence/repair_history.json" in reader.names else None
+    recorded_patch = history.get("final_patch_sha256") if history else m["inputs"].get("patch_sha256")
+    if expect_patch_sha256 is not None and recorded_patch != expect_patch_sha256:
         decision["reason_codes"] = ["EXPECTED_PATCH_MISMATCH"]
         return report
     verdict = summary.get("overall_verdict")
@@ -221,7 +235,10 @@ def inspect_evidence(reader, *, expect_base=None, expect_patch_sha256=None) -> d
             raise ValueError("Run completion state disagrees with its verdict.")
         decision.update(verdict=verdict, reason_codes=["RUN_" + m["status"]])
         return report
-    if m["kind"] == "verify":
+    if repair:
+        baseline = _load(reader, "baseline_summary.json")
+        results, saved, stages = _repair_evidence(reader, history, baseline)
+    elif m["kind"] == "verify":
         baseline = _load(reader, "baseline_summary.json")
         patch = _load(reader, "patch_result.json")
         candidate = _load(reader, "candidate_summary.json") if patch.get("applied") else None
@@ -278,3 +295,64 @@ def inspect_evidence(reader, *, expect_base=None, expect_patch_sha256=None) -> d
     else:
         raise ValueError("Unsupported final verdict.")
     return report
+
+
+def _repair_evidence(reader, history, baseline):
+    """Recompute every round; only the last round may decide a repair outcome."""
+    from mimo_harness.cli_agents import validate_agent_ledger
+    m = reader.manifest
+    reference = m.get("agent_ledger")
+    if not isinstance(reference, dict) or reference.get("path") != "agent_ledger.json":
+        raise ValueError("Repair requires a sealed Agent budget ledger.")
+    raw = reader.read("evidence/agent_ledger.json")
+    if hashlib.sha256(raw).hexdigest() != reference.get("sha256"):
+        raise ValueError("Agent ledger disagrees with its manifest.")
+    ledger = validate_agent_ledger(object_from_bytes(raw))
+    entries = {e["id"]: e for e in ledger["entries"]}
+    if (not isinstance(history, dict) or history.get("schema_version") != 1
+            or history.get("max_rounds") != m["options"]["max_rounds"]
+            or not isinstance(history.get("rounds"), list) or not history["rounds"]
+            or not 1 <= len(history["rounds"]) <= history["max_rounds"]
+            or history.get("selected_round") != len(history["rounds"])):
+        raise ValueError("Invalid repair history or final selection.")
+    stages = [("baseline", baseline)]
+    for number, row in enumerate(history["rounds"], 1):
+        key = f"repair-{number:03d}"
+        entry = entries.get(row.get("reservation_id"), {})
+        if (row.get("round") != number or row.get("candidate_id") != key
+                or entry.get("candidate_id") != key or entry.get("status") != row.get("agent_status")):
+            raise ValueError("Repair round disagrees with its Agent reservation.")
+        patch, candidate = row["patch_result"], row["candidate_summary"]
+        if patch.get("candidate_id") != key or patch.get("task_id") != "REPAIR" or (
+                patch.get("applied") and row.get("agent_status") != "completed"):
+            raise ValueError("A missing/failed Agent response cannot have an applied patch.")
+        if patch.get("patch_file"):
+            name = "evidence/" + original_relative(patch["patch_file"], _load(reader, "run_log.json")["output_dir"])
+            if hashlib.sha256(reader.read(name)).hexdigest() != row.get("patch_sha256"):
+                raise ValueError("Repair round patch hash disagrees.")
+        elif row.get("patch_sha256") is not None:
+            raise ValueError("Repair patch identity has no file.")
+        result = classify_candidate(SimpleNamespace(task_id="REPAIR", task_type="bug_fix"), patch, baseline, candidate)
+        if result.to_dict() != row["verification"] or result.to_dict() != _load(reader, f"verification/round-{number:03d}/verification_result.json"):
+            raise ValueError("Repair round verdict disagrees with its independent test evidence.")
+        if number < len(history["rounds"]) and (result.verdict in {"PASS", "ERROR"} or row.get("agent_status") != "completed"):
+            raise ValueError("Repair continued after a terminal round.")
+        if candidate:
+            if candidate != _load(reader, f"verification/round-{number:03d}/candidate/build_test_summary.json"):
+                raise ValueError("Repair candidate summaries disagree.")
+            stages.append((key, candidate))
+    if history.get("final_patch_sha256") != row.get("patch_sha256"):
+        raise ValueError("Final repair patch is not the last round patch.")
+    if row.get("patch_sha256") is not None and hashlib.sha256(reader.read("evidence/input.patch")).hexdigest() != row["patch_sha256"]:
+        raise ValueError("Final repair patch bytes disagree.")
+    if result.verdict == "PASS":
+        expected_stop = "VERIFIED_PASS"
+    elif result.verdict == "ERROR":
+        expected_stop = row.get("agent_error") or "VERIFICATION_ERROR"
+    else:
+        expected_stop = "ROUND_LIMIT_REACHED"
+    if history.get("stop_reason") != expected_stop or (
+            expected_stop == "ROUND_LIMIT_REACHED" and len(history["rounds"]) != history["max_rounds"]):
+        raise ValueError("Repair stop reason disagrees with its last round.")
+    saved = [_load(reader, "verification_result.json")]
+    return [result], saved, stages

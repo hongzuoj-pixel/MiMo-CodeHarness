@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "project": "project",
+  "output_dir": ".mimo/runs",
+  "mode": "offline",
+  "model_config": "models.json",
+  "limit_tasks": 1,
+  "max_files": 100,
+  "apply_patches": true,
+  "run_build_tests": true,
+  "execution": {"mode": "local", "env_allowlist": [], "prepare": []},
+  "checks": [{"id": "unit", "adapter": "pytest", "args": ["-q"], "target_tests": ["test_calc.py::test_add"]}]
+}

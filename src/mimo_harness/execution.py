@@ -10,6 +10,8 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -80,28 +82,68 @@ class WindowsJob:
 
 
 def run_process(argv, cwd: Path, *, timeout=180, env=None,
-                stdout_path: Path | None = None, stderr_path: Path | None = None) -> ProcessOutcome:
+                stdout_path: Path | None = None, stderr_path: Path | None = None,
+                max_output_bytes: int | None = None) -> ProcessOutcome:
     """Stream logs to disk; terminate the whole managed tree on exit/timeout/interrupt."""
     stdout_path = Path(stdout_path) if stdout_path else None
     stderr_path = Path(stderr_path) if stderr_path else None
     out = stdout_path.open("w+b") if stdout_path else tempfile.TemporaryFile()
     err = stderr_path.open("w+b") if stderr_path else tempfile.TemporaryFile()
     process = job = None
+    readers = []
+    overflow = threading.Event()
     status, code = "completed", None
     try:
         worker = str(Path(__file__).with_name("process_worker.py"))
         process = subprocess.Popen(
             [sys.executable, "-I", worker, json.dumps(list(argv))], cwd=cwd, env=env,
-            stdin=subprocess.PIPE, stdout=out, stderr=err,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE if max_output_bytes else out,
+            stderr=subprocess.PIPE if max_output_bytes else err,
             start_new_session=os.name != "nt",
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == "nt" else 0,
         )
         if os.name == "nt":
             job = WindowsJob(process)
+        if max_output_bytes:
+            def drain(pipe, destination):
+                retained = 0
+                try:
+                    while True:
+                        chunk = pipe.read(65536)
+                        if not chunk:
+                            break
+                        remaining = max(0, max_output_bytes - retained)
+                        destination.write(chunk[:remaining])
+                        retained += len(chunk[:remaining])
+                        if len(chunk) > remaining:
+                            overflow.set()
+                finally:
+                    pipe.close()
+            for pipe, destination in ((process.stdout, out), (process.stderr, err)):
+                thread = threading.Thread(target=drain, args=(pipe, destination), daemon=True)
+                thread.start()
+                readers.append(thread)
         process.stdin.write(b"G")
         process.stdin.close()
         try:
-            code = process.wait(timeout=timeout)
+            if max_output_bytes:
+                deadline = time.monotonic() + timeout
+                while process.poll() is None:
+                    if overflow.is_set():
+                        status = "output_limit"
+                        break
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        status = "timeout"
+                        break
+                    try:
+                        process.wait(timeout=min(0.02, remaining))
+                    except subprocess.TimeoutExpired:
+                        pass
+                code = process.poll()
+            else:
+                code = process.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
             status = "timeout"
         except KeyboardInterrupt:
@@ -120,6 +162,12 @@ def run_process(argv, cwd: Path, *, timeout=180, env=None,
             process.wait(timeout=10)
             if process.stdin and not process.stdin.closed:
                 process.stdin.close()
+        for thread in readers:
+            thread.join(timeout=10)
+            if thread.is_alive():
+                raise RuntimeError("Could not finish process output collection.")
+        if overflow.is_set() and status == "completed":
+            status = "output_limit"
         def tail(handle):
             handle.seek(0, 2)
             handle.seek(max(0, handle.tell() - 1024 * 1024))
@@ -262,10 +310,10 @@ class ExecutionContext:
         if outcome.status != "completed" or outcome.returncode != 0:
             raise ValueError(f"Environment preparation failed at {name}; see preparation logs.")
 
-    def run(self, argv, cwd, timeout, stdout_path, stderr_path, *, prepare=False):
+    def run(self, argv, cwd, timeout, stdout_path, stderr_path, *, prepare=False, max_output_bytes=None):
         if self.mode != "docker":
             return run_process(argv, cwd, timeout=timeout, env=self.env,
-                               stdout_path=stdout_path, stderr_path=stderr_path)
+                               stdout_path=stdout_path, stderr_path=stderr_path, max_output_bytes=max_output_bytes)
         name = "mimo-" + uuid.uuid4().hex
         self.containers.append(name)
         worker = Path(__file__).with_name("pytest_worker.py").resolve()
@@ -290,7 +338,7 @@ class ExecutionContext:
         self.env.setdefault("PATH", os.defpath)
         try:
             return run_process(command, self.root, timeout=timeout, env=self.env,
-                               stdout_path=stdout_path, stderr_path=stderr_path)
+                               stdout_path=stdout_path, stderr_path=stderr_path, max_output_bytes=max_output_bytes)
         finally:
             cleanup = subprocess.run(["docker", "rm", "--force", name], capture_output=True, timeout=15)
             # A successful --rm already removed it; other failures must be visible.

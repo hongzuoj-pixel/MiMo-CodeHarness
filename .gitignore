@@ -22,6 +22,7 @@ Thumbs.db
 
 # Heavy or temporary generated artifacts
 .mimo/runs/
+examples/cli_agent/.mimo/
 build/
 dist/
 *.egg-info/

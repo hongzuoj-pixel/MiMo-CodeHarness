@@ -1,0 +1,1 @@
+Fix addition so add(3, 2) returns 5. Keep the existing acceptance tests unchanged.

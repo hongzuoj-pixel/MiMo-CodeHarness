@@ -34,6 +34,11 @@ The final product is accepted by complete workflows and failure scenarios, not b
 | Limits, rate limiting, redirects and incomplete provider output | Real HTTP 408/409/429/5xx, permanent errors, truncation/tool/invalid/empty replies, trickled bodies | Finite retries/deadline; every attempt reserved; no partial output applied; worker cleanup |
 | API → real pytest → report → bundle/gate → resume | Local HTTP provider through public CLI | PASS from fresh project tests; portable accounting; completed response reused without a new request |
 | Failed/inflight/branching recovery and provider budget corruption/loss | Actual CLI processes, abrupt parent death, repeated/parallel recovery | Reservations preserved across branches; no extra call after cap or invalid accounting |
+| External CLI → two-round independent pytest repair → report/export/gate | `test_cli_repair.py`, complete free example | First FAIL retained, final PASS recomputed, all patches/case evidence portable, original source unchanged |
+| Agent timeout/output overflow/nonzero/invalid/incomplete/tool-only replies | Actual CLI subprocess fault injection | ERROR, bounded retained logs, process-tree cleanup, invocation reservation retained |
+| Agent credentials and acceptance tampering | Actual separate child environments | Credentials absent from tests/export; leaked credential patch rejected; changed acceptance cannot PASS |
+| Repair resume, stale PASS, older-ancestor/sibling budgets and damaged inputs/accounting | Public CLI recovery and durable ledger/lock fixtures | Fresh tests; completed proposals reused only for matching inputs; no budget reset/refund or false approval |
+| External CLI repair in real Docker | Dedicated Docker two-round workflow | Separate containers/credentials, pinned image identity, cleanup verified, portable PASS gate |
 | Python/pytest/platform compatibility | Python 3.10/3.12/3.13; pytest 8/9; Linux/Windows | All jobs pass; JUnit retained even on failure |
 
 Run ordinary checks with `python -m pytest tests -q --junitxml=results.xml`. Docker tests require a real non-root Linux Docker worker and `MIMO_DOCKER_TEST_IMAGE`; they are explicitly skipped elsewhere, never counted as passed. POSIX SIGINT integration is skipped on Windows, whose Job cleanup is exercised by timeout/normal-exit tests. The separate Docker CI job is mandatory before claiming this backend is validated.
@@ -42,7 +47,7 @@ Run ordinary checks with `python -m pytest tests -q --junitxml=results.xml`. Doc
 
 - Generalized cross-run caches/migration remain deferred; current recovery reuses only completed model responses within a validated run lineage. Network preparation and external services require pinned inputs and fresh execution.
 - Signed/remote attestation, richer evidence migration and organization-level enforced workflow policies are outside the current unsigned bundle format. The opt-in PR template still requires maintainer-configured required checks/review protection.
-- Certified CLI Agent/tool execution contract and a limited repair loop remain pending. The unified final-text HTTP/mock contract and retry/budget/truncation/usage cases are automated; live paid-provider validation remains separate until credentials and budget are available.
+- Generic CLI Agent protocol and limited pytest bug-fix repair are automated. Vendor-specific CLI/event adapters and live paid-provider validation remain separate until credentials and spending allowance are available. Opaque external Agent tokens/costs are unavailable; invocation/time caps are not billing caps.
 - Certified Node/GenericCommand support and additional real defect cases; Keil/firmware/hardware behavior remain separately scoped.
 - Wheel/sdist release process, upgrade/compatibility notes, maintainer-selected license, and at least three independent new-user walkthroughs.
 - One final clean checkout/install run across the supported matrix, all failure-injection scenarios, evidence audit and scope review after the last functional change.

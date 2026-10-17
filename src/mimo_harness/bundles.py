@@ -98,6 +98,8 @@ class BundleReader:
                 raise ValueError("Invalid run provenance.")
             if m.get("status") not in {"RUNNING", "COMPLETED", "ERROR", "CANCELLED"} or index["run_id"] != m.get("run_id"):
                 raise ValueError("Invalid run state/identity.")
+            if m.get("options") != m["inputs"].get("options"):
+                raise ValueError("Run options disagree with the input fingerprint.")
             if digest(object_from_bytes(self.read("provenance/source_manifest.json"))) != m["inputs"].get("source_sha256"):
                 raise ValueError("Source identity does not match bundle provenance.")
             self.names = set(names) - {"bundle_manifest.json", "index.html", "report.json"}
