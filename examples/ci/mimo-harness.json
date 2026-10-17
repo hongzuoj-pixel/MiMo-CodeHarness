@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "project": ".",
+  "output_dir": ".mimo/runs",
+  "mode": "offline",
+  "model_config": ".mimo/models.json",
+  "limit_tasks": 6,
+  "max_files": 800,
+  "apply_patches": true,
+  "run_build_tests": true,
+  "checks": [{"id": "acceptance", "adapter": "pytest", "args": ["-q"], "cwd": ".", "timeout_seconds": 180}],
+  "execution": {
+    "mode": "docker",
+    "image": "mimo-pr:reviewed",
+    "network": "none",
+    "prepare_network": "none",
+    "cpus": 1,
+    "memory_mb": 512,
+    "pids_limit": 128,
+    "env_allowlist": [],
+    "prepare": []
+  }
+}

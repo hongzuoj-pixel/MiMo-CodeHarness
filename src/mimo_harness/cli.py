@@ -794,6 +794,58 @@ def _positive_int(value: str) -> int:
     return parsed
 
 
+def command_export(args: argparse.Namespace) -> int:
+    from mimo_harness.bundles import create_bundle
+    from mimo_harness.evidence import RunReader
+    root = _resolve(Path.cwd(), args.run)
+    if not root.is_dir():
+        raise ValueError(f"Run directory does not exist: {root}")
+    output = _resolve(Path.cwd(), args.output)
+    if output == root or root in output.parents:
+        raise ValueError("Export outside the original run directory to preserve its evidence.")
+    try:
+        with RunLock(root):
+            decision = create_bundle(RunReader(root), output)
+    except (KeyError, TypeError, AttributeError) as exc:
+        raise ValueError("Malformed run evidence; no export was published.") from exc
+    print(f"[EXPORT] {output}")
+    print(f"[GATE] {'APPROVED' if decision['allowed'] else 'BLOCKED'} — {decision['verdict']}")
+    print("[NOTE] Export success is not gate approval. Use mimo gate for an automation exit code.")
+    return 0
+
+
+def command_gate(args: argparse.Namespace) -> int:
+    import zipfile
+    import zlib
+    from mimo_harness.bundles import BundleReader
+    from mimo_harness.evidence import RunReader, inspect_evidence
+    from mimo_harness.manifests import file_digest
+    try:
+        expected = dict(expect_base=args.expect_base,
+                        expect_patch_sha256=file_digest(_resolve(Path.cwd(), args.expect_patch)) if args.expect_patch else None)
+        if args.bundle:
+            with BundleReader(_resolve(Path.cwd(), args.bundle)) as reader:
+                decision = inspect_evidence(reader, **expected)["gate"]
+        else:
+            root = _resolve(Path.cwd(), args.run)
+            if not root.is_dir():
+                raise ValueError(f"Run directory does not exist: {root}")
+            with RunLock(root):
+                decision = inspect_evidence(RunReader(root), **expected)["gate"]
+    except (ValueError, OSError, KeyError, TypeError, AttributeError, RuntimeError,
+            EOFError, zlib.error, zipfile.BadZipFile) as exc:
+        decision = {"schema_version": 1, "allowed": False, "verdict": "ERROR", "exit_code": 4,
+                    "reason_codes": ["EVIDENCE_INVALID"], "note": str(exc)}
+    if args.json:
+        print(_json_dump(decision))
+    else:
+        print(f"[GATE] {'APPROVED' if decision['allowed'] else 'BLOCKED'} — {decision['verdict']}")
+        print(f"[REASONS] {', '.join(decision['reason_codes'])}")
+        if decision.get("note"):
+            print(f"[DETAIL] {decision['note']}")
+    return int(decision["exit_code"])
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="mimo",
@@ -854,6 +906,20 @@ def build_parser() -> argparse.ArgumentParser:
     report = sub.add_parser("report", help="Generate a concise report for a completed run.")
     report.add_argument("--run", help="Run directory; defaults to the latest completed run")
     report.set_defaults(handler=command_report)
+
+    export = sub.add_parser("export", help="Export a hash-indexed offline HTML/JSON/JUnit evidence ZIP.")
+    export.add_argument("--run", required=True, help="Run directory")
+    export.add_argument("--output", required=True, help="New ZIP path outside the original run")
+    export.set_defaults(handler=command_export)
+
+    gate = sub.add_parser("gate", help="Strict automation gate: only an intact, recomputed PASS succeeds.")
+    location = gate.add_mutually_exclusive_group(required=True)
+    location.add_argument("--run", help="Run directory")
+    location.add_argument("--bundle", help="Portable evidence ZIP (no extraction or project execution)")
+    gate.add_argument("--expect-base", help="Required resolved Git base SHA")
+    gate.add_argument("--expect-patch", help="Patch file whose exact bytes must match the recorded input")
+    gate.add_argument("--json", action="store_true", help="Emit a machine-readable gate decision")
+    gate.set_defaults(handler=command_gate)
     return parser
 
 

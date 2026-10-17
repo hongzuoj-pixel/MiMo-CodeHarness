@@ -1,0 +1,70 @@
+name: mimo-patch-gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      MIMO_HARNESS_REF: ${{ vars.MIMO_HARNESS_REF }}
+    steps:
+      - name: Checkout trusted acceptance policy
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: baseline
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch candidate objects without executing candidate scripts
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: incoming
+          persist-credentials: false
+      - name: Install reviewed harness revision
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned harness
+        shell: bash
+        run: |
+          if [[ ! "$MIMO_HARNESS_REF" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Set repository variable MIMO_HARNESS_REF to a reviewed full commit SHA."
+            exit 4
+          fi
+          python -m pip install "mimo-codeharness @ git+https://github.com/hongzuoj-pixel/MiMo-CodeHarness.git@$MIMO_HARNESS_REF"
+      - name: Build image from trusted base and import candidate commit
+        shell: bash
+        run: |
+          docker build -t mimo-pr:reviewed -f baseline/.github/mimo/Dockerfile baseline
+          git -C baseline fetch ../incoming/.git "$HEAD_SHA" --no-tags
+      - name: Verify, export and enforce the gate
+        shell: bash
+        run: |
+          python baseline/.github/scripts/mimo_verify_pr.py \
+            --project baseline --base "$BASE_SHA" --head "$HEAD_SHA" \
+            --output "$RUNNER_TEMP/mimo-evidence"
+      - name: Retain evidence even when verification fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mimo-patch-evidence
+          path: |
+            ${{ runner.temp }}/mimo-evidence/evidence.zip
+            ${{ runner.temp }}/mimo-evidence/gate.json
+            ${{ runner.temp }}/mimo-evidence/ci_context.json
+            ${{ runner.temp }}/mimo-evidence/runs/patch/run_manifest.json
+            ${{ runner.temp }}/mimo-evidence/runs/patch/run_log.json
+            ${{ runner.temp }}/mimo-evidence/runs/patch/verification_summary.json
+            ${{ runner.temp }}/mimo-evidence/runs/patch/baseline
+            ${{ runner.temp }}/mimo-evidence/runs/patch/candidate
+            !${{ runner.temp }}/mimo-evidence/**/runtime/**
+          if-no-files-found: warn
+          retention-days: 14

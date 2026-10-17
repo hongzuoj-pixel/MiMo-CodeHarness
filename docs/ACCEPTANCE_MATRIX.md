@@ -25,6 +25,10 @@ The final product is accepted by complete workflows and failure scenarios, not b
 | Binary/test/config/provider/environment/engine/patch/ref changes | Input invalidation fixtures | ERROR before model reuse or project commands |
 | Damaged snapshots/checkpoints/evidence and concurrent recovery | File corruption fixtures and actual OS locks | No unsafe reuse or overwrite |
 | Docker recovery and mutable image tag | Dedicated Docker CLI recovery test | New containers per attempt; changed image ID rejected |
+| Verify → export → relocate → offline gate | `test_evidence_bundles.py`, Linux/Windows installed CLI | HTML/JSON/JUnit/log links work without original source/configuration |
+| Forged summary, recorder/JUnit/report disagreement, invalid ZIP paths/data | Corruption and malicious archive fixtures | ERROR; never a false approval |
+| FAIL/insufficient/analysis-only/error/cancelled/unsealed export | Actual execution and interruption fixtures | Diagnostic artifacts retained; strict gate blocks |
+| Trusted-base PR runner with good/regressing commits | Real Docker CI runner test | PASS returns 0; regression returns 2; both retain evidence; base unchanged |
 | Real external repository regression | Fixed SlideNote commit gate | Structured case evidence and clean source |
 | Python/pytest/platform compatibility | Python 3.10/3.12/3.13; pytest 8/9; Linux/Windows | All jobs pass; JUnit retained even on failure |
 
@@ -33,7 +37,7 @@ Run ordinary checks with `python -m pytest tests -q --junitxml=results.xml`. Doc
 ## Final stable-release gates still pending
 
 - Generalized cross-run caches/migration remain deferred; current recovery reuses only completed model responses within a validated run lineage. Network preparation and external services require pinned inputs and fresh execution.
-- Portable offline HTML/JSON/JUnit evidence bundles, relocation checks and a user-facing PR workflow that blocks bad/insufficient/error results while retaining artifacts.
+- Signed/remote attestation, richer evidence migration and organization-level enforced workflow policies are outside the current unsigned bundle format. The opt-in PR template still requires maintainer-configured required checks/review protection.
 - Unified provider/Agent contract, limited repair loop, retry/budget/truncation/usage tests; live paid-provider validation only when credentials and budget are available.
 - Certified Node/GenericCommand support and additional real defect cases; Keil/firmware/hardware behavior remain separately scoped.
 - Wheel/sdist release process, upgrade/compatibility notes, maintainer-selected license, and at least three independent new-user walkthroughs.
