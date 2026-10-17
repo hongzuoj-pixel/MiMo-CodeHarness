@@ -601,7 +601,9 @@ def command_verify(args: argparse.Namespace) -> int:
 
     try:
         patch_bytes = patch_path.read_bytes()
-        patch_text = patch_bytes.decode("utf-8")
+        # Keep original bytes for identity; normalize only the text used by git
+        # so Windows write_text cannot turn CRLF input into CR-CR-LF output.
+        patch_text = patch_bytes.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
     except UnicodeDecodeError:
         print("[ERROR] Patch must be a UTF-8 unified diff.", file=sys.stderr)
         return EXIT_CODES[ERROR]

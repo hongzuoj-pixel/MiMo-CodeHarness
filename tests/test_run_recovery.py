@@ -120,6 +120,17 @@ def test_interrupted_models_are_checkpointed_individually_and_failed_calls_retry
                for cp in third["model_checkpoints"].values())
 
 
+def test_crlf_patch_bytes_are_preserved_while_application_is_normalized(tmp_path, monkeypatch):
+    root, patch = project(tmp_path, monkeypatch)
+    original = patch.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    patch.write_bytes(original)
+    first = verify(root, patch)
+    assert (first / "input.patch").read_bytes() == original
+    assert main(["resume", "--run", str(first), "--name", "second"]) == 0
+    assert (root / ".mimo/runs/second/input.patch").read_bytes() == original
+    assert (root / "value.py").read_text() == "VALUE = 1\n"
+
+
 @pytest.mark.parametrize("change", ["binary", "tests", "policy", "models", "environment", "provider", "engine"])
 def test_resume_invalidates_changed_inputs_before_any_model_call(tmp_path, monkeypatch, capsys, change):
     root, _ = project(tmp_path, monkeypatch)

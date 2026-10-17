@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.metadata
+import importlib.util
 import json
 import os
 import platform
@@ -180,9 +181,15 @@ def environment_identity(execution: dict, checks, salt: str, runtime_home: Path)
 
 
 def engine_identity() -> str:
-    src = Path(__file__).resolve().parents[1]
-    paths = [*src.glob("*.py"), *Path(__file__).parent.glob("*.py")]
-    return digest({str(p.relative_to(src)): file_digest(p) for p in sorted(paths)})
+    # A wheel lives in site-packages beside unrelated packages; a checkout may
+    # contain legacy scripts that are not distributed. Hash the same executable
+    # components in both layouts, using module names instead of install paths.
+    code = {"mimo_harness/" + p.name: file_digest(p)
+            for p in sorted(Path(__file__).parent.glob("*.py"))}
+    for name in ("run_mimo_codeharness_v02", "scoring_v03", "verification_v04"):
+        spec = importlib.util.find_spec(name)
+        code[name + ".py"] = file_digest(Path(spec.origin)) if spec and spec.origin else None
+    return digest(code)
 
 
 class RecoverySource:
