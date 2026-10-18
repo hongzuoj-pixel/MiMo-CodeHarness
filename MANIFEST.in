@@ -1,4 +1,5 @@
 recursive-include docs *.md
+include README_CN.md
 graft examples/cli_agent
 prune examples/cli_agent/.mimo
 global-exclude __pycache__ *.py[cod]

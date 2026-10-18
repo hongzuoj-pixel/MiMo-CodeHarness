@@ -10,6 +10,47 @@ permissions:
   contents: read
 
 jobs:
+  agent-and-real-cases:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install harness and pinned actual Codex CLI
+        run: |
+          python -m pip install ".[test]" "pytest==8.4.2"
+          npm install --global @openai/codex@0.163.0
+          mimo agent-init --model mimo-contract-test --output .mimo/codex-agent.json
+      - name: Actual CLI against local Responses server, without a paid model
+        env:
+          MIMO_CODEX_BINARY: codex
+        run: python -m pytest tests/test_codex_adapter.py -q --junitxml=codex-contract.xml
+      - name: Two pinned real defects, reference and regression controls, fresh recovery
+        run: |
+          mimo case-init --case boltons-write --output .mimo/cases/boltons
+          mimo case-check --directory .mimo/cases/boltons --name ci
+          mimo case-init --case more-itertools-bucket --output .mimo/cases/more-itertools
+          mimo case-check --directory .mimo/cases/more-itertools --name ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-real-cases-${{ matrix.os }}
+          path: |
+            codex-contract.xml
+            .mimo/cases/*/case.json
+            .mimo/cases/*/results/ci/acceptance.json
+            .mimo/cases/*/results/ci/*.zip
+          include-hidden-files: true
+          if-no-files-found: error
+
   evidence-gate-contract:
     runs-on: ubuntu-latest
     steps:
@@ -81,7 +122,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install package
-        run: python -m pip install ".[test]" "pytest==8.4.2"
+        run: |
+          python -m pip install "build==1.3.0" "pytest==8.4.2"
+          python -m build --outdir .mimo/dist
+          python -c "import pathlib,subprocess,sys; wheel=next(pathlib.Path('.mimo/dist').glob('*.whl')); subprocess.run([sys.executable,'-m','pip','install',str(wheel)],check=True)"
       - name: Installed CLI and pytest evidence regression
         run: python -m pytest tests -q --junitxml=cli-pytest-results.xml
       - name: Exercise installed CLI
@@ -106,7 +150,10 @@ jobs:
         if: always()
         with:
           name: cli-pytest-${{ matrix.os }}
-          path: cli-pytest-results.xml
+          path: |
+            cli-pytest-results.xml
+            .mimo/dist/*
+          include-hidden-files: true
 
   unit-and-smoke:
     runs-on: ubuntu-latest

@@ -4,6 +4,8 @@ The `mimo` command is the supported user entry point introduced in v0.5. It wrap
 
 v0.8 unifies final-text model providers and adds explicit completion/usage states, bounded HTTP workers, opt-in retries and durable reservations across recovery branches. [Configure providers and budgets](MODEL_PROVIDERS.md); [review the remaining product milestones](PRODUCT_PLAN.md).
 
+v0.10 adds a [pinned Codex CLI adapter](CODEX_AGENT.md), configuration generation and [two reproducible real defect cases](REAL_DEFECT_CASES.md). Existing JSON Agent and legacy script entry points remain supported.
+
 ## Installation
 
 ```bash
@@ -37,6 +39,10 @@ Neither file is overwritten unless `--force` is explicitly supplied. Offline and
 | `mimo doctor` | Validate Python, Git, paths, model config, and API prerequisites | No |
 | `mimo run` | Run scanning, task generation, agents, candidate verification, and reports | Only in API mode |
 | `mimo verify` | Verify one local unified diff against an isolated baseline | No |
+| `mimo agent-init --model MODEL` | Generate a new pinned Codex CLI profile after version preflight | No |
+| `mimo repair --agent-config FILE --task-file FILE` | Bounded Agent proposals with independent fixed-baseline pytest acceptance | Depends on the chosen Agent |
+| `mimo case-init --case ID --output NEW_PATH` | Prepare a pinned upstream defect and acceptance | No; GitHub access required |
+| `mimo case-check --directory PATH` | Run reference/regression controls, fresh recovery and portable gates | No |
 | `mimo resume --run PATH` | Validate inputs, recover completed model responses, rerun all checks in a new attempt | Original API mode only |
 | `mimo report` | Generate a concise Markdown summary for a completed run | No |
 | `mimo export --run PATH --output ZIP` | Export a portable, hash-indexed offline evidence package | No |

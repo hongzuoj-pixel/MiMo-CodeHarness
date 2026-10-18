@@ -25,13 +25,19 @@ def _number(value, name, maximum, *, integer=False):
 
 def load_agent_config(path: Path) -> dict:
     cfg = read_object(path)
-    allowed = {"schema_version", "argv", "cwd", "timeout_seconds", "max_output_bytes", "execution", "budget"}
+    allowed = {"schema_version", "argv", "cwd", "timeout_seconds", "max_output_bytes", "execution", "budget",
+               "adapter", "model", "cli_version", "base_url"}
     if type(cfg.get("schema_version")) is not int or cfg["schema_version"] != 1 or set(cfg) - allowed:
         raise ValueError("Agent configuration requires schema_version 1 and known fields only.")
     argv = cfg.get("argv")
     if not isinstance(argv, list) or not 1 <= len(argv) <= 128 or any(not isinstance(a, str) or not a or len(a) > 65536 or "\0" in a for a in argv):
         raise ValueError("Agent argv must be a non-empty array of literal arguments.")
-    if "{request}" not in argv:
+    adapter = cfg.get("adapter", "json")
+    if adapter not in {"json", "codex"}:
+        raise ValueError("Agent adapter must be json or codex.")
+    if adapter == "json" and set(cfg) & {"model", "cli_version", "base_url"}:
+        raise ValueError("model, cli_version and base_url are Codex adapter fields.")
+    if adapter == "json" and "{request}" not in argv:
         raise ValueError("Agent argv must include a whole {request} argument.")
     if argv[0] in {"{request}", "{workspace}"}:
         raise ValueError("Agent argv[0] must be an executable or {python}.")
@@ -45,6 +51,9 @@ def load_agent_config(path: Path) -> dict:
     execution = validate_execution(cfg.get("execution"))
     if execution["prepare"] or execution["mode"] == "venv":
         raise ValueError("Agents require local mode or a reviewed Docker image, without prepare steps.")
+    if adapter == "codex":
+        from mimo_harness.codex_adapter import validate_codex_config
+        validate_codex_config(cfg, execution)
     budget = cfg.get("budget", {"max_invocations": 3})
     if not isinstance(budget, dict) or set(budget) - {"max_invocations", "max_reserved_seconds"}:
         raise ValueError("Agent budget supports max_invocations and max_reserved_seconds only.")
@@ -69,6 +78,9 @@ def preflight_agent(config, project):
         executable = sys.executable if config["argv"][0] == "{python}" else config["argv"][0]
         if not shutil.which(executable, path=os.environ.get("PATH", "")) and not (cwd / executable).is_file():
             raise ValueError("Agent executable is unavailable; install it or select a reviewed Docker image.")
+        if config.get("adapter") == "codex":
+            from mimo_harness.codex_adapter import probe_codex
+            probe_codex(config["argv"], config["cli_version"])
 
 
 def ledger_document(policy, entries):
@@ -193,8 +205,12 @@ def propose(config, snapshot: Path, root: Path, request: dict, manifest, budget)
         argv = [replacements.get(a, a) for a in config["argv"]]
         cwd = (workspace / config["cwd"]).resolve()
         cwd.relative_to(workspace)
-        outcome = context.run(argv, cwd, config["timeout_seconds"], logs / "stdout.log", logs / "stderr.log",
-                              max_output_bytes=config["max_output_bytes"])
+        if config.get("adapter") == "codex":
+            from mimo_harness.codex_adapter import invoke_codex
+            outcome = invoke_codex(config, context, cwd, request)
+        else:
+            outcome = context.run(argv, cwd, config["timeout_seconds"], logs / "stdout.log", logs / "stderr.log",
+                                  max_output_bytes=config["max_output_bytes"])
         if outcome.status == "cancelled":
             raise KeyboardInterrupt
         if outcome.status != "completed" or outcome.returncode != 0:
@@ -229,12 +245,16 @@ def propose(config, snapshot: Path, root: Path, request: dict, manifest, budget)
         for path in logs.glob("*.log"):
             if not path.is_symlink():
                 path.write_text(redact(path.read_text(encoding="utf-8", errors="replace")), encoding="utf-8")
-    record = ModelRunRecord("REPAIR", "cli-agent", "external-cli", status, False,
+    codex = config.get("adapter") == "codex"
+    record = ModelRunRecord("REPAIR", "codex-cli" if codex else "cli-agent",
+                            config["model"] if codex else "external-cli", status, False,
                             time.monotonic() - started, 0, 0, 0,
                             f"```diff\n{patch}\n```" if status == "completed" else "", error, {},
                             candidate_id=candidate_id, provider_type="cli_agent", usage_source="unavailable",
                             finish_reason="completed" if status == "completed" else "error", error_code=error,
-                            attempts=[{"reservation_id": reservation, "status": status}])
+                            attempts=[{"reservation_id": reservation, "status": status,
+                                       **({"adapter": "codex", "cli_version": config["cli_version"],
+                                           "model": config["model"]} if codex else {})}])
     budget.finish(reservation, status)
     manifest.record(candidate_id, signature, asdict(record))
     return record

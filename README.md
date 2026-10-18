@@ -235,7 +235,16 @@ See [execution isolation and configuration](docs/EXECUTION_ISOLATION.md) and the
 
 Agent execution uses explicit argv, separate credentials, timeout/output limits and durable invocation/time reservations shared across recovery branches. `resume`, `report`, `export` and the PASS-only gate support the complete repair workflow. External CLI tokens/costs are unavailable; configure actual spending limits in the Agent/provider.
 
-Start with the [complete free two-round example and Agent protocol](docs/CLI_AGENTS.md). The supported integration is the generic JSON protocol; vendor-specific CLI/event adapters and live paid validation remain separate acceptance work.
+Start with the [complete free two-round example and Agent protocol](docs/CLI_AGENTS.md). v0.10 also supplies a [pinned Codex adapter and profile generator](docs/CODEX_AGENT.md); live-model repair quality and provider billing remain separate acceptance work.
+
+### Try a real defect without a model account
+
+```bash
+mimo case-init --case boltons-write --output .mimo/cases/boltons
+mimo case-check --directory .mimo/cases/boltons --name first
+```
+
+The prepared case reproduces an upstream defect, accepts its reference fix, rejects a regression, reruns recovery and exports portable evidence. It uses no API key or model call. A second independent case and exact source/fix identities are documented in [real defect acceptance](docs/REAL_DEFECT_CASES.md). Choose new output directories/run names to repeat; existing evidence is preserved.
 
 ### Continue an interrupted run
 
