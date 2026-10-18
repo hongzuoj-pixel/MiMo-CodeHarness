@@ -236,6 +236,19 @@ def collect_diagnostics(
         if check["adapter"] == "pytest" and cfg.get("execution", {}).get("mode", "local") == "local" and importlib.util.find_spec("pytest") is None:
             rows.append(Diagnostic(f"check:{check['id']}", "error",
                                    "pytest is not installed in this interpreter. Install the project's test dependencies or pip install pytest."))
+        if check["adapter"] == "node" and cfg["execution"]["mode"] != "docker":
+            try:
+                import tempfile
+                from mimo_harness.execution import clean_environment, run_process
+                from mimo_harness.structured_cases import validate_node_version
+                with tempfile.TemporaryDirectory(prefix="mimo-node-doctor-") as temporary:
+                    runtime = Path(temporary)
+                    probe = run_process(["node", "--version"], runtime, timeout=10, env=clean_environment(runtime / "home"))
+                if probe.status != "completed" or probe.returncode != 0:
+                    raise ValueError("Node is unavailable; install Node 22.23+ or 24.19+.")
+                rows.append(Diagnostic(f"node:{check['id']}", "ok", validate_node_version(probe.stdout)))
+            except (ValueError, OSError) as exc:
+                rows.append(Diagnostic(f"node:{check['id']}", "error", str(exc)))
     execution = cfg["execution"]
     rows.append(Diagnostic("execution", "ok", execution["mode"] + " (clean environment; allowlist names only)"))
     if execution["mode"] == "docker":
@@ -382,8 +395,8 @@ def command_doctor(args: argparse.Namespace) -> int:
             preflight_agent(agent, _resolve(config_path.parent, cfg["project"]))
             if {k.upper() for k in agent["execution"]["env_allowlist"]} & {k.upper() for k in cfg["execution"]["env_allowlist"]}:
                 raise ValueError("Agent and acceptance env_allowlist must be disjoint.")
-            if not any(c.get("target_tests") for c in (cfg.get("checks") or []) if c["adapter"] == "pytest"):
-                raise ValueError("Repair requires explicit pytest target_tests.")
+            if not any(c.get("target_tests") for c in (cfg.get("checks") or []) if c["adapter"] in {"pytest", "node", "junit"}):
+                raise ValueError("Repair requires explicit target_tests in a structured case check.")
             rows.append(Diagnostic("cli_agent", "OK", "Agent configuration/credentials available; no Agent invoked. Docker availability is checked during setup."))
         except (ValueError, OSError) as exc:
             rows.append(Diagnostic("cli_agent", "ERROR", str(exc)))
@@ -965,7 +978,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify.set_defaults(handler=command_verify)
 
     from mimo_harness.repair import command_repair
-    repair = sub.add_parser("repair", help="Run a bounded external CLI Agent repair loop with fixed pytest acceptance.")
+    repair = sub.add_parser("repair", help="Run a bounded external CLI Agent repair loop with fixed per-case acceptance.")
     repair.add_argument("--project", help="Override the configured project directory")
     repair.add_argument("--agent-config", required=True, help="Versioned Agent argv/execution/budget JSON")
     repair.add_argument("--task-file", required=True, help="UTF-8 defect description (at most 64 KiB)")
@@ -990,6 +1003,26 @@ def build_parser() -> argparse.ArgumentParser:
     case_check.add_argument("--directory", required=True, help="Prepared case directory")
     case_check.add_argument("--name", help="New acceptance attempt name")
     case_check.set_defaults(handler=command_case_check)
+
+    from mimo_harness.product_acceptance import command_trial_init, command_trial_run, command_walkthrough_init, command_readiness
+    trial_init = sub.add_parser("trial-init", help="Prepare a live-model trial plan without calling a model.")
+    trial_init.add_argument("--agent-config", required=True)
+    trial_init.add_argument("--output", default=".mimo/live-trial-plan.json")
+    trial_init.set_defaults(handler=command_trial_init)
+    trial_run = sub.add_parser("trial-run", help="Execute a reviewed live trial with explicit allowance and provider cap declaration.")
+    trial_run.add_argument("--plan", required=True)
+    trial_run.add_argument("--output", required=True, help="New trial directory; existing evidence is preserved")
+    trial_run.set_defaults(handler=command_trial_run)
+    walkthrough = sub.add_parser("walkthrough-init", help="Create an independent-user guide and blank feedback record.")
+    walkthrough.add_argument("--output", required=True)
+    walkthrough.set_defaults(handler=command_walkthrough_init)
+    readiness = sub.add_parser("readiness", help="Check source-bound product evidence; missing external gates remain pending.")
+    readiness.add_argument("--repository", default=".")
+    readiness.add_argument("--trial", help="Completed trial.json")
+    readiness.add_argument("--feedback", action="append", help="Completed independent-user feedback.json; repeat for each tester")
+    readiness.add_argument("--license-id", help="Maintainer-selected license identifier; requires a repository LICENSE file")
+    readiness.add_argument("--ci-record", help="Source-bound final CI acceptance JSON")
+    readiness.set_defaults(handler=command_readiness)
 
     resume = sub.add_parser("resume", help="Recover into a new run; validate inputs and rerun all checks.")
     resume.add_argument("--run", required=True, help="Original run directory with run_manifest.json")

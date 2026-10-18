@@ -78,6 +78,73 @@ def test_nonempty_validator_keeps_permitted_values():
     },
 }
 
+CASES["ms-invalid-number"] = {
+    "adapter": "node", "repository": "https://github.com/vercel/ms.git",
+    "upstream_base": "d95e17fd75a93708c8a3daf5bb07bf649cd5931c",
+    "upstream_fix": "d1add60365fe2340b750b1f7a254b83bea34e52d",
+    "license_url": "https://github.com/vercel/ms/blob/d95e17fd75a93708c8a3daf5bb07bf649cd5931c/license.md",
+    "source_file": "index.js",
+    "old": r"  var match = /^((?:\d+)?-?(?:\d+)?\.?\d+) *",
+    "fixed": r"  var match = /^(-?(?:\d+)?\.?\d+) *",
+    "regressed": r"  var match = /^((?:\d+)?\.?\d+) *",
+    "target": "rejects an internal minus sign",
+    "task": "Fix ms parsing so malformed numbers such as 10-.5 are rejected. Preserve negative decimal durations, unit conversion and case-insensitive units. Keep acceptance tests unchanged.",
+    "tests": '''const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const ms = require('../index.js');
+test('rejects an internal minus sign', () => assert.equal(ms('10-.5'), undefined));
+test('preserves negative decimals', () => assert.equal(ms('-10.5s'), -10500));
+test('preserves unit conversion', () => assert.equal(ms('2 HOURS'), 7200000));
+''',
+}
+
+# A user-owned command can emit the documented JUnit contract without importing
+# harness internals. This reference runner executes real stdlib unittest cases.
+UNITTEST_JUNIT_RUNNER = '''import inspect, sys, unittest
+from pathlib import Path
+from xml.etree.ElementTree import Element, SubElement, ElementTree
+root=Element('testsuite')
+class Result(unittest.TextTestResult):
+    def save(self,test,status,message=''):
+        file=Path(inspect.getsourcefile(type(test))).resolve().relative_to(Path.cwd()).as_posix()
+        row=SubElement(root,'testcase',file=file,classname=type(test).__name__,name=test._testMethodName)
+        if status:
+            SubElement(row,status,type='AssertionError' if status=='failure' else status).text=message
+    def addSuccess(self,test):
+        super().addSuccess(test); self.save(test,None)
+    def addFailure(self,test,err):
+        super().addFailure(test,err); self.save(test,'failure',self._exc_info_to_string(err,test))
+    def addError(self,test,err):
+        super().addError(test,err); self.save(test,'error',self._exc_info_to_string(err,test))
+    def addSkip(self,test,reason):
+        super().addSkip(test,reason); self.save(test,'skipped',reason)
+sys.path.insert(0,str(Path.cwd()))
+suite=unittest.defaultTestLoader.discover('.mimo_acceptance',pattern='test_regression.py')
+result=unittest.TextTestRunner(resultclass=Result,verbosity=2).run(suite)
+root.set('tests',str(result.testsRun))
+ElementTree(root).write(sys.argv[1],encoding='utf-8',xml_declaration=True)
+raise SystemExit(0 if result.wasSuccessful() else 1)
+'''
+
+CASES["boltons-junit"] = {
+    **CASES["boltons-write"], "adapter": "junit", "target": "Streams::test_write_reports_count",
+    "tests": '''import unittest
+from boltons.ioutils import SpooledStringIO
+class Streams(unittest.TestCase):
+    def test_write_reports_count(self):
+        with SpooledStringIO() as stream:
+            self.assertEqual(stream.write('abc'),3)
+    def test_unicode_round_trip(self):
+        with SpooledStringIO() as stream:
+            stream.write('a\\u2603b')
+            self.assertEqual(stream.getvalue(),'a\\u2603b')
+    def test_rolled_round_trip(self):
+        with SpooledStringIO() as stream:
+            stream.rollover(); stream.write('mixed Case')
+            self.assertEqual(stream.getvalue(),'mixed Case')
+''',
+}
+
 
 def _git(argv, cwd, *, env=None):
     try:
@@ -114,8 +181,13 @@ def command_case_init(args):
         (root / f"{name}.patch").write_text(patch_for(spec, before, replacement), encoding="utf-8", newline="\n")
     acceptance = project / ".mimo_acceptance"
     acceptance.mkdir()
-    (acceptance / "test_regression.py").write_text(spec["tests"], encoding="utf-8", newline="\n")
-    (acceptance / "pytest.ini").write_text("[pytest]\n", encoding="utf-8", newline="\n")
+    adapter = spec.get("adapter", "pytest")
+    test_name = "test_regression.cjs" if adapter == "node" else "test_regression.py"
+    (acceptance / test_name).write_text(spec["tests"], encoding="utf-8", newline="\n")
+    if adapter == "pytest":
+        (acceptance / "pytest.ini").write_text("[pytest]\n", encoding="utf-8", newline="\n")
+    if adapter == "junit":
+        (acceptance / "run_junit.py").write_text(UNITTEST_JUNIT_RUNNER, encoding="utf-8", newline="\n")
     # A local acceptance commit preserves the exact upstream parent and allows
     # the public verify/repair commands to use an immutable Git base by default.
     _git(["add", "--", ".mimo_acceptance"], project)
@@ -129,18 +201,23 @@ def command_case_init(args):
     if _git(["rev-parse", "HEAD^"], project) != spec["upstream_base"]:
         raise ValueError("Acceptance commit does not preserve upstream ancestry.")
     cfg = default_project_config()
-    cfg.update(project="project", output_dir="runs", model_config="models.json", run_build_tests=True,
-               checks=[{"id": "case", "adapter": "pytest",
-                        "args": ["-q", "-c", ".mimo_acceptance/pytest.ini", ".mimo_acceptance/test_regression.py"],
-                        "target_tests": [".mimo_acceptance/test_regression.py::" + spec["target"]]}])
+    check = {"id": "case", "adapter": adapter, "target_tests": [".mimo_acceptance/" + test_name + "::" + spec["target"]]}
+    if adapter == "junit":
+        check.update(argv=["{python}", ".mimo_acceptance/run_junit.py", "{junit}"], acceptance_files=[".mimo_acceptance/*.py"])
+    else:
+        check["args"] = [".mimo_acceptance/" + test_name] if adapter == "node" else ["-q", "-c", ".mimo_acceptance/pytest.ini", ".mimo_acceptance/test_regression.py"]
+    cfg.update(project="project", output_dir="runs", model_config="models.json", run_build_tests=True, checks=[check])
     atomic_json(root / "mimo-harness.json", cfg)
     atomic_json(root / "models.json", default_model_config())
     (root / "task.txt").write_text(spec["task"] + "\n", encoding="utf-8", newline="\n")
     tracked = ["mimo-harness.json", "models.json", "task.txt", "reference.patch", "regression.patch"]
+    inventory = source_inventory(project, COPY_EXCLUDE_DIRS)
     record = {"schema_version": 1, "case_id": args.case, "mode": "upstream_reference_controls",
               "repository": spec["repository"], "upstream_base": spec["upstream_base"], "upstream_fix": spec["upstream_fix"],
               "license_url": spec["license_url"], "acceptance_base": resolved,
-              "source_sha256": digest(source_inventory(project, COPY_EXCLUDE_DIRS)),
+              "source_sha256": digest(inventory),
+              "source_content_sha256": digest({name: {key: value for key, value in row.items() if key != "mode"}
+                                               for name, row in inventory.items()}),
               "files": {name: file_digest(root / name) for name in tracked},
               "reference_note": "Minimal reference change follows the pinned upstream fix. Regression patch is an intentional negative control, not an upstream change or an AI result."}
     atomic_json(root / "case.json", record)

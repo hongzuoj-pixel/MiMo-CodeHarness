@@ -159,6 +159,8 @@ def environment_identity(execution: dict, checks, salt: str, runtime_home: Path)
                        for d in importlib.metadata.distributions()})
     tools = {"git"}
     for step in [*(checks or []), *execution.get("prepare", [])]:
+        if step.get("adapter") == "node":
+            tools.add("node")
         argv = step.get("argv", [])
         if argv and argv[0] != "{python}":
             tools.add(argv[0])
@@ -185,7 +187,7 @@ def engine_identity() -> str:
     # contain legacy scripts that are not distributed. Hash the same executable
     # components in both layouts, using module names instead of install paths.
     code = {"mimo_harness/" + p.name: file_digest(p)
-            for p in sorted(Path(__file__).parent.glob("*.py"))}
+            for p in sorted(Path(__file__).parent.iterdir()) if p.suffix in {".py", ".mjs"}}
     for name in ("run_mimo_codeharness_v02", "scoring_v03", "verification_v04"):
         spec = importlib.util.find_spec(name)
         code[name + ".py"] = file_digest(Path(spec.origin)) if spec and spec.origin else None

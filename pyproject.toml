@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mimo-codeharness"
-version = "0.10.0"
+version = "0.11.0"
 description = "Evidence-backed repository and code-agent patch verification harness"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -56,6 +56,9 @@ py-modules = [
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["mimo_harness*"]
+
+[tool.setuptools.package-data]
+mimo_harness = ["*.mjs"]
 
 [tool.setuptools.data-files]
 "share/mimo-codeharness" = ["docs/THIRD_PARTY_NOTICES.md"]

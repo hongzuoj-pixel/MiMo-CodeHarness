@@ -1,5 +1,7 @@
 # Reproduce two real Python defects
 
+v0.11 also provides `ms-invalid-number` through native Node and `boltons-junit` through a generic JUnit-emitting command. See [Node/JUnit setup and evidence](STRUCTURED_CHECKS.md). The original two pytest cases remain unchanged.
+
 These cases let a new user exercise the entire verifier without an API key, a model call or a custom adapter. GitHub access is needed to prepare the pinned source. The checks use Python/pytest already installed in the invoking environment; the selected cases have no additional third-party runtime dependencies.
 
 From the harness checkout:

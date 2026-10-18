@@ -1,6 +1,6 @@
 # Codex CLI repair adapter
 
-The optional `codex` adapter removes the need to write a JSON wrapper for Codex. The harness supplies a read-only proposal request, translates completed CLI JSONL events, then applies only the returned diff in a separate verifier. A model answer is accepted only after fixed-baseline pytest acceptance. The original checkout is preserved.
+The optional `codex` adapter removes the need to write a JSON wrapper for Codex. The harness supplies a read-only proposal request, translates completed CLI JSONL events, then applies only the returned diff in a separate verifier. A model answer is accepted only after fixed-baseline per-case acceptance (pytest, native Node or the documented JUnit subset). The original checkout is preserved.
 
 ## Install and configure
 
