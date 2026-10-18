@@ -115,15 +115,20 @@ def test_agent_init_profile_is_explicit_and_never_overwrites(tmp_path, monkeypat
     assert main(args) == 4 and output.read_bytes() == saved
 
 
-def test_npm_package_resolves_to_native_binary(tmp_path):
+@pytest.mark.parametrize("layout", ["hoisted", "nested", "bundled"])
+@pytest.mark.parametrize("shim", ["js", "cmd", "ps1"])
+def test_npm_package_resolves_to_native_binary(tmp_path, layout, shim):
     import platform
     system = {"linux": "linux", "darwin": "darwin", "windows": "win32"}[platform.system().lower()]
     arch = {"x86_64": "x64", "amd64": "x64", "aarch64": "arm64", "arm64": "arm64"}[platform.machine().lower()]
     package = tmp_path / "node_modules/@openai/codex"
-    launcher = package / "bin/codex.js"
+    launcher = package / "bin/codex.js" if shim == "js" else tmp_path / ("codex." + shim)
     launcher.parent.mkdir(parents=True)
     launcher.write_text("// npm launcher\n")
-    binary = package.parent / f"codex-{system}-{arch}/vendor/test-triple/bin" / ("codex.exe" if os.name == "nt" else "codex")
+    vendor = {"hoisted": package.parent / f"codex-{system}-{arch}/vendor",
+              "nested": package / f"node_modules/@openai/codex-{system}-{arch}/vendor",
+              "bundled": package / "vendor"}[layout]
+    binary = vendor / "test-triple/bin" / ("codex.exe" if os.name == "nt" else "codex")
     binary.parent.mkdir(parents=True)
     binary.write_bytes(b"native-package-bytes")
     assert resolve_codex_binary(str(launcher)) == str(binary.resolve())

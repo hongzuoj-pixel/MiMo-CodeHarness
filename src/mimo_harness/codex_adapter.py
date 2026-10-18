@@ -65,7 +65,9 @@ def resolve_codex_binary(value):
         machine = platform.machine().lower()
         arch = {"x86_64": "x64", "amd64": "x64", "aarch64": "arm64", "arm64": "arm64"}.get(machine)
         for root in roots:
-            for vendor in (root / "vendor", root.parent / f"codex-{system}-{arch}" / "vendor"):
+            package = f"codex-{system}-{arch}"
+            for vendor in (root / "vendor", root.parent / package / "vendor",
+                           root / "node_modules/@openai" / package / "vendor"):
                 for candidate in vendor.glob("*/bin/codex.exe" if os.name == "nt" else "*/bin/codex"):
                     if candidate.is_file():
                         return str(candidate.resolve())
