@@ -82,6 +82,24 @@ def test_suite_and_nested_test_identity_is_stable(tmp_path):
     assert row["collected"] == ["nested::nested.cjs::suite > leaf", "nested::nested.cjs::parent > child", "nested::nested.cjs::parent"]
 
 
+def test_concurrent_nested_identity_across_files_and_encoded_reporter_path(tmp_path, monkeypatch):
+    import mimo_harness.node_worker as worker
+    # Force a reporter module URL containing spaces, # and % on every platform.
+    runner = tmp_path / "runner space # percent%"; runner.mkdir()
+    source = Path(worker.__file__)
+    for name in ("node_worker.py", "node_reporter.mjs", "structured_cases.py"):
+        shutil.copy2(source.with_name(name), runner / name)
+    import mimo_harness.structured_checks as checks
+    monkeypatch.setattr(checks, "__file__", str(runner / "structured_checks.py"))
+    project = tmp_path / "project"; project.mkdir()
+    (project / "a.cjs").write_text("const {test}=require('node:test');test('parent',{concurrency:true},async t=>{await Promise.all(['left','right'].map((name,i)=>t.test(name,async t=>{await new Promise(r=>setTimeout(r,i?1:30));await t.test('leaf',()=>{});})));});")
+    (project / "b.cjs").write_text("require('node:test').test('another',()=>{});")
+    row = run_check(project, tmp_path / "logs", {"id":"native", "adapter":"node", "args":["*.cjs"]}, True)
+    assert row["status"] == "ok", row
+    assert set(row["collected"]) == {"native::a.cjs::parent", "native::a.cjs::parent > left", "native::a.cjs::parent > left > leaf",
+                                    "native::a.cjs::parent > right", "native::a.cjs::parent > right > leaf", "native::b.cjs::another"}
+
+
 @pytest.mark.parametrize("body", ["const {test}=require('node:test');test('same',()=>{});test('same',()=>{});",
                                   "const {test}=require('node:test');test('broken',()=>new Promise(()=>{}));"])
 def test_duplicate_identity_and_cancelled_tests_are_errors(tmp_path, body):

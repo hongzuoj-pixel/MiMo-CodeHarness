@@ -173,6 +173,10 @@ def command_case_init(args):
     project = root / "project"
     print(f"[CASE] {args.case}: fetching pinned upstream source", flush=True)
     _git(["-c", "core.autocrlf=false", "clone", "--no-checkout", "--filter=blob:none", spec["repository"], str(project)], root)
+    # This owned clone must keep the same bytes in checkout and Git archives,
+    # including when the operator's global Windows configuration requests CRLF.
+    _git(["config", "--local", "core.autocrlf", "false"], project)
+    _git(["config", "--local", "core.eol", "lf"], project)
     _git(["-c", "core.autocrlf=false", "checkout", "--detach", spec["upstream_base"]], project)
     if _git(["rev-parse", "HEAD"], project) != spec["upstream_base"]:
         raise ValueError("Unexpected upstream base; no acceptance prepared.")

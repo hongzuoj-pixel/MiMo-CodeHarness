@@ -118,6 +118,8 @@ def verify_junit(data, payload):
 
 def load_node(path):
     data = validate_record(json.loads(read_bytes(path).decode("utf-8")))
+    if data.get("runner_error"):
+        raise ValueError(data["runner_error"])
     if data.get("adapter") != "node" or data.get("complete") is not True:
         raise ValueError("NODE_INCOMPLETE_STREAM")
     return data

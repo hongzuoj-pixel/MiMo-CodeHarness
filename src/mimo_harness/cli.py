@@ -593,7 +593,8 @@ def _materialize_baseline(project: Path, base_ref: str, destination: Path) -> st
     if resolved.returncode != 0:
         raise ValueError(f"Git base ref does not resolve to a commit: {base_ref}")
     archive = subprocess.run(
-        ["git", "-C", str(project), "archive", "--format=tar", resolved.stdout.strip()],
+        ["git", "-c", "core.autocrlf=false", "-c", "core.eol=lf", "-C", str(project),
+         "archive", "--format=tar", resolved.stdout.strip()],
         capture_output=True,
     )
     if archive.returncode != 0:

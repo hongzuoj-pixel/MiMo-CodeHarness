@@ -9,12 +9,16 @@ export default async function* reporter(source) {
     collection_errors: [], collection_skips: [], complete: false, runner_version: process.version};
   const parents = new Map();
   const identities = new Map();
+  // Node 22 reports start/results in declaration order without testId/parentId.
+  // Track only that ordered stream; execution-order enqueue/complete events
+  // cannot establish ancestry when tests explicitly run concurrently.
+  const frames = [];
   let summary;
   function identity(d) {
-    if (!d.file || !Number.isInteger(d.testId)) throw new Error('NODE_EVENT_ID_MISSING');
+    if (!d.file || !Number.isInteger(d.nesting) || d.nesting < 0 || typeof d.name !== 'string') throw new Error('NODE_EVENT_ID_MISSING');
     const file = path.relative(root, d.file).split(path.sep).join('/');
     if (!file || file.startsWith('../') || path.isAbsolute(file)) throw new Error('NODE_TEST_OUTSIDE_WORKSPACE');
-    const parent = d.parentId && parents.get(d.parentId);
+    const parent = Number.isInteger(d.testId) ? parents.get(d.parentId) : frames[d.nesting - 1];
     if (d.nesting > 0 && !parent) throw new Error('NODE_PARENT_ID_MISSING');
     const names = [...(d.nesting > 0 ? parent.names : []), d.name];
     return {nodeid: `${file}::${names.join(' > ')}`, file, names};
@@ -31,8 +35,13 @@ export default async function* reporter(source) {
       }
       if (event.type === 'test:start' && !wrapper(d)) {
         const item = identity(d);
-        parents.set(d.testId, item);
-        identities.set(`${d.file}:${d.testId}`, item);
+        if (Number.isInteger(d.testId)) {
+          parents.set(d.testId, item);
+          identities.set(`${d.file}:${d.testId}`, item);
+        } else {
+          if (frames.length !== d.nesting) throw new Error('NODE_START_ORDER_MISMATCH');
+          frames.push({...item, name: d.name, nativeFile: d.file});
+        }
       }
       if (!['test:pass', 'test:fail'].includes(event.type)) continue;
       const error = d.details?.error;
@@ -40,8 +49,12 @@ export default async function* reporter(source) {
         if (event.type === 'test:fail') data.collection_errors.push({nodeid: d.name, message: String(error?.stack || error)});
         continue; // A successful empty file is not an executed behavior test.
       }
-      const item = identities.get(`${d.file}:${d.testId}`);
+      const item = Number.isInteger(d.testId) ? identities.get(`${d.file}:${d.testId}`) : frames[d.nesting];
       if (!item) throw new Error('NODE_RESULT_WITHOUT_START');
+      if (!Number.isInteger(d.testId)) {
+        if (frames.length !== d.nesting + 1 || item.name !== d.name || item.nativeFile !== d.file) throw new Error('NODE_RESULT_ORDER_MISMATCH');
+        frames.length = d.nesting;
+      }
       const skipped = d.skip !== undefined && d.skip !== false;
       const todo = d.todo !== undefined && d.todo !== false;
       if (d.details?.type === 'suite') {

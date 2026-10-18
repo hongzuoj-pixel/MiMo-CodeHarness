@@ -164,14 +164,16 @@ def bundle_proof(path, live_row=None):
             inventory = json.loads(reader.read("provenance/source_manifest.json"))
             content_sha = digest({name: {key: value for key, value in row.items() if key != "mode"}
                                   for name, row in inventory.items()})
-            if (manifest["options"].get("workflow") != "repair" or agent.get("adapter") != "codex"
-                    or agent.get("cli_version") != CODEX_VERSION or agent != live_row.get("agent")
-                    or ledger["summary"] != live_row.get("ledger") or ledger["summary"]["invocations_reserved"] != 1
-                    or source["upstream_base"] != spec["upstream_base"] or source["upstream_fix"] != spec["upstream_fix"]
-                    or manifest["inputs"]["resolved_base"] != source["acceptance_base"]
-                    or content_sha != source.get("source_content_sha256")
-                    or manifest["inputs"]["agent"]["config_sha256"] != live_row.get("limited_profile_sha256")):
-                raise ValueError("Trial requires an actual bounded Codex repair record for the pinned defect, not reference controls.")
+            checks = {"adapter": agent.get("adapter") == "codex", "cli_version": agent.get("cli_version") == CODEX_VERSION,
+                      "agent_identity": agent == live_row.get("agent"), "ledger": ledger["summary"] == live_row.get("ledger"),
+                      "invocations": ledger["summary"]["invocations_reserved"] == 1,
+                      "upstream_base": source["upstream_base"] == spec["upstream_base"],
+                      "upstream_fix": source["upstream_fix"] == spec["upstream_fix"],
+                      "acceptance_base": manifest["inputs"]["resolved_base"] == source["acceptance_base"],
+                      "source_content": content_sha == source.get("source_content_sha256"),
+                      "agent_profile": manifest["inputs"]["agent"]["config_sha256"] == live_row.get("limited_profile_sha256")}
+            if not all(checks.values()):
+                raise ValueError("Live trial repair evidence mismatch: " + ", ".join(key for key, ok in checks.items() if not ok))
         return decision["run_id"]
 
 

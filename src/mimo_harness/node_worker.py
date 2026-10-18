@@ -37,7 +37,8 @@ def main():
             write_junit(data, junit)
             return 0
         env = dict(os.environ, MIMO_NODE_EVIDENCE=str(output), MIMO_NODE_ROOT=str(root.resolve()))
-        command = ["node", "--test", "--test-concurrency=1", "--test-reporter=" + str(Path(__file__).with_name("node_reporter.mjs")), *files]
+        reporter = Path(__file__).with_name("node_reporter.mjs").resolve().as_uri()
+        command = ["node", "--test", "--test-concurrency=1", "--test-reporter=" + reporter, *files]
         code = subprocess.call(command, env=env)
         data = load_node(output)
         data["exit_code"] = code
