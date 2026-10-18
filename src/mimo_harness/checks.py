@@ -19,7 +19,7 @@ def validate_checks(checks: Any) -> list[dict] | None:
     for check in checks:
         if not isinstance(check, dict):
             raise ValueError("Each check must be an object.")
-        extra = set(check) - {"id", "adapter", "argv", "args", "cwd", "timeout_seconds", "category", "target_tests"}
+        extra = set(check) - {"id", "adapter", "argv", "args", "cwd", "timeout_seconds", "category", "target_tests", "acceptance_files"}
         if extra:
             raise ValueError(f"Unknown check fields: {sorted(extra)}")
         name = check.get("id", "")
@@ -27,16 +27,26 @@ def validate_checks(checks: Any) -> list[dict] | None:
             raise ValueError("Check IDs must be unique letters, numbers, underscores or hyphens.")
         seen.add(name)
         adapter = check.get("adapter")
-        if adapter not in {"pytest", "command"}:
-            raise ValueError(f"Check {name}: adapter must be pytest or command.")
-        key = "args" if adapter == "pytest" else "argv"
+        if adapter not in {"pytest", "node", "junit", "command"}:
+            raise ValueError(f"Check {name}: adapter must be pytest, node, junit or command.")
+        key = "args" if adapter in {"pytest", "node"} else "argv"
         args = check.get(key, [] if key == "args" else None)
         if not isinstance(args, list) or any(not isinstance(a, str) or not a for a in args):
             raise ValueError(f"Check {name}: {key} must be an array of non-empty strings.")
         if key == "argv" and not args:
             raise ValueError(f"Check {name}: argv cannot be empty.")
-        if (adapter == "pytest" and "argv" in check) or (adapter == "command" and "args" in check):
-            raise ValueError(f"Check {name}: use args for pytest and argv for command.")
+        if (key == "args" and "argv" in check) or (key == "argv" and "args" in check):
+            raise ValueError(f"Check {name}: use {key} for the selected adapter.")
+        if adapter == "node" and (not args or any(a.startswith("-") or Path(a).is_absolute()
+                or ".." in a.replace("\\", "/").split("/") or "\\" in a or ":" in a for a in args)):
+            raise ValueError(f"Check {name}: node args must be relative test file/glob paths, without CLI flags.")
+        if adapter == "junit" and (args.count("{junit}") != 1 or args[0] == "{junit}"):
+            raise ValueError(f"Check {name}: junit argv requires exactly one whole {{junit}} output argument.")
+        acceptance = check.get("acceptance_files", [])
+        if (not isinstance(acceptance, list) or any(not isinstance(p, str) or not p or p.startswith("/")
+                or "\\" in p or ":" in p or ".." in p.split("/") for p in acceptance)
+                or (adapter == "junit" and not acceptance) or (acceptance and adapter not in {"node", "junit"})):
+            raise ValueError(f"Check {name}: declare relative acceptance_files for junit (optional for node).")
         cwd = check.get("cwd", ".")
         if not isinstance(cwd, str) or not cwd or Path(cwd).is_absolute() or ".." in Path(cwd).parts:
             raise ValueError(f"Check {name}: cwd must stay inside the isolated project.")
@@ -45,13 +55,13 @@ def validate_checks(checks: Any) -> list[dict] | None:
             raise ValueError(f"Check {name}: timeout_seconds must be > 0 and <= 86400.")
         if check.get("category", "test") not in {"test", "build", "smoke"}:
             raise ValueError(f"Check {name}: unsupported category.")
-        if adapter == "pytest" and check.get("category", "test") != "test":
-            raise ValueError(f"Check {name}: pytest category must be test.")
+        if adapter in {"pytest", "node", "junit"} and check.get("category", "test") != "test":
+            raise ValueError(f"Check {name}: structured case adapters require category test.")
         targets = check.get("target_tests", [])
         if not isinstance(targets, list) or any(not isinstance(t, str) or not t for t in targets):
             raise ValueError(f"Check {name}: target_tests must be an array of node IDs.")
-        if targets and adapter != "pytest":
-            raise ValueError(f"Check {name}: target_tests requires the pytest adapter.")
+        if targets and adapter not in {"pytest", "node", "junit"}:
+            raise ValueError(f"Check {name}: target_tests requires a structured case adapter.")
     return checks
 
 
@@ -63,9 +73,12 @@ def protected_files(root: Path) -> dict[str, str]:
         relative = path.relative_to(root)
         if set(relative.parts) & excluded or not path.is_file():
             continue
-        if (path.name in {"conftest.py", "pytest.ini", "pyproject.toml", "setup.cfg", "tox.ini"}
+        if (path.name in {"conftest.py", "pytest.ini", "pyproject.toml", "setup.cfg", "tox.ini",
+                          "package.json", "package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", ".npmrc"}
                 or path.name.startswith("test_") or path.name.endswith("_test.py")
-                or "tests" in relative.parts):
+                or path.stem in {"test", "tests"}
+                or any(part in {"test", "tests", "__tests__"} for part in relative.parts)
+                or any(mark in path.name for mark in (".test.", ".spec."))):
             if path.is_symlink():
                 raise ValueError(f"Acceptance input is a symlink: {relative}")
             hashes[relative.as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -73,6 +86,9 @@ def protected_files(root: Path) -> dict[str, str]:
 
 
 def run_check(root: Path, logs: Path, spec: dict, enabled: bool, context=None) -> dict:
+    if spec["adapter"] in {"node", "junit"}:
+        from mimo_harness.structured_checks import run_structured_check
+        return run_structured_check(root, logs, spec, enabled, context)
     from mimo_harness.execution import CheckCancelled, ExecutionContext
     name = spec["id"]
     adapter = spec["adapter"]

@@ -1,6 +1,6 @@
 # External CLI Agents and finite repair
 
-`mimo repair` turns a defect description into a bounded sequence of proposals and independent pytest acceptance. It uses the same patch verification rules as `mimo verify --task-type bug_fix`: every target must reproduce an assertion failure on the baseline, then pass without regressions or changed acceptance files. The original project is preserved. Review/apply the final `input.patch` yourself after a PASS.
+`mimo repair` turns a defect description into a bounded sequence of proposals and independent per-case acceptance. It uses the same patch verification rules as `mimo verify --task-type bug_fix`: every target must reproduce an assertion failure on the baseline, then pass without regressions or changed acceptance files. Pytest, native Node and the documented JUnit subset are supported. The original project is preserved. Review/apply the final `input.patch` yourself after a PASS.
 
 ## Run the complete free example
 

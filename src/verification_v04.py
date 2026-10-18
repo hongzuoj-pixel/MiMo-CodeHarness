@@ -308,7 +308,7 @@ def _classify_test_cases(task_type, common, baseline, candidate):
     if task_type in BUG_FIX_TYPES:
         targets = baseline.get("target_tests", [])
         if not targets:
-            return result(INSUFFICIENT_EVIDENCE, "TARGET_TESTS_NOT_CONFIGURED", "Bug-fix verification requires explicit target_tests in the pytest check.")
+            return result(INSUFFICIENT_EVIDENCE, "TARGET_TESTS_NOT_CONFIGURED", "Bug-fix verification requires explicit target_tests in a structured case check.")
         if any(k not in before or before[k]["status"] != "failed" or not before[k].get("assertion_failure") for k in targets):
             return result(INSUFFICIENT_EVIDENCE, "TARGET_NOT_REPRODUCED", "Each target must fail a baseline behavior assertion.")
         if any(after.get(k, {}).get("status") != "passed" for k in targets):

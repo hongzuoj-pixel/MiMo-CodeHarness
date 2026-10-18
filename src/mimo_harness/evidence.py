@@ -144,7 +144,7 @@ def _proof(reader, summary, original_root):
                 if name not in reader.names:
                     raise ValueError("Required command log is missing.")
                 links.append(name)
-        if row.get("adapter") not in {"pytest", "unittest"}:
+        if row.get("adapter") not in {"pytest", "unittest", "node", "junit"}:
             continue
         evidence_name = "evidence/" + original_relative(row.get("test_evidence", ""), original_root)
         junit_name = "evidence/" + original_relative(row.get("junit_xml", ""), original_root)
@@ -156,6 +156,21 @@ def _proof(reader, summary, original_root):
         if expected != row.get("test_cases") or ids != row.get("collected") or raw.get("exit_code") != row.get("returncode"):
             raise ValueError("Test recorder and check summary disagree.")
         xml = reader.read(junit_name)
+        if row.get("adapter") in {"node", "junit"}:
+            from mimo_harness.structured_cases import validate_record, verify_junit
+            validate_record(raw)
+            if raw.get("adapter") != row["adapter"] or raw.get("complete") is not True or raw.get("runner_error"):
+                raise ValueError("Incomplete structured test recorder.")
+            skips = [dict(item, nodeid=f"{row['name']}::{item['nodeid']}") for item in raw.get("collection_skips", [])]
+            if raw.get("collection_errors", []) != row.get("collection_errors", []) or skips != row.get("collection_skips", []):
+                raise ValueError("Test collection evidence disagrees.")
+            verify_junit(raw, xml)
+            if any(case["file"] not in row.get("protected_files", {}) for case in raw["cases"].values()):
+                raise ValueError("Unprotected test file in structured evidence.")
+            cases.extend(expected)
+            collected.extend(ids)
+            links.extend((evidence_name, junit_name))
+            continue
         if b"<!DOCTYPE" in xml.upper() or b"<!ENTITY" in xml.upper():
             raise ValueError("DTD/entity declarations are not allowed in JUnit evidence.")
         try:

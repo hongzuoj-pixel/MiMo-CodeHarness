@@ -43,8 +43,8 @@ def command_repair(args):
     if not 1 <= args.max_rounds <= 100:
         raise ValueError("max_rounds must be between 1 and 100.")
     checks = cfg.get("checks") or []
-    if not any(c.get("target_tests") for c in checks if c["adapter"] == "pytest"):
-        raise ValueError("Repair requires an explicit pytest check with target_tests that reproduce the defect.")
+    if not any(c.get("target_tests") for c in checks if c["adapter"] in {"pytest", "node", "junit"}):
+        raise ValueError("Repair requires a structured case check with target_tests that reproduce the defect.")
     if {k.upper() for k in agent["execution"]["env_allowlist"]} & {k.upper() for k in cfg["execution"]["env_allowlist"]}:
         raise ValueError("Agent and acceptance env_allowlist must be disjoint; keep Agent credentials out of tests.")
     project = _resolve(config_path.parent, args.project or cfg["project"])

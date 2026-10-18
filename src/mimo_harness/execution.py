@@ -265,8 +265,8 @@ class ExecutionContext:
                 return container + "/" + path.relative_to(host).as_posix()
             except ValueError:
                 pass
-        if path == Path(__file__).with_name("pytest_worker.py").resolve():
-            return "/mimo/pytest_worker.py"
+        if path.parent == Path(__file__).parent.resolve() and path.suffix in {".py", ".mjs"}:
+            return "/mimo/" + path.name
         raise ValueError(f"Path is outside Docker mounts: {path}")
 
     def setup(self):
@@ -319,7 +319,7 @@ class ExecutionContext:
                                stdout_path=stdout_path, stderr_path=stderr_path, max_output_bytes=max_output_bytes)
         name = "mimo-" + uuid.uuid4().hex
         self.containers.append(name)
-        worker = Path(__file__).with_name("pytest_worker.py").resolve()
+        worker = Path(__file__).parent.resolve()
         if any("," in str(p) for p in (self.root, self.logs, worker)):
             raise ValueError("Docker bind-mount paths cannot contain commas.")
         network = self.config.get("prepare_network" if prepare else "network", "none")
@@ -332,7 +332,7 @@ class ExecutionContext:
                    "--tmpfs", "/tmp:rw,nosuid,nodev,size=67108864,mode=1777",
                    "--mount", f"type=bind,source={self.root},target=/workspace",
                    "--mount", f"type=bind,source={self.logs},target=/evidence",
-                   "--mount", f"type=bind,source={worker},target=/mimo/pytest_worker.py,readonly",
+                   "--mount", f"type=bind,source={worker},target=/mimo,readonly",
                    "--workdir", self.path(cwd), "--env", "HOME=/tmp", "--env", "PYTHONNOUSERSITE=1",
                    "--env", "PYTHONUTF8=1", "--env", "PIP_CONFIG_FILE=/dev/null"]
         for key in self.config["env_allowlist"]:

@@ -211,6 +211,10 @@ mimo case-check --directory .mimo/cases/boltons --name first
 
 使用实际 Agent 时，可通过 `mimo agent-init --model YOUR_MODEL_ID` 生成固定版本 Codex CLI 的配置，省去自行编写协议包装器；安装、密钥、限额、运行与恢复见[Codex 使用指南](docs/CODEX_AGENT.md)。实际模型修复质量与付费调用验收单独记录。
 
+v0.11 已增加原生 Node.js 与通用 JUnit 的逐用例验证，可通过 `ms-invalid-number` 体验真实 JavaScript 缺陷，或通过 `boltons-junit` 体验通用测试命令。安装、配置和证据规则见[Node/JUnit 指南](docs/STRUCTURED_CHECKS.md)。
+
+真实模型试跑、新用户反馈和最终验收分别使用 `trial-init`/`trial-run`、`walkthrough-init` 和 `readiness`。执行 `mimo readiness` 可查看缺项；返回 `3` 表示尚未齐备，不会把测试模板当作真实试用。详见[中文产品验收指南](docs/PRODUCT_ACCEPTANCE_CN.md)和[支持范围与升级说明](docs/SUPPORT_AND_UPGRADES.md)。
+
 ### 6.3 初始化并检查项目
 
 先使用明确的离线模式。下面命令会创建 `mimo-harness.json` 和 `.mimo/models.json`，不会调用模型 API。

@@ -13,6 +13,10 @@ from test_cli_repair import ORIGINAL
 
 @pytest.fixture
 def prepared(tmp_path, monkeypatch):
+    # Exercise Windows-style global Git defaults on every CI platform.
+    git_config = tmp_path / "global-git-config"
+    git_config.write_text("[core]\n\tautocrlf = true\n\teol = crlf\n", encoding="utf-8")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(git_config))
     upstream = tmp_path / "upstream"
     upstream.mkdir()
     _git(["init", "--quiet"], upstream)
@@ -31,6 +35,13 @@ def prepared(tmp_path, monkeypatch):
     root = tmp_path / "prepared"
     assert main(["case-init", "--case", "local-fixture", "--output", str(root)]) == 0
     return SimpleNamespace(root=root, spec=spec)
+
+
+def test_git_baseline_bytes_ignore_global_checkout_line_endings(prepared, tmp_path):
+    from mimo_harness.cli import _materialize_baseline
+    baseline = tmp_path / "baseline"
+    _materialize_baseline(Path(prepared.spec["repository"]), prepared.spec["upstream_base"], baseline)
+    assert (baseline / "calc.py").read_bytes() == ORIGINAL.encode("utf-8")
 
 
 def test_pinned_case_public_workflow_and_no_overwrite(prepared):

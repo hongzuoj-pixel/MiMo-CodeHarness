@@ -42,6 +42,12 @@ The final product is accepted by complete workflows and failure scenarios, not b
 | Pinned Codex CLI → local Responses → two-round pytest repair | Actual npm native binary on Linux/Windows; fake local credentials | Explicit model/version and completion; reference PASS, portable gate, injected HTTP failure; no paid model claim |
 | Two independent pinned real Python defects | `case-init`/`case-check` for boltons and more-itertools on Linux/Windows | Target assertion reproduced; reference accepted, new regression rejected, fresh recovery, portable positive/negative gates, unchanged source |
 | Python/pytest/platform compatibility | Python 3.10/3.12/3.13; pytest 8/9; Linux/Windows | All jobs pass; JUnit retained even on failure |
+| Native Node per-case acceptance and repair | Actual Node 22/24 on Linux and 24 on Windows, plus real Docker | Stable parent/test IDs, assertion/error classification, skip/TODO/missing/empty handling, finite two-round repair, fresh recovery, strict portable proof |
+| Generic command with typed JUnit evidence | Actual commands and pinned boltons unittest/JUnit control | Predeclared acceptance files; typed assertions, exact identity/outcomes, XML/exit/totals consistency; malformed/missing/stale reports cannot PASS |
+| Real Node upstream defect | Pinned ms source/fix and independent tests | Reject malformed numeric input, preserve negative decimals/units; reference PASS and intentional regression FAIL, fresh recovery and portable gate |
+| Live trial preparation and evidence | `test_product_acceptance.py` with explicitly synthetic fixture declarations | No dispatch without allowance/credentials; changed inputs and loopback labels blocked; reference ZIP cannot be relabelled as model repair |
+| Independent-user preparation | Blank guide/feedback, duplicate/stale/unfinished record tests | Templates count as zero users; separate identities and run evidence required; independence remains an actual external observation |
+| Final source-bound automation | `release-automation`, exact Git commit/tree plus all 14 prerequisite job results | Automatic evidence stays pending without the real model, three independent users and maintainer license; no automatic publication |
 
 Run ordinary checks with `python -m pytest tests -q --junitxml=results.xml`. Docker tests require a real non-root Linux Docker worker and `MIMO_DOCKER_TEST_IMAGE`; they are explicitly skipped elsewhere, never counted as passed. POSIX SIGINT integration is skipped on Windows, whose Job cleanup is exercised by timeout/normal-exit tests. The separate Docker CI job is mandatory before claiming this backend is validated.
 
@@ -52,8 +58,8 @@ The two actual-Codex tests require `MIMO_CODEX_BINARY` and the exact pinned exec
 - Generalized cross-run caches/migration remain deferred; current recovery reuses only completed model responses within a validated run lineage. Network preparation and external services require pinned inputs and fresh execution.
 - Signed/remote attestation, richer evidence migration and organization-level enforced workflow policies are outside the current unsigned bundle format. The opt-in PR template still requires maintainer-configured required checks/review protection.
 - Generic CLI Agent repair, the pinned Codex event adapter and two real Python defect controls have automated gates. Live paid-provider/model repair validation still requires credentials and an explicit spending allowance. Opaque external Agent tokens/costs remain unavailable; invocation/time caps are not billing caps.
-- Certified Node/GenericCommand support and broader defect diversity; Keil/firmware/hardware behavior remain separately scoped.
-- Wheel/sdist release process, upgrade/compatibility notes, maintainer-selected license, and at least three independent new-user walkthroughs.
+- Broader language/framework and defect diversity beyond the documented native Node/JUnit subset; Keil/firmware/hardware behavior remain separately scoped.
+- Maintainer-selected license and at least three independent new-user walkthroughs. Wheel/sdist checks, upgrade/support notes, trial/feedback generation and source-bound CI collection are implemented; generated templates are not completed external evidence.
 - One final clean checkout/install run across the supported matrix, all failure-injection scenarios, evidence audit and scope review after the last functional change.
 
 Passing an intermediate batch is not the final completeness sign-off. Unavailable environments, skipped tests and external/manual gates must remain visible in the release record.

@@ -6,6 +6,8 @@ v0.8 unifies final-text model providers and adds explicit completion/usage state
 
 v0.10 adds a [pinned Codex CLI adapter](CODEX_AGENT.md), configuration generation and [two reproducible real defect cases](REAL_DEFECT_CASES.md). Existing JSON Agent and legacy script entry points remain supported.
 
+v0.11 adds [native Node and generic JUnit checks](STRUCTURED_CHECKS.md), live-trial planning/execution, independent-user material generation and source-bound release readiness. See [the complete acceptance workflow](PRODUCT_ACCEPTANCE_CN.md) and [support/upgrade notes](SUPPORT_AND_UPGRADES.md).
+
 ## Installation
 
 ```bash
@@ -43,6 +45,10 @@ Neither file is overwritten unless `--force` is explicitly supplied. Offline and
 | `mimo repair --agent-config FILE --task-file FILE` | Bounded Agent proposals with independent fixed-baseline pytest acceptance | Depends on the chosen Agent |
 | `mimo case-init --case ID --output NEW_PATH` | Prepare a pinned upstream defect and acceptance | No; GitHub access required |
 | `mimo case-check --directory PATH` | Run reference/regression controls, fresh recovery and portable gates | No |
+| `mimo trial-init --agent-config FILE` | Prepare a real-model trial plan with a blank allowance | No |
+| `mimo trial-run --plan FILE --output NEW_PATH` | Run the reviewed one-invocation-per-case live trial | Yes; explicit allowance/credentials required |
+| `mimo walkthrough-init --output NEW_PATH` | Generate a new-user guide and blank feedback | No |
+| `mimo readiness` | Check product evidence; pending external gates return 3 | No |
 | `mimo resume --run PATH` | Validate inputs, recover completed model responses, rerun all checks in a new attempt | Original API mode only |
 | `mimo report` | Generate a concise Markdown summary for a completed run | No |
 | `mimo export --run PATH --output ZIP` | Export a portable, hash-indexed offline evidence package | No |

@@ -246,6 +246,18 @@ mimo case-check --directory .mimo/cases/boltons --name first
 
 The prepared case reproduces an upstream defect, accepts its reference fix, rejects a regression, reruns recovery and exports portable evidence. It uses no API key or model call. A second independent case and exact source/fix identities are documented in [real defect acceptance](docs/REAL_DEFECT_CASES.md). Choose new output directories/run names to repeat; existing evidence is preserved.
 
+### Node/JUnit checks and product acceptance
+
+v0.11 adds [native Node and generic JUnit case evidence](docs/STRUCTURED_CHECKS.md), including a pinned real `ms` defect. Both support independent repair, recovery and portable gates; a zero command exit still cannot establish PASS.
+
+```bash
+mimo case-init --case ms-invalid-number --output .mimo/cases/ms
+mimo case-check --directory .mimo/cases/ms --name first
+mimo readiness
+```
+
+`readiness` returns `3` while external acceptance is pending. Use `trial-init`/`trial-run` for an explicitly budgeted live model trial and `walkthrough-init` for each independent new user. Blank templates and deterministic controls do not count as those observations. See the [acceptance guide](docs/PRODUCT_ACCEPTANCE_CN.md) and [support/upgrade boundaries](docs/SUPPORT_AND_UPGRADES.md).
+
 ### Continue an interrupted run
 
 ```bash

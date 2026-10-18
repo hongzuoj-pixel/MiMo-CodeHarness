@@ -26,6 +26,36 @@ def assert_removed(names):
         assert subprocess.run(["docker", "inspect", name], capture_output=True).returncode != 0
 
 
+@pytest.mark.parametrize("adapter", ["node", "junit"])
+def test_structured_case_adapters_in_real_docker(tmp_path, adapter):
+    from types import SimpleNamespace
+    from test_node_evidence import SOURCE, TESTS, policy as node_policy
+    from mimo_harness.real_cases import UNITTEST_JUNIT_RUNNER
+    from run_mimo_codeharness_v02 import copy_worktree
+    from verification_v04 import classify_candidate
+    root = tmp_path / "base"; root.mkdir()
+    if adapter == "node":
+        (root / "calc.cjs").write_text(SOURCE)
+        (root / "accept.cjs").write_text(TESTS)
+        checks = node_policy()
+    else:
+        (root / "calc.py").write_text("VALUE=1\n")
+        tests = root / ".mimo_acceptance"; tests.mkdir()
+        (tests / "test_regression.py").write_text("import unittest\nfrom calc import VALUE\nclass C(unittest.TestCase):\n    def test_target(self): self.assertEqual(VALUE,2)\n")
+        (tests / "runner.py").write_text(UNITTEST_JUNIT_RUNNER)
+        checks = [{"id":"generic","adapter":"junit","argv":["{python}",".mimo_acceptance/runner.py","{junit}"],
+                   "acceptance_files":[".mimo_acceptance/*.py"],"target_tests":[".mimo_acceptance/test_regression.py::C::test_target"]}]
+    candidate = copy_worktree(root, tmp_path / "candidate")
+    source = candidate / ("calc.cjs" if adapter == "node" else "calc.py")
+    source.write_text(SOURCE.replace("()=>1;", "()=>2;") if adapter == "node" else "VALUE=2\n")
+    before = BuildTesterV02(root, tmp_path / "logs/base", checks=checks, execution=policy()).run_all(True)
+    after = BuildTesterV02(candidate, tmp_path / "logs/after", checks=checks, execution=policy()).run_all(True)
+    patch = SimpleNamespace(candidate_id="test",task_id="T",provider_name="local",status="applied",applied=True,changed_files="M "+source.name)
+    result = classify_candidate(SimpleNamespace(task_type="bug_fix"),patch,before,after)
+    assert result.verdict == "PASS", result.to_dict()
+    assert_removed(before["execution_environment"]["container_names"] + after["execution_environment"]["container_names"])
+
+
 def test_cli_agent_two_round_repair_and_private_credentials_in_real_docker(tmp_path, monkeypatch):
     from test_cli_repair import case, repair, read
     c = case(tmp_path, secret=True, timeout=30, budget=2)
