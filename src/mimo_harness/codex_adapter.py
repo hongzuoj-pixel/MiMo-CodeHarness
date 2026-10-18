@@ -152,6 +152,7 @@ def invoke_codex(config, context, cwd, request):
     prompt = (f"Read {context.path(input_path)}. It is the complete repair request. "
               "Inspect the repository using read-only commands. Return a cumulative unified diff against the original baseline "
               "in the required JSON schema. Do not edit files or include control files in the patch. "
+              "Read and respect repository AGENTS.md instructions applicable to the files you inspect. "
               "Use previous_patch and independent failure feedback to improve the proposal. Preserve acceptance tests and configuration.")
     argv = [*config["argv"], "exec", "--json", "--ephemeral", "--ignore-user-config", "--ignore-rules",
             "--sandbox", "read-only", "--color", "never", "--model", config["model"],
@@ -160,7 +161,8 @@ def invoke_codex(config, context, cwd, request):
             "-c", 'shell_environment_policy.exclude=["CODEX_API_KEY","OPENAI_API_KEY"]',
             "--disable", "plugins", "--disable", "apps", "--disable", "multi_agent",
             "--disable", "shell_snapshot", "-c", "features.skip_host_skill_discovery=true",
-            "-c", "skills.bundled.enabled=false", "-c", "analytics.enabled=false"]
+            "-c", "skills.bundled.enabled=false", "-c", "analytics.enabled=false",
+            "-c", "project_doc_max_bytes=0"]
     if config.get("base_url"):
         argv += ["-c", 'model_provider="mimo_contract"',
                  "-c", 'model_providers.mimo_contract.name="MiMoHarness Responses gateway"',

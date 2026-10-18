@@ -32,11 +32,15 @@ def codex_profile(c, argv, **extra):
     return cfg
 
 
-def test_codex_adapter_real_subprocess_and_untrusted_project_config(tmp_path, monkeypatch):
+@pytest.mark.parametrize("cwd", [".", "subdir"])
+def test_codex_adapter_real_subprocess_and_untrusted_project_config(tmp_path, monkeypatch, cwd):
     c = case(tmp_path)
     monkeypatch.setenv("CODEX_API_KEY", "fake-contract-credential")
     (c.project / ".codex").mkdir()
     (c.project / ".codex/config.toml").write_text('model_provider="hostile"\n')
+    if cwd != ".":
+        (c.project / cwd / ".codex").mkdir(parents=True)
+        (c.project / cwd / ".codex/config.toml").write_text('model_provider="nested-hostile"\n')
     patches = [diff(ORIGINAL, ORIGINAL.replace("a - b", "a")), diff(ORIGINAL, ORIGINAL.replace("a - b", "a + b"))]
     program = c.project / "adapter.py"
     program.write_text(f'''import json,sys
@@ -46,7 +50,11 @@ if sys.argv[-1] == "--version":
 assert "--json" in sys.argv and "--ignore-user-config" in sys.argv and "--ignore-rules" in sys.argv
 assert sys.argv[sys.argv.index("--sandbox")+1] == "read-only"
 assert not Path(".codex").exists()
-request=json.loads(next(Path.cwd().glob(".mimo-agent-*.json")).read_text(encoding="utf-8"))
+root=Path.cwd()
+while not (root / ".git").is_dir():
+    root=root.parent
+assert not (root / ".codex").exists()
+request=json.loads(next(root.glob(".mimo-agent-*.json")).read_text(encoding="utf-8"))
 patches={patches!r}
 response={{"schema_version":1,"status":"completed","patch":patches[request["round"]-1]}}
 for event in [{{"type":"thread.started"}},{{"type":"turn.started"}},
@@ -54,12 +62,14 @@ for event in [{{"type":"thread.started"}},{{"type":"turn.started"}},
  {{"type":"turn.completed","usage":{{"input_tokens":0,"output_tokens":20}}}}]:
  print(json.dumps(event))
 ''', encoding="utf-8")
-    codex_profile(c, [sys.executable, str(program)])
+    codex_profile(c, [sys.executable, str(program)], cwd=cwd)
     assert repair(c) == 0
     assert read(c)["stop_reason"] == "VERIFIED_PASS"
     assert read(c)["agent"]["model"] == "mimo-contract-test"
     assert read(c)["agent"]["cli_version"] == CODEX_VERSION
     assert (c.project / ".codex/config.toml").read_text() == 'model_provider="hostile"\n'
+    if cwd != ".":
+        assert (c.project / cwd / ".codex/config.toml").read_text() == 'model_provider="nested-hostile"\n'
     assert main(["gate", "--run", str(tmp_path / "runs/first")]) == 0
     assert main(["resume", "--run", str(tmp_path / "runs/first"), "--name", "resumed"]) == 0
     assert read(c, "resumed", "agent_ledger.json")["summary"]["invocations_reserved"] == 2
@@ -123,7 +133,7 @@ def test_npm_package_resolves_to_native_binary(tmp_path, layout, shim):
     arch = {"x86_64": "x64", "amd64": "x64", "aarch64": "arm64", "arm64": "arm64"}[platform.machine().lower()]
     package = tmp_path / "node_modules/@openai/codex"
     launcher = package / "bin/codex.js" if shim == "js" else tmp_path / ("codex." + shim)
-    launcher.parent.mkdir(parents=True)
+    launcher.parent.mkdir(parents=True, exist_ok=True)
     launcher.write_text("// npm launcher\n")
     vendor = {"hoisted": package.parent / f"codex-{system}-{arch}/vendor",
               "nested": package / f"node_modules/@openai/codex-{system}-{arch}/vendor",
