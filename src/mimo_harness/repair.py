@@ -83,6 +83,9 @@ def command_repair(args):
             raise ValueError("BASELINE_TARGET_NOT_REPRODUCED: fix collection/setup/static errors and reproduce every target assertion before invoking an Agent.")
         history = {"schema_version": 1, "max_rounds": args.max_rounds, "rounds": [],
                    "stop_reason": "RUNNING", "selected_round": None, "final_patch_sha256": None}
+        if agent.get("adapter") == "codex":
+            history["agent"] = {"adapter": "codex", "cli_version": agent["cli_version"],
+                                "model": agent["model"], "usage_source": "unavailable"}
         atomic_json(root / "repair_history.json", history)
         previous_patch, prior_feedback = "", feedback(baseline, root)
         for number in range(1, args.max_rounds + 1):

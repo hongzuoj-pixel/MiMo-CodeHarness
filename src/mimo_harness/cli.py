@@ -974,6 +974,23 @@ def build_parser() -> argparse.ArgumentParser:
     repair.add_argument("--name", help="Stable output run name")
     repair.set_defaults(handler=command_repair)
 
+    from mimo_harness.codex_adapter import command_agent_init
+    agent_init = sub.add_parser("agent-init", help="Create a pinned, ready-to-use Codex Agent profile without a model call.")
+    agent_init.add_argument("--model", required=True, help="Explicit model identifier to use for real execution")
+    agent_init.add_argument("--codex", default="codex", help="Installed Codex executable or npm shim")
+    agent_init.add_argument("--output", default=".mimo/codex-agent.json", help="New Agent profile; existing files are preserved")
+    agent_init.set_defaults(handler=command_agent_init)
+
+    from mimo_harness.real_cases import CASES, command_case_init, command_case_check
+    case_init = sub.add_parser("case-init", help="Prepare a pinned real upstream defect and fixed independent acceptance.")
+    case_init.add_argument("--case", choices=sorted(CASES), required=True)
+    case_init.add_argument("--output", required=True, help="New case directory; existing directories are preserved")
+    case_init.set_defaults(handler=command_case_init)
+    case_check = sub.add_parser("case-check", help="Verify upstream reference/regression controls, recovery and portable gates.")
+    case_check.add_argument("--directory", required=True, help="Prepared case directory")
+    case_check.add_argument("--name", help="New acceptance attempt name")
+    case_check.set_defaults(handler=command_case_check)
+
     resume = sub.add_parser("resume", help="Recover into a new run; validate inputs and rerun all checks.")
     resume.add_argument("--run", required=True, help="Original run directory with run_manifest.json")
     resume.add_argument("--name", help="New output run name; the original is preserved")

@@ -12,13 +12,25 @@ Priorities are ordered by user dependency, with a concrete exit condition:
 |---|---|---|
 | P0 · implemented | Isolated baseline/candidate verification, stable Python case evidence, recovery, portable reports, PASS-only gates | Existing Linux/Windows/Python/pytest/Docker/browser gates remain green |
 | P1 · implemented | Unified HTTP/mock provider contract, bounded deadlines/retries, explicit usage/completion states, persistent request/token/cost reservations | Real local HTTP fault injection; API → pytest → export/gate; interruption and branching recovery cannot reset budgets; old configs and offline execution work |
-| P2a · current batch | Generic external CLI Agent protocol and limited pytest bug-fix repair loop | Explicit argv, separate Agent/acceptance workspaces and credentials, process cleanup and bounded output; each round preserves its patch and independent test evidence; unchanged baseline acceptance; shared invocation/time budget, finite rounds, recovery and portable strict gate |
-| P2b | Live vendor CLI adapters | Validate each claimed vendor's actual command/events, credentials, completion states and internal spending limits with explicit allowance; no tool call silently accepted by the text-only HTTP runner |
-| P3 | Additional real defect cases and certified Node/GenericCommand checks | At least one independent bug-fix and regression case per claimed adapter; structured case evidence rather than command exit alone; documented dependency/setup boundaries |
+| P2a · implemented | Generic external CLI Agent protocol and limited pytest bug-fix repair loop | Explicit argv, separate Agent/acceptance workspaces and credentials, process cleanup and bounded output; each round preserves its patch and independent test evidence; unchanged baseline acceptance; shared invocation/time budget, finite rounds, recovery and portable strict gate |
+| P2b · next | Ready-to-use vendor adapter, then live model validation | Ship a pinned Codex CLI adapter and config generator; test its actual binary against a local protocol server; separately validate a real model with available credentials and an explicit spending allowance |
+| P3a · next | Two independent real Python defect cases | Pin upstream commits, reproduce target assertions, accept the reference fix and reject a patch that introduces a regression; retain source identity and portable evidence |
+| P3b | Certified Node/GenericCommand checks | At least one independent bug-fix and regression case per claimed adapter; structured case evidence rather than command exit alone; documented dependency/setup boundaries |
 | P4 | New-user workflow and actionable diagnosis | Complete install/configure/run/fail/recover/export walkthrough; at least three independent new users can follow the guide, with observed problems addressed and their results recorded |
 | P5 | Release and final completeness sign-off | Clean wheel/sdist installation, upgrade/support notes, maintainer-selected license, supported matrix and failure-injection acceptance rerun after the last functional change |
 
 P2–P4 may be scoped into smaller batches, but a capability is not advertised as certified before its exit condition is met. Existing `mimo verify` already accepts patches produced by external tools without needing a tool-specific Agent integration.
+
+## Delivery sequence and status rules
+
+The next delivery is one ready-to-use Agent adapter, two pinned real Python defect cases, user commands/configuration, automated failure cases and an inspectable acceptance record. This removes the requirement to write an adapter before trying the workflow. It does not establish model repair quality from a deterministic reply.
+
+1. **Adapter and real-defect acceptance:** validate the Codex binary, response completion, fixed-baseline verification, failure handling and recoverable budgets. Local protocol replies and upstream reference patches are labelled explicitly. A live model run records the exact CLI/model, source/test inputs, observed outcome and available usage separately.
+2. **Language coverage:** establish the same per-case evidence for Node before advertising support; add other languages only with their own executable acceptance.
+3. **First-use validation:** complete the installation/configuration/failure/recovery/export guide and observe at least three independent new users. Automated tests and simulated users do not count as those people.
+4. **Stable release:** choose the license with the maintainer; document supported versions, upgrades and recovery limits; build clean wheel/sdist artifacts; rerun the full supported matrix and failure scenarios on the final functional tree; publish the resulting acceptance record.
+
+Every update distinguishes **implemented**, **automated protocol verified**, **real defect verified**, **live model verified**, **independent user accepted** and **release accepted**. A passing intermediate CI batch never changes later statuses automatically. Credential access, an explicit model spending allowance, real users and the maintainer's license decision are external acceptance inputs; all implementation and reproducible preparation proceed before requesting any of them.
 
 ## P1 decisions and acceptance
 

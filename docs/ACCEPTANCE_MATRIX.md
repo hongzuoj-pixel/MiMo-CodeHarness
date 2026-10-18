@@ -39,16 +39,20 @@ The final product is accepted by complete workflows and failure scenarios, not b
 | Agent credentials and acceptance tampering | Actual separate child environments | Credentials absent from tests/export; leaked credential patch rejected; changed acceptance cannot PASS |
 | Repair resume, stale PASS, older-ancestor/sibling budgets and damaged inputs/accounting | Public CLI recovery and durable ledger/lock fixtures | Fresh tests; completed proposals reused only for matching inputs; no budget reset/refund or false approval |
 | External CLI repair in real Docker | Dedicated Docker two-round workflow | Separate containers/credentials, pinned image identity, cleanup verified, portable PASS gate |
+| Pinned Codex CLI → local Responses → two-round pytest repair | Actual npm native binary on Linux/Windows; fake local credentials | Explicit model/version and completion; reference PASS, portable gate, injected HTTP failure; no paid model claim |
+| Two independent pinned real Python defects | `case-init`/`case-check` for boltons and more-itertools on Linux/Windows | Target assertion reproduced; reference accepted, new regression rejected, fresh recovery, portable positive/negative gates, unchanged source |
 | Python/pytest/platform compatibility | Python 3.10/3.12/3.13; pytest 8/9; Linux/Windows | All jobs pass; JUnit retained even on failure |
 
 Run ordinary checks with `python -m pytest tests -q --junitxml=results.xml`. Docker tests require a real non-root Linux Docker worker and `MIMO_DOCKER_TEST_IMAGE`; they are explicitly skipped elsewhere, never counted as passed. POSIX SIGINT integration is skipped on Windows, whose Job cleanup is exercised by timeout/normal-exit tests. The separate Docker CI job is mandatory before claiming this backend is validated.
+
+The two actual-Codex tests require `MIMO_CODEX_BINARY` and the exact pinned executable; ordinary runs skip them explicitly. The `agent-and-real-cases` jobs install it and must pass both tests plus both real-repository workflows. These jobs retain JUnit and case ZIP/JSON evidence. Reference patches and local protocol replies are controls, not live AI results.
 
 ## Final stable-release gates still pending
 
 - Generalized cross-run caches/migration remain deferred; current recovery reuses only completed model responses within a validated run lineage. Network preparation and external services require pinned inputs and fresh execution.
 - Signed/remote attestation, richer evidence migration and organization-level enforced workflow policies are outside the current unsigned bundle format. The opt-in PR template still requires maintainer-configured required checks/review protection.
-- Generic CLI Agent protocol and limited pytest bug-fix repair are automated. Vendor-specific CLI/event adapters and live paid-provider validation remain separate until credentials and spending allowance are available. Opaque external Agent tokens/costs are unavailable; invocation/time caps are not billing caps.
-- Certified Node/GenericCommand support and additional real defect cases; Keil/firmware/hardware behavior remain separately scoped.
+- Generic CLI Agent repair, the pinned Codex event adapter and two real Python defect controls have automated gates. Live paid-provider/model repair validation still requires credentials and an explicit spending allowance. Opaque external Agent tokens/costs remain unavailable; invocation/time caps are not billing caps.
+- Certified Node/GenericCommand support and broader defect diversity; Keil/firmware/hardware behavior remain separately scoped.
 - Wheel/sdist release process, upgrade/compatibility notes, maintainer-selected license, and at least three independent new-user walkthroughs.
 - One final clean checkout/install run across the supported matrix, all failure-injection scenarios, evidence audit and scope review after the last functional change.
 

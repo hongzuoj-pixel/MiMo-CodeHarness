@@ -18,6 +18,8 @@ The included `demo_agent.py` is deterministic and makes no model requests. Round
 
 ## Connect a real Agent
 
+Codex users can start with the built-in [pinned CLI adapter and `agent-init`](CODEX_AGENT.md). The steps below are for the generic JSON adapter; both share the same independent verifier, limits and recovery.
+
 1. Run `mimo init` in your project. Review `checks` in `mimo-harness.json`; configure explicit pytest `target_tests`, e.g. `"test_calc.py::test_add"`. These IDs exclude the harness's check prefix. Confirm the defect reproduces in the selected `--base` (default `HEAD`; `WORKTREE` includes local edits).
 2. Write a reviewed adapter around your Agent CLI. It receives the request-file path and emits exactly the JSON response below. Most vendor CLIs need a small adapter; vendor flags/event formats are not assumed interchangeable.
 3. Save the Agent configuration, set named credentials in your shell, and run `doctor --agent-config agent.json`. This checks configuration, local executable and environment presence, without invoking an Agent. Baseline test reproduction and Docker image/setup are checked by `repair`.
@@ -71,4 +73,4 @@ Preserve `.agent-budgets/` beside run directories: recovery branches and older a
 
 `report` shows rounds and accounting; `export` includes all round patches and independent test evidence, while excluding private task/request/Agent logs, checkpoints and source workspaces. Test logs can contain source excerpts and project data; review evidence before sharing it. Hashes detect inconsistency, not an adversary who can rewrite every unsigned artifact.
 
-The certified boundary is the generic protocol plus the local/real-Docker acceptance cases. Live paid vendor CLIs, their billing accuracy and vendor-specific interactive/tool event adapters require separate credentials, spending allowance and validation. HTTP final-text providers remain available through `mimo run`; that path does not silently execute tool calls.
+The generic protocol has local/real-Docker acceptance cases. The optional Codex adapter has separate actual-binary/local-server CI; live-model repair and tool behavior require their own credentials, spending allowance and observed validation. Neither protocol tests nor invocation counts establish billing accuracy. HTTP final-text providers remain available through `mimo run`; that path does not silently execute tool calls.

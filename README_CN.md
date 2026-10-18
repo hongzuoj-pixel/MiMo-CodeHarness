@@ -200,6 +200,17 @@ mimo --version
 
 旧的 `python src/...` 入口仍然保留，但新用户推荐统一使用 `mimo`。
 
+v0.10 增加了无需模型账号的真实缺陷体验入口：
+
+```bash
+mimo case-init --case boltons-write --output .mimo/cases/boltons
+mimo case-check --directory .mimo/cases/boltons --name first
+```
+
+它会固定上游源码、复现缺陷、接受参考修复、拒绝回归补丁，重跑恢复流程并输出便携证据。故意回归的 FAIL 是负向验收的一部分；整个 `case-check` 仅在两组对照均符合预期时返回成功。另一个独立案例及准确提交见[真实缺陷验收指南](docs/REAL_DEFECT_CASES.md)。这些参考补丁不是 AI 修复结果。
+
+使用实际 Agent 时，可通过 `mimo agent-init --model YOUR_MODEL_ID` 生成固定版本 Codex CLI 的配置，省去自行编写协议包装器；安装、密钥、限额、运行与恢复见[Codex 使用指南](docs/CODEX_AGENT.md)。实际模型修复质量与付费调用验收单独记录。
+
 ### 6.3 初始化并检查项目
 
 先使用明确的离线模式。下面命令会创建 `mimo-harness.json` 和 `.mimo/models.json`，不会调用模型 API。
