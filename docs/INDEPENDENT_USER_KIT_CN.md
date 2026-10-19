@@ -17,7 +17,7 @@ mimo walkthrough-pack --wheelhouse .mimo/kit-wheels --output .mimo/user-kit
 
 准备依赖需要联网；输出目录必须是新目录。wheel 必须与当前 CLI 的版本和引擎字节一致；缺依赖、重复版本、平台专用 wheel 和不同引擎都会被拒绝。安装时使用这些确切 wheel，不从在线索引解析新依赖。
 
-CI 的 Linux/Windows `cli-install` 任务从真实构建产物生成试用包，并演练新环境安装、拒绝覆盖、半成品虚拟环境恢复、保留反馈、真实 boltons 对照验收、手动恢复和迁移后的 ZIP 门禁。对应 `cli-pytest-*` artifact 内包含 `.mimo/user-kit-rehearsal/kit/` 和 `rehearsal.json`。选择一份可信 CI 产出的包，原样分发给三位使用者；不要混合不同任务中重建的 wheel。
+CI 的 Linux/Windows `cli-install` 任务从真实构建产物生成试用包，并演练新环境安装、拒绝覆盖、半成品虚拟环境恢复、保留反馈、真实 boltons 对照验收、手动恢复和迁移后的 ZIP 门禁。选择一份可信 CI 的 `independent-user-kit-ubuntu-latest` 或 `independent-user-kit-windows-latest` artifact 下载；解压后即可看到 bootstrap.py 和 GUIDE_CN.md。原样分发同一份包给三位使用者，不要混合不同任务中重建的 wheel。技术演练记录 rehearsal.json 另保留在 `cli-pytest-*` artifact 中。
 
 ## 新用户操作
 

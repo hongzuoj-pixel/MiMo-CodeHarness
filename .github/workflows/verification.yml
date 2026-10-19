@@ -231,6 +231,12 @@ jobs:
             .mimo/user-kit-rehearsal/kit/
             .mimo/user-kit-rehearsal/rehearsal.json
           include-hidden-files: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: independent-user-kit-${{ matrix.os }}
+          path: .mimo/user-kit-rehearsal/kit/
+          include-hidden-files: true
+          if-no-files-found: error
 
   unit-and-smoke:
     runs-on: ubuntu-latest
