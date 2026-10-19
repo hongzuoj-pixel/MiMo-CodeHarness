@@ -1,6 +1,6 @@
 # Supported scope and upgrades
 
-v0.11 remains a beta. Automated release evidence and a stable release sign-off are separate. The package has no mandatory third-party Python runtime dependencies; configured projects/runners need their own explicitly prepared dependencies.
+v0.12 remains a beta. Automated release evidence and a stable release sign-off are separate. The package has no mandatory third-party Python runtime dependencies; configured projects/runners need their own explicitly prepared dependencies.
 
 | Component | Automated coverage | Boundary |
 |---|---|---|
@@ -12,6 +12,7 @@ v0.11 remains a beta. Automated release evidence and a stable release sign-off a
 | Linux Docker | Actual non-root isolated baseline/candidate/Agent tests; Node/JUnit included | Prebuilt image, exact resolved image ID, explicit network/resources; no local fallback |
 | Codex | CLI 0.163.0 native-binary protocol on Linux/Windows | Explicit model/key; live model/tool quality and billing require observed trials |
 | Portable evidence | Relocation, strict gate, HTML/JSON/JUnit/log linkage; exact Node/JUnit identity | Unsigned integrity evidence, not hostile-party authentication |
+| Independent user kit | One exact wheel, portable offline Python dependencies; actual Python 3.12 installation/recovery on Linux/Windows | Python/Git must already be installed; fetching pinned upstream cases needs GitHub; automated rehearsal is not a human trial |
 | Embedded/other languages | Existing scans and explicit commands | No claim of full Keil firmware build, hardware validity or certified Go/Rust/Jest/Vitest acceptance |
 
 ## Install and upgrade
@@ -22,7 +23,7 @@ Keep the previous checkout/tag and all run directories before upgrading. Do not 
 
 Recovery requires the exact source/test/configuration, task, engine, executable/environment and Docker identity that produced the original run. A version upgrade, changed reporter or changed Node binary can invalidate recovery. Restore the matching old environment to resume an old run, or start a new run; do not edit fingerprints/accounting to force reuse. Previously completed portable bundles remain available for inspection, subject to their evidence format and verifier compatibility.
 
-v0.11 does not migrate cached tests or silently reuse old PASS. Resume recreates baseline/candidate checks; completed proposals are reused only when inputs match. Native Node executable bytes are included in local recovery identity; Docker runtime bytes are bound through image identity.
+The current version does not migrate cached tests or silently reuse old PASS. Resume recreates baseline/candidate checks; completed proposals are reused only when inputs match. Native Node executable bytes are included in local recovery identity; Docker runtime bytes are bound through image identity.
 
 ## Final release record
 

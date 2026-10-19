@@ -59,7 +59,7 @@ The two actual-Codex tests require `MIMO_CODEX_BINARY` and the exact pinned exec
 - Signed/remote attestation, richer evidence migration and organization-level enforced workflow policies are outside the current unsigned bundle format. The opt-in PR template still requires maintainer-configured required checks/review protection.
 - Generic CLI Agent repair, the pinned Codex event adapter and two real Python defect controls have automated gates. Live paid-provider/model repair validation still requires credentials and an explicit spending allowance. Opaque external Agent tokens/costs remain unavailable; invocation/time caps are not billing caps.
 - Broader language/framework and defect diversity beyond the documented native Node/JUnit subset; Keil/firmware/hardware behavior remain separately scoped.
-- Maintainer-selected license and at least three independent new-user walkthroughs. Wheel/sdist checks, upgrade/support notes, trial/feedback generation and source-bound CI collection are implemented; generated templates are not completed external evidence.
+- Maintainer-selected license and at least three independent new-user walkthroughs. Wheel/sdist checks, upgrade/support notes, exact-wheel user kits, offline install/setup recovery, trial/feedback generation and source-bound CI collection are implemented; generated templates and automated installer rehearsals are not completed external evidence.
 - One final clean checkout/install run across the supported matrix, all failure-injection scenarios, evidence audit and scope review after the last functional change.
 
 Passing an intermediate batch is not the final completeness sign-off. Unavailable environments, skipped tests and external/manual gates must remain visible in the release record.

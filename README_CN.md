@@ -215,6 +215,8 @@ v0.11 已增加原生 Node.js 与通用 JUnit 的逐用例验证，可通过 `ms
 
 真实模型试跑、新用户反馈和最终验收分别使用 `trial-init`/`trial-run`、`walkthrough-init` 和 `readiness`。执行 `mimo readiness` 可查看缺项；返回 `3` 表示尚未齐备，不会把测试模板当作真实试用。详见[中文产品验收指南](docs/PRODUCT_ACCEPTANCE_CN.md)和[支持范围与升级说明](docs/SUPPORT_AND_UPGRADES.md)。
 
+v0.12 新增 [`walkthrough-pack` 独立用户试用包](docs/INDEPENDENT_USER_KIT_CN.md)：三位使用者共用同一份 wheel 和离线 Python 依赖，用一条命令创建独立环境；安装中断后可以恢复，已填写的反馈会保留。自动安装不算真人验收。
+
 ### 6.3 初始化并检查项目
 
 先使用明确的离线模式。下面命令会创建 `mimo-harness.json` 和 `.mimo/models.json`，不会调用模型 API。

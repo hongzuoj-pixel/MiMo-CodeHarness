@@ -133,7 +133,7 @@ def command_walkthrough_init(args):
 3. 执行 `mimo --config .mimo/user-case/mimo-harness.json doctor`。
 4. 执行 `mimo case-check --directory .mimo/user-case --name first`。阅读参考 PASS、故意回归 FAIL 和恢复重跑的证据；整个对照验收应成功。
 5. 再用相同名称运行一次，确认拒绝覆盖；记录提示是否足以解决问题。换一个新名称可重新验收。
-6. 将 `results/first/reference.zip` 复制到其他目录，执行 `mimo gate --bundle ZIP路径 --json`；解压后打开 report.html。
+6. 将 `.mimo/user-case/results/first/reference.zip` 复制到其他目录，执行 `mimo gate --bundle ZIP路径 --json`；解压后打开 report.html。
 7. 填写匿名 tester_id、观察时间、环境、各步骤是否完成、遇到的问题。只在实际独立试用后设置 independence_confirmed=true。issues 中每个问题记录 description 和 resolved。
 8. evidence_bundle 填写你自己运行产生的参考 ZIP 路径（相对 feedback.json 所在目录，或绝对路径）。不同试用者需要各自的运行证据。
 

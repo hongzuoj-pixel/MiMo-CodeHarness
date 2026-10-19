@@ -216,6 +216,11 @@ jobs:
           mimo --config examples/cli_agent/mimo-harness.json report --run examples/cli_agent/.mimo/runs/recovered-repair
           mimo export --run examples/cli_agent/.mimo/runs/recovered-repair --output cli-repair-evidence.zip
           mimo gate --bundle cli-repair-evidence.zip
+      - name: Prepare portable user-kit dependencies and rehearse clean installation
+        run: |
+          python -m pip download --only-binary=:all: --platform any --implementation py --abi none --dest .mimo/kit-wheels pip==25.0.1 pytest==8.4.2 iniconfig==2.1.0 packaging==25.0 pluggy==1.6.0 pygments==2.19.2 exceptiongroup==1.3.0 tomli==2.2.1 colorama==0.4.6 typing_extensions==4.15.0
+          python -c "import pathlib,shutil; shutil.copy2(next(pathlib.Path('.mimo/dist').glob('*.whl')), '.mimo/kit-wheels')"
+          python tests/ci_user_kit.py --wheelhouse .mimo/kit-wheels --output .mimo/user-kit-rehearsal
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -223,6 +228,8 @@ jobs:
           path: |
             cli-pytest-results.xml
             .mimo/dist/*
+            .mimo/user-kit-rehearsal/kit/
+            .mimo/user-kit-rehearsal/rehearsal.json
           include-hidden-files: true
 
   unit-and-smoke:
