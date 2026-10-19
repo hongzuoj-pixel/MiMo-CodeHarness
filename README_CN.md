@@ -5,6 +5,8 @@
 
 [English README](README.md)
 
+**当前状态：v0.12.0 beta。** 可安装 CLI 已支持独立补丁验证、有限轮次的外部 Agent 修复、Python/Node/JUnit 验收、中断恢复与便携证据。可从[快速开始](#6-快速开始)或[独立用户试用包](docs/INDEPENDENT_USER_KIT_CN.md)入手。真实模型试跑、三位独立用户试用、维护者许可证决定及最终签收仍待完成，目前尚未正式稳定发布。详见[项目状态](PROJECT_STATUS.md)和[产品计划](docs/PRODUCT_PLAN.md)。
+
 ---
 
 ## 1. 这个项目解决什么问题？
@@ -21,7 +23,7 @@
 
 **MiMo-CodeHarness** 的目标就是把大模型代码能力评测从“单题问答”推进到“真实代码仓库级 Agent 评测”。
 
-这个项目特别适合展示 **AI + 软件工程 + 物联网/嵌入式/工具类项目** 的结合。当前版本使用小米 **MiMo Pro API** 作为主要模型后端，并在两个真实项目上完成了最终 clean 版评测：
+这个项目特别适合展示 **AI + 软件工程 + 物联网/嵌入式/工具类项目** 的结合。原始案例使用小米 **MiMo Pro API** 作为主要模型后端，以下两个项目保留了历史 v0.3.1 final clean 评测：
 
 1. STM32 RFID 门禁系统；
 2. SlideNotes Python GUI 文档导出工具。
@@ -110,9 +112,9 @@ LLM Judge 和人工 review 仍然只是可选证据，不能替代可执行验�
 
 ---
 
-## 4. Final Clean 评测结果
+## 4. 历史 v0.3.1 评测结果
 
-下面是当前推荐在 README、简历、项目报告和展示中引用的最终 clean 版结果。
+以下数据保留原始 final clean 运行记录，只能作为历史描述性评分引用。当前可执行验收及参考修复/回归对照，见[真实 Python 缺陷](docs/REAL_DEFECT_CASES.md)、[Node/JUnit 检查](docs/STRUCTURED_CHECKS.md)和[验收矩阵](docs/ACCEPTANCE_MATRIX.md)。
 
 | Case Study | 项目类型 | 文件数 | 依赖边数 | 任务数 | 平均分 | 估算 Token | 状态 |
 |---|---:|---:|---:|---:|---:|---:|---|
@@ -121,7 +123,7 @@ LLM Judge 和人工 review 仍然只是可选证据，不能替代可执行验�
 
 这些 v0.3.1 历史分数生成于“基线—候选”验证机制之前，不能再表述为补丁已验证通过。
 
-推荐展示目录：
+历史结果目录：
 
 ```text
 outputs/mimo_codeharness_v02/final_stm32_v031_clean__stm32_rfid/
@@ -350,6 +352,11 @@ MiMo-CodeHarness/
 ├── src/
 │   ├── mimo_harness/
 │   │   ├── cli.py
+│   │   ├── repair.py
+│   │   ├── structured_checks.py
+│   │   ├── product_acceptance.py
+│   │   ├── user_kit.py
+│   │   ├── study_bootstrap.py
 │   │   └── __main__.py
 │   ├── run_real_repo_case_studies.py
 │   ├── run_mimo_codeharness_v02.py
@@ -358,19 +365,25 @@ MiMo-CodeHarness/
 │   ├── scoring_v03.py
 │   └── verification_v04.py
 ├── docs/
-│   ├── SCORING_SYSTEM_V03.md
-│   ├── SCORING_SYSTEM_V031.md
-│   ├── VERIFICATION_V04.md
-│   └── CLI_V05.md
+│   ├── PRODUCT_PLAN.md
+│   ├── PRODUCT_ACCEPTANCE_CN.md
+│   ├── INDEPENDENT_USER_KIT_CN.md
+│   ├── CODEX_AGENT.md
+│   ├── REAL_DEFECT_CASES.md
+│   ├── STRUCTURED_CHECKS.md
+│   └── ACCEPTANCE_MATRIX.md
 ├── tests/
-│   ├── test_verification_v04.py
-│   └── test_cli_v05.py
+│   ├── test_cli_repair.py
+│   ├── test_product_acceptance.py
+│   ├── test_user_kit.py
+│   └── ci_user_kit.py
 ├── .github/workflows/
 │   └── verification.yml
 ├── outputs/
 │   └── mimo_codeharness_v02/
 │       ├── final_stm32_v031_clean__stm32_rfid/
 │       └── final_slidenotes_v031_clean__slidenotes/
+├── PROJECT_STATUS.md
 ├── README.md
 └── README_CN.md
 ```
@@ -395,18 +408,17 @@ MiMo-CodeHarness/
 
 ## 10. 后续计划
 
-完成统一 CLI 后，后续继续升级：
+[产品计划](docs/PRODUCT_PLAN.md)分别记录实现与验收状态。Python/Node/JUnit 用例证据、运行 manifest、有限修复与恢复、便携门禁和独立用户试用包均已实现。
 
-- 接入项目专属 build/test adapter，如 STM32/Keil 编译检查；
-- 增加 HarmonyOS、机器人、后端等更多真实仓库；
-- 增加可校准的跨模型 LLM Judge；
-- 增加小样本人工 review 协议；
-- 增加可恢复的运行 manifest、按输入识别的缓存，以及更多容器平台认证；
-- 做一个可视化对比 dashboard；
-- 将技术报告扩展成本科科研报告或 workshop-style paper draft。
+正式稳定发布前还需：
+
+1. 使用明确的模型和预算完成已准备好的真实模型试跑，保留实际结果与可获取的用量。
+2. 观察三位独立新用户使用，解决反馈中的障碍并重跑受影响的验收。
+3. 由维护者确定项目许可证，审阅绑定源码的 CI、模型和用户证据，完成最终发布签收。目前尚未创建正式稳定版 GitHub Release 或发布 PyPI。
+
+后续扩展根据实际验收反馈排序，包括更多真实仓库/框架、Keil/硬件适配、更多容器平台、通用跨运行缓存、可复用的项目 PR 集成及本地/多模型网页入口。Judge 校准和科研报告属于后续可选工作。这些扩展尚不属于 v0.12 已实现功能。
 
 ---
-
 
 ## 11. 安全说明
 

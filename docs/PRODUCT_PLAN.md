@@ -25,6 +25,8 @@ P2–P4 may be scoped into smaller batches, but a capability is not advertised a
 
 The v0.10 delivery adds one ready-to-use Agent adapter, two pinned real Python defect cases, user commands/configuration, automated failure cases and inspectable acceptance records. This removes the requirement to write an adapter before trying the workflow. It does not establish model repair quality from a deterministic reply. See [Codex setup](CODEX_AGENT.md) and [real defect acceptance](REAL_DEFECT_CASES.md).
 
+v0.11 implements native Node/generic JUnit acceptance and prepares live-trial, walkthrough and readiness records. v0.12 prepares the exact-engine independent-user kit with offline installation and setup recovery. In the sequence below, language implementation and first-use materials are delivered; actual live-model/user observations and final release sign-off are still pending.
+
 1. **Adapter and real-defect acceptance:** validate the Codex binary, response completion, fixed-baseline verification, failure handling and recoverable budgets. Local protocol replies and upstream reference patches are labelled explicitly. A live model run records the exact CLI/model, source/test inputs, observed outcome and available usage separately.
 2. **Language coverage:** establish the same per-case evidence for Node before advertising support; add other languages only with their own executable acceptance.
 3. **First-use validation:** complete the installation/configuration/failure/recovery/export guide and observe at least three independent new users. Automated tests and simulated users do not count as those people.

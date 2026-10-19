@@ -5,6 +5,8 @@
 
 [中文说明](README_CN.md)
 
+**Current status: v0.12.0 beta.** The installable CLI supports independent patch verification, bounded external-Agent repair, Python/Node/JUnit acceptance, recovery and portable evidence. Start with [Quick Start](#6-quick-start) or the [independent-user kit](docs/INDEPENDENT_USER_KIT_CN.md). Live-model validation, three independent user walkthroughs and maintainer license/final sign-off remain pending; this is not a stable release. See [project status](PROJECT_STATUS.md) and the [product plan](docs/PRODUCT_PLAN.md).
+
 ---
 
 ## 1. Why this project?
@@ -102,9 +104,9 @@ LLM Judge and human review remain optional evidence and do not replace executabl
 
 ---
 
-## 4. Final Clean Case Study Results
+## 4. Historical v0.3.1 Case Study Results
 
-The following results are from final clean runs. They are the recommended results to cite in README, reports, and presentations.
+The following results preserve the original final clean runs for provenance. Cite them only as historical descriptive scores. For current executable acceptance and reference/regression controls, see [real Python defects](docs/REAL_DEFECT_CASES.md), [Node/JUnit checks](docs/STRUCTURED_CHECKS.md) and the [acceptance matrix](docs/ACCEPTANCE_MATRIX.md).
 
 | Case Study | Repository Type | Files | Dependency Edges | Tasks | Avg. Score | Estimated Tokens | Status |
 |---|---:|---:|---:|---:|---:|---:|---|
@@ -113,7 +115,7 @@ The following results are from final clean runs. They are the recommended result
 
 These historical v0.3.1 scores predate baseline-vs-candidate verification and must not be cited as verified patch success.
 
-Recommended result directories:
+Historical result directories:
 
 ```text
 outputs/mimo_codeharness_v02/final_stm32_v031_clean__stm32_rfid/
@@ -362,6 +364,11 @@ MiMo-CodeHarness/
 ├── src/
 │   ├── mimo_harness/
 │   │   ├── cli.py
+│   │   ├── repair.py
+│   │   ├── structured_checks.py
+│   │   ├── product_acceptance.py
+│   │   ├── user_kit.py
+│   │   ├── study_bootstrap.py
 │   │   └── __main__.py
 │   ├── run_real_repo_case_studies.py
 │   ├── run_mimo_codeharness_v02.py
@@ -370,19 +377,25 @@ MiMo-CodeHarness/
 │   ├── scoring_v03.py
 │   └── verification_v04.py
 ├── docs/
-│   ├── SCORING_SYSTEM_V03.md
-│   ├── SCORING_SYSTEM_V031.md
-│   ├── VERIFICATION_V04.md
-│   └── CLI_V05.md
+│   ├── PRODUCT_PLAN.md
+│   ├── PRODUCT_ACCEPTANCE_CN.md
+│   ├── INDEPENDENT_USER_KIT_CN.md
+│   ├── CODEX_AGENT.md
+│   ├── REAL_DEFECT_CASES.md
+│   ├── STRUCTURED_CHECKS.md
+│   └── ACCEPTANCE_MATRIX.md
 ├── tests/
-│   ├── test_verification_v04.py
-│   └── test_cli_v05.py
+│   ├── test_cli_repair.py
+│   ├── test_product_acceptance.py
+│   ├── test_user_kit.py
+│   └── ci_user_kit.py
 ├── .github/workflows/
 │   └── verification.yml
 ├── outputs/
 │   └── mimo_codeharness_v02/
 │       ├── final_stm32_v031_clean__stm32_rfid/
 │       └── final_slidenotes_v031_clean__slidenotes/
+├── PROJECT_STATUS.md
 ├── README.md
 └── README_CN.md
 ```
@@ -407,18 +420,17 @@ Current limitations:
 
 ## 10. Roadmap
 
-Planned improvements after the installable CLI:
+The [product plan](docs/PRODUCT_PLAN.md) records implementation and acceptance separately. Python/Node/JUnit case evidence, run manifests, bounded repair/recovery, portable gates and the independent-user kit are implemented.
 
-- Add project-specific build/test adapters, such as Keil/STM32 build checks and Python unit tests.
-- Add more real repositories, including HarmonyOS, robotics, and backend projects.
-- Add optional calibrated LLM Judge with stricter JSON schema and cross-model judging.
-- Add manual review protocol for small-sample validation.
-- Add resumable run manifests and input-aware caches; broaden certified container platforms.
-- Build a web dashboard for comparing multiple repositories and multiple models.
-- Convert the current technical report into a more complete undergraduate research report or workshop-style paper draft.
+Before a stable release:
+
+1. Run the prepared live-model trial with an explicit model and spending allowance; retain the actual outcome and available usage.
+2. Observe three independent new users, resolve their reported obstacles and rerun the affected acceptance checks.
+3. Have the maintainer choose the project license, review the source-bound CI/model/user evidence and complete final release sign-off. A stable GitHub Release/PyPI publication has not been performed.
+
+Later extensions, prioritized after actual acceptance feedback, include broader repository/framework coverage, Keil/hardware adapters, additional container platforms, generalized cross-run caches, reusable project PR integration and a local/multi-model web interface. Judge calibration and research reports remain optional later work. These extensions are not part of the implemented v0.12 feature set.
 
 ---
-
 
 ## 11. Safety Notes
 
