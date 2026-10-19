@@ -33,6 +33,8 @@ mimo trial-run --plan .mimo/live-trial-plan.json --output .mimo/live-trial-001
 
 ## 2. 至少三位独立新用户试用
 
+推荐先按[独立用户试用包指南](INDEPENDENT_USER_KIT_CN.md)准备同一份 wheel 和离线依赖，让三位使用者获得一致的引擎。下面的 `walkthrough-init` 仍可用于已经安装好相同版本的环境。
+
 为每位未参与实现的使用者生成一份独立材料：
 
 ```bash

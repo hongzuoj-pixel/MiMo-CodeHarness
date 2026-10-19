@@ -258,6 +258,8 @@ mimo readiness
 
 `readiness` returns `3` while external acceptance is pending. Use `trial-init`/`trial-run` for an explicitly budgeted live model trial and `walkthrough-init` for each independent new user. Blank templates and deterministic controls do not count as those observations. See the [acceptance guide](docs/PRODUCT_ACCEPTANCE_CN.md) and [support/upgrade boundaries](docs/SUPPORT_AND_UPGRADES.md).
 
+v0.12 adds [`walkthrough-pack`](docs/INDEPENDENT_USER_KIT_CN.md): distribute one exact wheel, offline Python dependencies and three blank user-study slots. A cross-platform bootstrap creates a private environment, verifies the installed engine and preserves feedback when resuming interrupted setup. Actual user observations remain separate.
+
 ### Continue an interrupted run
 
 ```bash

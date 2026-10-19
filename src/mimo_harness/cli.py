@@ -1017,6 +1017,11 @@ def build_parser() -> argparse.ArgumentParser:
     walkthrough = sub.add_parser("walkthrough-init", help="Create an independent-user guide and blank feedback record.")
     walkthrough.add_argument("--output", required=True)
     walkthrough.set_defaults(handler=command_walkthrough_init)
+    from mimo_harness.user_kit import command_walkthrough_pack
+    pack = sub.add_parser("walkthrough-pack", help="Package one exact wheel and offline dependencies for three independent user walkthroughs.")
+    pack.add_argument("--wheelhouse", required=True, help="Directory containing the matching harness wheel and all portable pytest dependencies")
+    pack.add_argument("--output", required=True, help="New kit directory; existing files are preserved")
+    pack.set_defaults(handler=command_walkthrough_pack)
     readiness = sub.add_parser("readiness", help="Check source-bound product evidence; missing external gates remain pending.")
     readiness.add_argument("--repository", default=".")
     readiness.add_argument("--trial", help="Completed trial.json")
